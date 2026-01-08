@@ -338,6 +338,36 @@ The `.env.example` file includes the following sections:
 - **Upload Configuration** - File size limits and allowed types
 - **Maintenance Mode** - Enable/disable maintenance mode
 
+### Environment-Specific Builds
+
+Create environment-specific `.env` files:
+
+```bash
+# Development (default)
+cp .env.example .env
+
+# Staging
+cp .env.example .env.staging
+# Update VITE_APP_ENV=staging and URLs
+
+# Production
+cp .env.example .env.production
+# Update VITE_APP_ENV=production and production URLs
+```
+
+Build for specific environments:
+
+```bash
+# Development (default)
+npm run build
+
+# Staging
+npm run build:staging
+
+# Production
+npm run build:production
+```
+
 ### Environment Configuration
 
 The project includes a type-safe environment configuration system at `src/utils/env.ts` that:
@@ -395,6 +425,72 @@ Pre-commit hooks are configured to run lint-staged:
 1. Create service in `src/services/`
 2. Use TanStack Query hooks for data fetching
 3. Type your API responses in `src/types/`
+
+## Build Optimization
+
+### Production Build
+
+The Vite configuration includes several optimizations for production:
+
+```bash
+# Standard production build
+npm run build
+
+# Build with bundle analysis
+npm run build:analyze
+
+# Staging build
+npm run build:staging
+
+# Explicit production build
+npm run build:production
+```
+
+### Bundle Analysis
+
+To analyze your bundle size and identify large dependencies:
+
+```bash
+npm run build:analyze
+```
+
+This will:
+- Build the application
+- Generate an interactive visualization in `dist/stats.html`
+- Show gzip and brotli sizes
+- Help identify optimization opportunities
+
+### Chunk Splitting
+
+The application uses automatic chunk splitting for better caching:
+
+- **react-vendor**: React and React Router
+- **query-vendor**: TanStack Query, Axios, and state management
+- **validation-vendor**: Zod, React Hook Form, resolvers
+- **ui-vendor**: UI utilities (clsx, tailwind-merge)
+- **vendor**: Other third-party libraries
+- **application**: Your application code
+
+### Build Configuration
+
+Key optimizations in `vite.config.ts`:
+
+- **Code Splitting**: Separate vendor and application chunks
+- **Tree Shaking**: Remove unused code
+- **Minification**: Using Terser for smaller bundle sizes
+- **Source Maps**: Only in development mode
+- **Asset Optimization**: Automatic asset inlining (<4KB)
+- **Target ES2015**: Modern browser support
+- **CSS Code Splitting**: Separate CSS chunks
+- **Dependency Optimization**: Pre-bundle common dependencies
+
+### Development Server
+
+The dev server includes:
+- Hot Module Replacement (HMR)
+- API proxy support (via `VITE_API_URL`)
+- Fast refresh with SWC compiler
+- Source maps for debugging
 
 ## Production Build
 

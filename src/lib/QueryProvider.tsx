@@ -1,11 +1,15 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
+import { env } from "@/utils/env";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      retry: env.queryRetryTimes,
+      retryDelay: env.queryRetryDelay,
       refetchOnWindowFocus: false,
+      staleTime: env.queryStaleTime,
+      gcTime: env.queryCacheTime,
     },
   },
 });

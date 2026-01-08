@@ -235,10 +235,54 @@ const [value, setValue] = useLocalStorage('key', defaultValue)
 
 ## Environment Variables
 
-Create a `.env` file in the root directory:
+The project uses a type-safe environment configuration system with validation. Create a `.env` file in the root directory by copying from `.env.example`:
 
-```env
-VITE_API_URL=http://localhost:3000/api
+```bash
+cp .env.example .env
+```
+
+### Available Variables
+
+The `.env.example` file includes the following sections:
+
+- **Application Configuration** - App name, URL, and environment
+- **API Configuration** - API URL and timeout settings
+- **Authentication** - Token keys and refresh interval
+- **Cache Configuration** - Query caching and retry settings
+- **UI Configuration** - Theme, locale, and date format
+- **Pagination** - Default and maximum page sizes
+- **Upload Configuration** - File size limits and allowed types
+- **Maintenance Mode** - Enable/disable maintenance mode
+
+### Environment Configuration
+
+The project includes a type-safe environment configuration system at `src/utils/env.ts` that:
+
+- Validates all required environment variables at startup
+- Provides type-safe access via `env` object
+- Validates URLs, numbers, and booleans
+- Falls back to sensible defaults when appropriate
+- Shows helpful error messages in development
+
+### Usage
+
+```typescript
+import { env, isProduction, isDevelopment } from '@/utils/env'
+
+// Access configuration
+console.log(env.apiUrl)
+console.log(env.appName)
+console.log(env.defaultPageSize)
+
+// Check environment
+if (isProduction) {
+  // Production-specific code
+}
+
+// Check maintenance mode
+if (env.maintenanceMode) {
+  // Show maintenance message
+}
 ```
 
 ## Git Hooks

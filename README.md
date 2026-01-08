@@ -10,6 +10,8 @@ A production-ready React frontend template built with modern tools and best prac
 - **Tailwind CSS** - Utility-first CSS framework
 - **TanStack Query** - Data fetching and state management
 - **Axios** - HTTP client
+- **React Hook Form** - Performant form validation
+- **Zod** - TypeScript-first schema validation
 - **Vitest** - Testing framework
 - **Husky** - Git hooks
 - **Lint-staged** - Run linters on staged files
@@ -157,6 +159,68 @@ const response = await api.put('/users/1', { name: 'Jane' })
 
 // DELETE request
 const response = await api.delete('/users/1')
+```
+
+## Form Validation
+
+### Using React Hook Form with Zod
+
+```typescript
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+
+// Define schema
+const schema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  username: z.string().min(3, 'Username must be at least 3 characters'),
+})
+
+// Infer TypeScript type from schema
+type FormData = z.infer<typeof schema>
+
+function MyForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  })
+
+  const onSubmit = async (data: FormData) => {
+    // Form data is validated and type-safe
+    console.log(data)
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <input {...register('email')} placeholder="Email" />
+        {errors.email && <span>{errors.email.message}</span>}
+      </div>
+
+      <div>
+        <input {...register('username')} placeholder="Username" />
+        {errors.username && <span>{errors.username.message}</span>}
+      </div>
+
+      <div>
+        <input
+          type="password"
+          {...register('password')}
+          placeholder="Password"
+        />
+        {errors.password && <span>{errors.password.message}</span>}
+      </div>
+
+      <button type="submit" disabled={isSubmitting}>
+        Submit
+      </button>
+    </form>
+  )
+}
 ```
 
 ## Custom Hooks

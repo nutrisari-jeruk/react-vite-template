@@ -113,6 +113,12 @@ src/
 - Husky git hooks
 - Lint-staged for automated checks
 
+### Error Handling
+- Global Error Boundary for React error catching
+- Comprehensive error logging
+- User-friendly error fallback UI
+- Development error details
+
 ## API Integration
 
 ### Using TanStack Query
@@ -160,6 +166,84 @@ const response = await api.put('/users/1', { name: 'Jane' })
 // DELETE request
 const response = await api.delete('/users/1')
 ```
+
+## Error Handling
+
+### Error Boundary
+
+The application includes a global Error Boundary that catches JavaScript errors anywhere in the component tree and displays a user-friendly fallback UI.
+
+#### Default Usage
+
+The Error Boundary is already wrapped around the entire app in `main.tsx`:
+
+```typescript
+<ErrorBoundary
+  onError={(error, errorInfo) => {
+    // Log to error tracking service (e.g., Sentry)
+    console.error("Global error caught:", error, errorInfo);
+  }}
+>
+  <App />
+</ErrorBoundary>
+```
+
+#### Wrapping Specific Components
+
+You can wrap specific sections of your app:
+
+```typescript
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+
+function MyComponent() {
+  return (
+    <ErrorBoundary
+      fallback={CustomErrorFallback}
+      onError={(error, errorInfo) => {
+        // Custom error handling
+      }}
+    >
+      <RiskyComponent />
+    </ErrorBoundary>
+  )
+}
+```
+
+#### Custom Fallback UI
+
+```typescript
+import type { Error as ErrorType } from 'react'
+
+function CustomErrorFallback({
+  error,
+  resetError,
+}: {
+  error: ErrorType
+  resetError: () => void
+}) {
+  return (
+    <div>
+      <h2>Something went wrong</h2>
+      <p>{error.message}</p>
+      <button onClick={resetError}>Try Again</button>
+    </div>
+  )
+}
+```
+
+#### Higher-Order Component
+
+```typescript
+import { withErrorBoundary } from '@/components/ErrorBoundary'
+
+const ProtectedComponent = withErrorBoundary(MyComponent, {
+  fallback: CustomErrorFallback,
+})
+```
+
+#### Testing the Error Boundary
+
+Navigate to `/error-test` to see the Error Boundary in action. Click the "Trigger Error" button to intentionally throw an error and see the fallback UI.
 
 ## Form Validation
 

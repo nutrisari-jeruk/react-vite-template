@@ -93,7 +93,18 @@ src/
 - Centralized HTTP client
 - Request/response interceptors
 - Automatic auth token handling
-- Error handling
+- Comprehensive error handling
+- Automatic token refresh on 401
+- Request ID tracing
+- Exponential backoff retry
+
+### Error Handling
+- Custom API error classes
+- Type-safe error handling
+- Automatic retry logic
+- Form field-level error display
+- User-friendly error messages
+- Request/response error classification
 
 ### Tailwind CSS
 - Utility-first CSS
@@ -166,6 +177,137 @@ const response = await api.put('/users/1', { name: 'Jane' })
 // DELETE request
 const response = await api.delete('/users/1')
 ```
+
+## API Error Handling
+
+The application includes a comprehensive API error handling system with custom error classes, automatic retry logic, and user-friendly error messages.
+
+### Error Classes
+
+The system includes typed error classes for different scenarios:
+
+```typescript
+import {
+  ApiError,
+  NetworkError,
+  TimeoutError,
+  ValidationError,
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError,
+  ConflictError,
+  RateLimitError,
+  ServerError,
+  ServiceUnavailableError,
+} from '@/lib/api-error'
+```
+
+### Using useApiError Hook
+
+```typescript
+import { useApiError } from '@/hooks/useApiError'
+
+function MyComponent() {
+  const { error, fieldErrors, isError, clearError, handleApiError, getFieldError } = useApiError()
+
+  const handleSubmit = async (data: FormData) => {
+    try {
+      await api.post('/endpoint', data)
+    } catch (err) {
+      handleApiError(err)
+      // Error is automatically handled and displayed
+    }
+  }
+
+  return (
+    <form>
+      {isError && (
+        <div className="error">{error?.message}</div>
+      )}
+
+      <input />
+      {getFieldError('email') && (
+        <div className="error">{getFieldError('email')}</div>
+      )}
+
+      <button>Submit</button>
+    </form>
+  )
+}
+```
+
+### Error Types & Handling
+
+The API client automatically handles different error types:
+
+| Error Type | Status Code | Retryable | Action |
+|------------|-------------|-----------|---------|
+| Network Error | - | ✓ Yes | Retry with backoff |
+| Timeout Error | 408 | ✓ Yes | Retry with backoff |
+| Validation Error | 400, 422 | ✗ No | Show field errors |
+| Unauthorized | 401 | ✗ No | Clear token, redirect to login |
+| Forbidden | 403 | ✗ No | Show access denied message |
+| Not Found | 404 | ✗ No | Show 404 message |
+| Conflict | 409 | ✗ No | Show conflict message |
+| Rate Limit | 429 | ✓ Yes | Retry after delay |
+| Server Error | 500, 502, 504 | ✓ Yes | Retry with backoff |
+| Service Unavailable | 503 | ✓ Yes | Retry with backoff |
+
+### Automatic Retry Logic
+
+Queries and mutations automatically retry on retryable errors:
+
+- **Exponential backoff**: 1s, 2s, 4s, 8s, 16s (max 30s)
+- **Jitter**: Random delay to avoid thundering herd
+- **Configurable retries**: Set via `VITE_QUERY_RETRY_TIMES`
+- **Smart retry**: Only retryable errors are retried
+
+### Token Management
+
+On 401 errors:
+
+1. Clear expired tokens from localStorage
+2. Redirect to login page
+3. User-friendly session expired message
+
+### Request Tracing
+
+Each request includes a unique `X-Request-ID` header for debugging and tracing.
+
+### Error Utilities
+
+```typescript
+import {
+  getErrorMessage,
+  getFieldErrors,
+  isRetryableError,
+  isAxiosError,
+} from '@/lib/api-error'
+
+// Get user-friendly error message
+const message = getErrorMessage(error)
+
+// Extract field errors for forms
+const errors = getFieldErrors(error)
+
+// Check if error is retryable
+if (isRetryableError(error)) {
+  // Retry logic
+}
+
+// Check if error is Axios error
+if (isAxiosError(error)) {
+  // Access axios-specific properties
+}
+```
+
+### Example: Try the Error Handling
+
+Navigate to `/api-error-example` to see the error handling in action with:
+- Form validation with field errors
+- Different error type simulations
+- Automatic retry behavior
+- User-friendly error messages
 
 ## Error Handling
 

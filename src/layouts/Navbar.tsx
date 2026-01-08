@@ -45,6 +45,14 @@ export default function Navbar() {
             >
               Error Test
             </Link>
+            <Link
+              to="/api-error-example"
+              className={`px-3 py-2 rounded-md hover:bg-gray-700 transition-colors ${
+                isActive("/api-error-example") ? "bg-gray-700" : ""
+              }`}
+            >
+              API Error
+            </Link>
           </div>
         </div>
       </div>

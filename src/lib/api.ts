@@ -13,6 +13,14 @@ import {
   ServerError,
   ServiceUnavailableError,
 } from "./api-error";
+import { getAccessToken, clearAuthTokens } from "./auth";
+
+export interface ApiResponse<T = unknown> {
+  success: boolean;
+  message: string;
+  data?: T;
+  errors?: Record<string, string[]>;
+}
 
 export const api = axios.create({
   baseURL: env.apiUrl,
@@ -23,7 +31,7 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // Add auth token if available
-    const token = localStorage.getItem(env.authTokenKey);
+    const token = getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -53,7 +61,7 @@ api.interceptors.response.use(
     }
 
     const status = error.response?.status;
-    const responseData = error.response?.data;
+    const responseData = error.response?.data as ApiResponse | undefined;
 
     // Network error (no response)
     if (!error.response) {
@@ -70,14 +78,13 @@ api.interceptors.response.use(
         return Promise.reject(
           new ValidationError(
             responseData?.message || "Invalid request data.",
-            responseData
+            responseData?.errors
           )
         );
 
       case 401:
-        // Clear expired token
-        localStorage.removeItem(env.authTokenKey);
-        localStorage.removeItem(env.authRefreshTokenKey);
+        // Clear expired tokens
+        clearAuthTokens();
 
         // Redirect to login (or trigger re-authentication flow)
         if (window.location.pathname !== "/login") {

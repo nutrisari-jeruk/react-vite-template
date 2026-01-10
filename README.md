@@ -124,6 +124,14 @@ src/
 - Husky git hooks
 - Lint-staged for automated checks
 
+### Authentication
+- Secure token storage with cookies/localStorage
+- Environment-based storage strategy
+- JWT token parsing and validation
+- Automatic token expiration tracking
+- Token refresh hooks
+- Type-safe auth management
+
 ### Error Handling
 - Global Error Boundary for React error catching
 - Comprehensive error logging
@@ -266,9 +274,102 @@ Queries and mutations automatically retry on retryable errors:
 
 On 401 errors:
 
-1. Clear expired tokens from localStorage
+1. Clear expired tokens from secure storage
 2. Redirect to login page
 3. User-friendly session expired message
+
+### Using Authentication
+
+```typescript
+import { useAuth } from '@/hooks/useAuth'
+
+function MyComponent() {
+  const { isAuthenticated, accessToken, logout, tokenExpiresIn } = useAuth()
+
+  if (!isAuthenticated) {
+    return <Login />
+  }
+
+  return (
+    <div>
+      <p>Welcome! Your token expires in {tokenExpiresIn}ms</p>
+      <button onClick={logout}>Logout</button>
+    </div>
+  )
+}
+```
+
+### Secure Token Storage
+
+The authentication system uses secure token storage:
+
+- **Development**: localStorage (for easier debugging)
+- **Production**: Cookies (with secure, httpOnly flags)
+- **Automatic fallback**: localStorage if cookies fail
+- **JWT Support**: Parse and validate JWT payloads
+- **Expiration Tracking**: Check token expiration automatically
+
+```typescript
+import {
+  getAccessToken,
+  setAccessToken,
+  removeAccessToken,
+  isAuthenticated,
+  parseJWT,
+  isTokenExpired,
+} from '@/lib/auth'
+
+// Get token
+const token = getAccessToken()
+
+// Set token with options
+setAccessToken(token, {
+  expires: 7, // days
+  secure: true,
+  httpOnly: true,
+  sameSite: 'strict',
+})
+
+// Check authentication
+if (isAuthenticated()) {
+  // User is logged in
+}
+
+// Parse JWT payload
+const payload = parseJWT(token)
+console.log(payload.sub, payload.exp)
+
+// Check expiration
+if (isTokenExpired(token)) {
+  // Token is expired
+}
+```
+
+### Token Refresh
+
+Use the `useTokenRefresh` hook to manage token refresh:
+
+```typescript
+import { useTokenRefresh } from '@/hooks/useAuth'
+
+function App() {
+  const { shouldRefresh, refresh } = useTokenRefresh()
+
+  useEffect(() => {
+    if (shouldRefresh) {
+      refresh()
+    }
+  }, [shouldRefresh, refresh])
+}
+```
+
+### Example: Try It Out
+
+Navigate to `/auth-example` to see authentication in action:
+- Login form with secure token storage
+- Authenticated state display
+- Token expiration tracking
+- Automatic logout functionality
 
 ### Request Tracing
 

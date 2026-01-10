@@ -6,6 +6,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import ErrorTest from "./pages/ErrorTest";
 import ApiErrorExample from "./pages/ApiErrorExample";
+import AuthExample from "./pages/AuthExample";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
             <Route path="contact" element={<Contact />} />
             <Route path="error-test" element={<ErrorTest />} />
             <Route path="api-error-example" element={<ApiErrorExample />} />
+            <Route path="auth-example" element={<AuthExample />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

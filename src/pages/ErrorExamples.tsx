@@ -10,6 +10,8 @@ import {
   NetworkError,
   TimeoutError,
   ValidationError,
+  UnauthorizedError,
+  ForbiddenError,
   NotFoundError,
   ServerError,
 } from "@/lib/api-error";
@@ -61,6 +63,14 @@ export default function ErrorExamples() {
             email: ["Please enter a valid email address."],
             password: ["Password must be at least 8 characters."],
           });
+        case "401":
+          throw new UnauthorizedError(
+            "Your session has expired. Please log in again."
+          );
+        case "403":
+          throw new ForbiddenError(
+            "You don't have permission to access this resource."
+          );
         case "404":
           throw new NotFoundError("The requested resource was not found.");
         case "500":
@@ -136,6 +146,20 @@ export default function ErrorExamples() {
               className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Validation Error
+            </button>
+            <button
+              onClick={() => simulateError("401")}
+              disabled={loading}
+              className="w-full px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              401 Unauthorized
+            </button>
+            <button
+              onClick={() => simulateError("403")}
+              disabled={loading}
+              className="w-full px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              403 Forbidden
             </button>
             <button
               onClick={() => simulateError("404")}
@@ -250,7 +274,8 @@ export default function ErrorExamples() {
           <ul className="space-y-2 text-blue-700 text-sm">
             <li>✓ Automatic retry for network and server errors</li>
             <li>✓ Exponential backoff with jitter</li>
-            <li>✓ Automatic token refresh on 401</li>
+            <li>✓ 401 unauthorized with auto-redirect to login</li>
+            <li>✓ 403 forbidden access handling</li>
             <li>✓ Form field-level error display</li>
             <li>✓ User-friendly error messages</li>
             <li>✓ Request ID for debugging</li>

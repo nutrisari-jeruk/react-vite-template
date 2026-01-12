@@ -22,6 +22,23 @@ export interface ApiResponse<T = unknown> {
   errors?: Record<string, string[]>;
 }
 
+/**
+ * Generate a UUID v4 compatible string
+ * Falls back to Math.random if crypto.randomUUID is not available
+ */
+function generateRequestId(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+
+  // Fallback UUID v4 generation
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export const api = axios.create({
   baseURL: env.apiUrl,
   timeout: env.apiTimeout,
@@ -37,7 +54,7 @@ api.interceptors.request.use(
     }
 
     // Add request ID for tracing
-    config.headers["X-Request-ID"] = crypto.randomUUID();
+    config.headers["X-Request-ID"] = generateRequestId();
 
     return config;
   },

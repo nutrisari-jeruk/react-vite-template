@@ -4,8 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import ErrorTest from "./pages/ErrorTest";
-import ApiErrorExample from "./pages/ApiErrorExample";
+import ErrorExamples from "./pages/ErrorExamples";
 import AuthExample from "./pages/AuthExample";
 import NotFound from "./pages/NotFound";
 
@@ -18,8 +17,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
-            <Route path="error-test" element={<ErrorTest />} />
-            <Route path="api-error-example" element={<ApiErrorExample />} />
+            <Route path="error-examples" element={<ErrorExamples />} />
             <Route path="auth-example" element={<AuthExample />} />
             <Route path="*" element={<NotFound />} />
           </Route>

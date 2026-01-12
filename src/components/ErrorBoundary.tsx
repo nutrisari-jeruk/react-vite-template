@@ -7,53 +7,68 @@
 import type { ComponentType, ReactNode } from "react";
 import { Component } from "react";
 
+export interface ErrorFallbackProps {
+  error: Error;
+  errorId: string;
+  resetError: () => void;
+}
+
 interface Props {
   children: ReactNode;
-  fallback?: ComponentType<{ error: Error; resetError: () => void }>;
-  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
+  fallback?: ComponentType<ErrorFallbackProps>;
+  onError?: (error: Error, errorInfo: React.ErrorInfo, errorId: string) => void;
+  onReset?: () => void;
 }
 
 interface State {
   hasError: boolean;
   error: Error | null;
+  errorId: string | null;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, errorId: null };
   }
 
   static getDerivedStateFromError(error: Error): State {
-    // Update state so the next render will show the fallback UI
-    return { hasError: true, error };
+    // Generate unique error ID for tracking
+    const errorId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    return { hasError: true, error, errorId };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    // Log the error to console
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
+    const { errorId } = this.state;
+
+    // Log the error to console with error ID
+    console.error(`[ErrorBoundary ${errorId}]:`, error, errorInfo);
 
     // Call the custom error handler if provided
-    if (this.props.onError) {
-      this.props.onError(error, errorInfo);
+    if (this.props.onError && errorId) {
+      this.props.onError(error, errorInfo, errorId);
     }
 
-    // TODO: Log error to error tracking service (e.g., Sentry)
-    // Sentry.captureException(error, { extra: errorInfo });
+    // You can integrate error tracking services here
+    // Example: Sentry.captureException(error, { tags: { errorId }, extra: errorInfo });
   }
 
   resetError = (): void => {
-    this.setState({ hasError: false, error: null });
+    if (this.props.onReset) {
+      this.props.onReset();
+    }
+    this.setState({ hasError: false, error: null, errorId: null });
   };
 
   render(): ReactNode {
-    if (this.state.hasError && this.state.error) {
+    if (this.state.hasError && this.state.error && this.state.errorId) {
       // Render custom fallback if provided
       if (this.props.fallback) {
         const FallbackComponent = this.props.fallback;
         return (
           <FallbackComponent
             error={this.state.error}
+            errorId={this.state.errorId}
             resetError={this.resetError}
           />
         );
@@ -63,6 +78,7 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <DefaultErrorFallback
           error={this.state.error}
+          errorId={this.state.errorId}
           resetError={this.resetError}
         />
       );
@@ -72,20 +88,23 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-interface ErrorFallbackProps {
-  error: Error;
-  resetError: () => void;
-}
-
 /**
  * Default error fallback UI
  */
-function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
+function DefaultErrorFallback({
+  error,
+  errorId,
+  resetError,
+}: ErrorFallbackProps) {
   const isDevelopment = import.meta.env.DEV;
+
+  const handleGoHome = () => {
+    window.location.href = "/";
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full bg-white rounded-lg shadow-lg p-8">
+      <div className="max-w-2xl w-full bg-white rounded-lg shadow-lg p-8">
         <div className="text-center">
           {/* Error Icon */}
           <div className="mx-auto w-16 h-16 mb-4 text-red-500">
@@ -119,9 +138,16 @@ function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={resetError}
+              autoFocus
               className="inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
             >
               Try again
+            </button>
+            <button
+              onClick={handleGoHome}
+              className="inline-flex items-center justify-center px-6 py-2.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+            >
+              Go home
             </button>
             <button
               onClick={() => window.location.reload()}
@@ -131,10 +157,15 @@ function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
             </button>
           </div>
 
+          {/* Error ID */}
+          <p className="mt-4 text-xs text-gray-400 font-mono">
+            Error ID: {errorId}
+          </p>
+
           {/* Development: Show error details */}
           {isDevelopment && (
             <details className="mt-6 text-left">
-              <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+              <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700 font-medium">
                 Show error details
               </summary>
               <div className="mt-3 p-4 bg-gray-100 rounded-lg overflow-auto">

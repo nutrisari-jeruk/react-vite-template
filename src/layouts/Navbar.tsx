@@ -38,20 +38,12 @@ export default function Navbar() {
               Contact
             </Link>
             <Link
-              to="/error-test"
+              to="/error-examples"
               className={`px-3 py-2 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive("/error-test") ? "bg-gray-700" : ""
+                isActive("/error-examples") ? "bg-gray-700" : ""
               }`}
             >
-              Error Test
-            </Link>
-            <Link
-              to="/api-error-example"
-              className={`px-3 py-2 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive("/api-error-example") ? "bg-gray-700" : ""
-              }`}
-            >
-              API Error
+              Error Examples
             </Link>
             <Link
               to="/auth-example"

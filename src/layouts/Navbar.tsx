@@ -37,6 +37,22 @@ export default function Navbar() {
             >
               Contact
             </Link>
+            <Link
+              to="/error-examples"
+              className={`px-3 py-2 rounded-md hover:bg-gray-700 transition-colors ${
+                isActive("/error-examples") ? "bg-gray-700" : ""
+              }`}
+            >
+              Error Examples
+            </Link>
+            <Link
+              to="/auth-example"
+              className={`px-3 py-2 rounded-md hover:bg-gray-700 transition-colors ${
+                isActive("/auth-example") ? "bg-gray-700" : ""
+              }`}
+            >
+              Auth Example
+            </Link>
           </div>
         </div>
       </div>

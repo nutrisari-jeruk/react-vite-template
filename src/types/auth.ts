@@ -67,7 +67,6 @@ export interface UserSession {
   accessToken: string | null;
   refreshToken: string | null;
   tokenExpiresAt: number | null;
-  user: UserSession["user"];
   user: {
     id: string;
     email: string;

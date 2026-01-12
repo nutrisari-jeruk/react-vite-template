@@ -642,6 +642,41 @@ if (env.maintenanceMode) {
 }
 ```
 
+## Git Configuration
+
+### Line Endings
+
+This project enforces **LF (Line Feed)** line endings across all text files to ensure consistency across different operating systems.
+
+#### Automatic Setup
+
+The repository includes a `.gitattributes` file that automatically handles line endings for all contributors. No manual configuration is required.
+
+#### Manual Configuration (Recommended)
+
+For a better development experience, configure your global Git settings:
+
+```bash
+git config --global core.autocrlf input
+git config --global core.eol lf
+```
+
+**What this does:**
+- `core.autocrlf input` - Converts CRLF to LF when committing, keeps LF when checking out
+- `core.eol lf` - Uses LF as the default line ending for text files
+
+#### Editor Configuration
+
+**VS Code / Cursor**: Add to your `settings.json`:
+
+```json
+{
+  "files.eol": "\n"
+}
+```
+
+**Other editors**: Configure your editor to use LF (`\n`) as the default line ending.
+
 ## Git Hooks
 
 Pre-commit hooks are configured to run lint-staged:

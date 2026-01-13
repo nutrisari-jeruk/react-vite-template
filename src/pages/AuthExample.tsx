@@ -7,6 +7,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import type { LoginCredentials } from "@/types/auth";
+import Input from "@/components/Input";
+import Button from "@/components/Button";
+import Checkbox from "@/components/Checkbox";
+import Alert from "@/components/Alert";
 
 export default function AuthExample() {
   const navigate = useNavigate();
@@ -77,77 +81,58 @@ export default function AuthExample() {
         {!isAuthenticated ? (
           <div className="bg-white rounded-lg shadow p-6">
             <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium mb-1"
-                >
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border rounded-lg border-gray-300"
-                  placeholder="you@example.com"
-                  required
-                />
-              </div>
+              <Input
+                id="email"
+                type="email"
+                label="Email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                placeholder="you@example.com"
+                required
+              />
 
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium mb-1"
-                >
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border rounded-lg border-gray-300"
-                  placeholder="•••••••••"
-                  required
-                />
-              </div>
+              <Input
+                id="password"
+                type="password"
+                label="Password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                placeholder="•••••••••"
+                required
+              />
 
-              <div className="flex items-center">
-                <input
-                  id="rememberMe"
-                  type="checkbox"
-                  checked={formData.rememberMe}
-                  onChange={(e) =>
-                    setFormData({ ...formData, rememberMe: e.target.checked })
-                  }
-                  className="w-4 h-4 text-blue-600 rounded"
-                />
-                <label
-                  htmlFor="rememberMe"
-                  className="ml-2 text-sm text-gray-700"
-                >
-                  Remember me
-                </label>
-              </div>
+              <Checkbox
+                id="rememberMe"
+                label="Remember me"
+                checked={formData.rememberMe}
+                onChange={(e) =>
+                  setFormData({ ...formData, rememberMe: e.target.checked })
+                }
+              />
 
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded p-3 text-red-700">
+                <Alert
+                  variant="error"
+                  dismissible
+                  onDismiss={() => setError(null)}
+                >
                   {error}
-                </div>
+                </Alert>
               )}
 
-              <button
+              <Button
                 type="submit"
                 disabled={loading}
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                loading={loading}
+                variant="primary"
+                className="w-full"
               >
-                {loading ? "Signing in..." : "Sign In"}
-              </button>
+                Sign In
+              </Button>
             </form>
 
             <p className="mt-4 text-sm text-center text-gray-600">
@@ -205,12 +190,13 @@ export default function AuthExample() {
                 </div>
               </div>
 
-              <button
+              <Button
                 onClick={handleLogout}
-                className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                variant="danger"
+                className="w-full"
               >
                 Sign Out
-              </button>
+              </Button>
             </div>
           </div>
         )}

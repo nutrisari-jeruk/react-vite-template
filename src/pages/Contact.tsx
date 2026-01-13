@@ -1,68 +1,158 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Card from "../components/Card";
+import FormInput from "../components/FormInput";
+import FormTextarea from "../components/FormTextarea";
+import Button from "../components/Button";
+import Alert from "../components/Alert";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    setTimeout(() => {
+      setSubmitted(false);
+      setFormData({ name: "", email: "", message: "" });
+    }, 3000);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   return (
-    <div className="max-w-md mx-auto p-8">
-      <Link to="/" className="text-blue-500 hover:text-blue-600">
-        &larr; Back to Home
-      </Link>
-      <h1 className="text-3xl font-bold mt-6 mb-4">Contact Us</h1>
-      {submitted ? (
-        <div className="bg-green-100 text-green-800 p-4 rounded-lg mb-4">
-          Message sent successfully!
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 py-12 px-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="mb-6">
+          <Link to="/">
+            <Button variant="outline-primary" size="sm">
+              <span>← Back to Home</span>
+            </Button>
+          </Link>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium mb-1">
-              Name
-            </label>
-            <input
-              type="text"
+
+        <Card variant="elevated">
+          <div className="mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Contact Us
+            </h1>
+            <p className="text-gray-600">
+              Have a question or feedback? We'd love to hear from you!
+            </p>
+          </div>
+
+          {submitted && (
+            <div className="mb-6">
+              <Alert
+                variant="success"
+                title="Success!"
+                dismissible
+                onDismiss={() => setSubmitted(false)}
+              >
+                Your message has been sent successfully. We'll get back to you
+                soon!
+              </Alert>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <FormInput
               id="name"
+              label="Name"
+              type="text"
+              placeholder="Enter your name"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={formData.name}
+              onChange={handleChange}
             />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email
-            </label>
-            <input
-              type="email"
+
+            <FormInput
               id="email"
+              label="Email"
+              type="email"
+              placeholder="your.email@example.com"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={formData.email}
+              onChange={handleChange}
             />
-          </div>
-          <div>
-            <label htmlFor="message" className="block text-sm font-medium mb-1">
-              Message
-            </label>
-            <textarea
+
+            <FormTextarea
               id="message"
-              rows={4}
+              label="Message"
+              rows={6}
+              placeholder="Tell us what's on your mind..."
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={formData.message}
+              onChange={handleChange}
             />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            Send Message
-          </button>
-        </form>
-      )}
+
+            <div className="flex gap-4">
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                className="flex-1"
+              >
+                Send Message
+              </Button>
+              <Button
+                type="button"
+                variant="outline-secondary"
+                size="lg"
+                onClick={() =>
+                  setFormData({ name: "", email: "", message: "" })
+                }
+              >
+                Clear
+              </Button>
+            </div>
+          </form>
+        </Card>
+
+        <div className="mt-8">
+          <Card variant="outlined">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">
+                Other Ways to Reach Us
+              </h2>
+              <div className="space-y-2 text-gray-600">
+                <p>
+                  <span className="font-medium">Email:</span>{" "}
+                  <a
+                    href="mailto:support@example.com"
+                    className="text-blue-500 hover:text-blue-600"
+                  >
+                    support@example.com
+                  </a>
+                </p>
+                <p>
+                  <span className="font-medium">Phone:</span>{" "}
+                  <a
+                    href="tel:+1234567890"
+                    className="text-blue-500 hover:text-blue-600"
+                  >
+                    +1 (234) 567-890
+                  </a>
+                </p>
+                <p>
+                  <span className="font-medium">Hours:</span> Mon-Fri, 9AM-5PM
+                  EST
+                </p>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }

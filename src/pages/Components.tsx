@@ -1,3 +1,4 @@
+import { useState } from "react";
 import ComponentDemo from "../components/ComponentDemo";
 import Button from "../components/Button";
 import Input from "../components/Input";
@@ -78,8 +79,53 @@ const DownloadIcon = () => (
 );
 
 export default function Components() {
+  const [alerts, setAlerts] = useState<
+    {
+      id: number;
+      variant: "info" | "success" | "warning" | "error";
+      title: string;
+      message: string;
+      floating?: boolean;
+      position?: "top-center" | "top-right" | "bottom-right" | "bottom-left";
+      timeout?: number;
+    }[]
+  >([]);
+
+  const showAlert = (
+    variant: "info" | "success" | "warning" | "error",
+    title: string,
+    message: string,
+    options: {
+      floating?: boolean;
+      position?: "top-center" | "top-right" | "bottom-right" | "bottom-left";
+      timeout?: number;
+    } = {}
+  ) => {
+    const id = Date.now();
+    setAlerts((prev) => [...prev, { id, variant, title, message, ...options }]);
+  };
+
+  const dismissAlert = (id: number) => {
+    setAlerts((prev) => prev.filter((alert) => alert.id !== id));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      {/* Render Alerts in their respective positions */}
+      {alerts.map((alert) => (
+        <Alert
+          key={alert.id}
+          variant={alert.variant}
+          title={alert.title}
+          dismissible
+          onDismiss={() => dismissAlert(alert.id)}
+          floating={alert.floating}
+          position={alert.position}
+          timeout={alert.timeout}
+        >
+          {alert.message}
+        </Alert>
+      ))}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -649,32 +695,299 @@ export default function Components() {
             {/* Alert Component */}
             <ComponentDemo
               title="Alert"
-              description="Display important messages and notifications with various severity levels."
+              description="Display important messages and notifications with flying animations and floating positioning."
               preview={
-                <div className="w-full space-y-4">
-                  <Alert variant="info">
-                    This is an informational message.
-                  </Alert>
-                  <Alert variant="success" title="Success!">
-                    Your changes have been saved successfully.
-                  </Alert>
-                  <Alert variant="warning" title="Warning">
-                    Please review your information before proceeding.
-                  </Alert>
-                  <Alert variant="error" title="Error" dismissible>
-                    Something went wrong. Please try again.
-                  </Alert>
+                <div className="w-full space-y-6">
+                  {/* Trigger Top-Center Alerts */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      Top Center Alerts
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "info",
+                            "Information",
+                            "This is a floating informational alert!",
+                            {
+                              floating: true,
+                              position: "top-center",
+                              timeout: 5000,
+                            }
+                          )
+                        }
+                      >
+                        Info (5s timeout)
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "success",
+                            "Success!",
+                            "Action completed successfully!",
+                            {
+                              floating: true,
+                              position: "top-center",
+                              timeout: 3000,
+                            }
+                          )
+                        }
+                      >
+                        Success (3s timeout)
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Trigger Top-Right Alerts */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      Trigger Top-Right Alerts
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "info",
+                            "Information",
+                            "This appears at the top-right corner!",
+                            { floating: true, position: "top-right" }
+                          )
+                        }
+                      >
+                        Show Info (Top-Right)
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "success",
+                            "Success!",
+                            "Auto-dismisses in 3 seconds!",
+                            {
+                              floating: true,
+                              position: "top-right",
+                              timeout: 3000,
+                            }
+                          )
+                        }
+                      >
+                        Show with 3s Timeout
+                      </Button>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "error",
+                            "Error",
+                            "This stays until dismissed.",
+                            { floating: true, position: "top-right" }
+                          )
+                        }
+                      >
+                        Show Error
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Trigger Bottom-Right Alerts */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      Trigger Toast Alerts (Bottom-Right)
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "info",
+                            "Info",
+                            "New notification received!",
+                            {
+                              floating: true,
+                              position: "bottom-right",
+                              timeout: 4000,
+                            }
+                          )
+                        }
+                      >
+                        Info Toast (4s)
+                      </Button>
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "success",
+                            "Saved!",
+                            "Your changes have been saved.",
+                            {
+                              floating: true,
+                              position: "bottom-right",
+                              timeout: 3000,
+                            }
+                          )
+                        }
+                      >
+                        Success Toast (3s)
+                      </Button>
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "warning",
+                            "Warning",
+                            "Action cannot be undone.",
+                            { floating: true, position: "bottom-right" }
+                          )
+                        }
+                      >
+                        Warning Toast
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Trigger Bottom-Left Alerts */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      Trigger Bottom-Left Alerts
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "info",
+                            "Info",
+                            "Bottom-left notification!",
+                            {
+                              floating: true,
+                              position: "bottom-left",
+                              timeout: 3000,
+                            }
+                          )
+                        }
+                      >
+                        Show Info (3s)
+                      </Button>
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() =>
+                          showAlert(
+                            "success",
+                            "Success",
+                            "Operation completed!",
+                            { floating: true, position: "bottom-left" }
+                          )
+                        }
+                      >
+                        Show Success
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Static Examples */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      Static Examples (Always Visible)
+                    </h4>
+                    <div className="space-y-3">
+                      <Alert variant="info">
+                        This is an informational message with fly-in animation.
+                      </Alert>
+                      <Alert variant="success" title="Success!">
+                        Your changes have been saved successfully.
+                      </Alert>
+                      <Alert variant="warning" title="Warning">
+                        Please review your information before proceeding.
+                      </Alert>
+                      <Alert variant="error" title="Error" dismissible>
+                        Something went wrong. Please try again.
+                      </Alert>
+                    </div>
+                  </div>
                 </div>
               }
-              code={`<Alert variant="info">
-  This is an informational message.
+              code={`// Interactive Demo with State Management
+const [alerts, setAlerts] = useState([]);
+
+const showAlert = (variant, title, message, options = {}) => {
+  const id = Date.now();
+  setAlerts(prev => [...prev, { id, variant, title, message, ...options }]);
+};
+
+const dismissAlert = (id) => {
+  setAlerts(prev => prev.filter(alert => alert.id !== id));
+};
+
+// Trigger alerts with different positions and timeouts
+<Button onClick={() =>
+  showAlert('success', 'Success!', 'Action completed!', {
+    floating: true,
+    position: 'top-center',
+    timeout: 3000  // Auto-dismiss after 3 seconds
+  })
+}>
+  Show Top-Center Alert (3s)
+</Button>
+
+<Button onClick={() =>
+  showAlert('info', 'Info', 'New notification!', {
+    floating: true,
+    position: 'top-right',
+    timeout: 5000  // Auto-dismiss after 5 seconds
+  })
+}>
+  Show Top-Right Alert (5s)
+</Button>
+
+<Button onClick={() =>
+  showAlert('warning', 'Warning', 'Please review!', {
+    floating: true,
+    position: 'bottom-right'
+    // No timeout - stays until dismissed
+  })
+}>
+  Show Bottom-Right Alert
+</Button>
+
+// Render all alerts dynamically
+{alerts.map(alert => (
+  <Alert
+    key={alert.id}
+    variant={alert.variant}
+    title={alert.title}
+    dismissible
+    onDismiss={() => dismissAlert(alert.id)}
+    floating={alert.floating}
+    position={alert.position}
+    timeout={alert.timeout}
+  >
+    {alert.message}
+  </Alert>
+))}
+
+// Static alerts (always visible)
+<Alert variant="info">
+  This is an informational message with fly-in animation.
 </Alert>
-<Alert variant="success" title="Success!">
-  Your changes have been saved successfully.
+
+<Alert variant="success" title="Success!" floating position="top-right" timeout={5000}>
+  Auto-dismisses after 5 seconds!
 </Alert>
-<Alert variant="warning" title="Warning">
-  Please review your information before proceeding.
-</Alert>
+
 <Alert variant="error" title="Error" dismissible>
   Something went wrong. Please try again.
 </Alert>`}
@@ -705,6 +1018,24 @@ export default function Components() {
                   name: "onDismiss",
                   type: "() => void",
                   description: "Callback when dismissed",
+                },
+                {
+                  name: "floating",
+                  type: "boolean",
+                  default: "false",
+                  description: "Makes alert fixed position",
+                },
+                {
+                  name: "position",
+                  type: "'top-center' | 'top-right' | 'bottom-right' | 'bottom-left'",
+                  default: "'top-center'",
+                  description: "Position of the floating alert",
+                },
+                {
+                  name: "timeout",
+                  type: "number",
+                  description:
+                    "Auto-dismiss after milliseconds (e.g., 3000 = 3s)",
                 },
               ]}
             />

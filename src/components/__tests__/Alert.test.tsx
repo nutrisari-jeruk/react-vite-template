@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { act } from "react";
 import Alert from "../Alert";
 
 describe("Alert", () => {
@@ -48,9 +48,9 @@ describe("Alert", () => {
     expect(screen.getByLabelText("Dismiss")).toBeInTheDocument();
   });
 
-  it("calls onDismiss and hides alert when dismiss button is clicked", async () => {
+  it("calls onDismiss and hides alert when dismiss button is clicked", () => {
+    vi.useFakeTimers();
     const onDismiss = vi.fn();
-    const user = userEvent.setup();
     render(
       <Alert dismissible onDismiss={onDismiss}>
         Alert
@@ -58,15 +58,268 @@ describe("Alert", () => {
     );
 
     const dismissButton = screen.getByLabelText("Dismiss");
-    await user.click(dismissButton);
+
+    act(() => {
+      fireEvent.click(dismissButton);
+    });
+
+    // Wait for the exit animation delay (300ms)
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
 
     expect(onDismiss).toHaveBeenCalledTimes(1);
     expect(screen.queryByText("Alert")).not.toBeInTheDocument();
+
+    vi.useRealTimers();
   });
 
   it("renders custom icon when provided", () => {
     const CustomIcon = () => <span data-testid="custom-icon">Custom</span>;
     render(<Alert icon={<CustomIcon />}>Alert</Alert>);
     expect(screen.getByTestId("custom-icon")).toBeInTheDocument();
+  });
+
+  describe("Floating and Position", () => {
+    it("applies floating classes when floating prop is true", () => {
+      const { container } = render(<Alert floating>Floating alert</Alert>);
+      const alert = container.firstChild as HTMLElement;
+      expect(alert).toHaveClass("fixed", "z-50", "shadow-lg");
+    });
+
+    it("applies top-center position classes by default", () => {
+      const { container } = render(
+        <Alert floating position="top-center">
+          Alert
+        </Alert>
+      );
+      const alert = container.firstChild as HTMLElement;
+      expect(alert).toHaveClass("top-4", "left-1/2", "-translate-x-1/2");
+    });
+
+    it("applies top-right position classes", () => {
+      const { container } = render(
+        <Alert floating position="top-right">
+          Alert
+        </Alert>
+      );
+      const alert = container.firstChild as HTMLElement;
+      expect(alert).toHaveClass("top-4", "right-4");
+    });
+
+    it("applies bottom-right position classes", () => {
+      const { container } = render(
+        <Alert floating position="bottom-right">
+          Alert
+        </Alert>
+      );
+      const alert = container.firstChild as HTMLElement;
+      expect(alert).toHaveClass("bottom-4", "right-4");
+    });
+
+    it("applies bottom-left position classes", () => {
+      const { container } = render(
+        <Alert floating position="bottom-left">
+          Alert
+        </Alert>
+      );
+      const alert = container.firstChild as HTMLElement;
+      expect(alert).toHaveClass("bottom-4", "left-4");
+    });
+
+    it("does not apply floating classes when floating is false", () => {
+      const { container } = render(<Alert>Not floating</Alert>);
+      const alert = container.firstChild as HTMLElement;
+      expect(alert).not.toHaveClass("fixed");
+    });
+
+    it("applies relative positioning to non-floating alerts", () => {
+      const { container } = render(<Alert>Static alert</Alert>);
+      const alert = container.firstChild as HTMLElement;
+      expect(alert).toHaveClass("relative");
+      expect(alert).not.toHaveClass("fixed");
+    });
+
+    it("does not apply relative positioning to floating alerts", () => {
+      const { container } = render(
+        <Alert floating position="top-right">
+          Floating alert
+        </Alert>
+      );
+      const alert = container.firstChild as HTMLElement;
+      expect(alert).toHaveClass("fixed");
+      expect(alert).not.toHaveClass("relative");
+    });
+  });
+
+  describe("Timeout", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("auto-dismisses after timeout duration", async () => {
+      const onDismiss = vi.fn();
+      render(
+        <Alert timeout={3000} onDismiss={onDismiss}>
+          Auto-dismiss alert
+        </Alert>
+      );
+
+      expect(screen.getByText("Auto-dismiss alert")).toBeInTheDocument();
+
+      // Advance time to trigger timeout
+      act(() => {
+        vi.advanceTimersByTime(3000);
+      });
+
+      // Advance time for exit animation (300ms)
+      act(() => {
+        vi.advanceTimersByTime(300);
+      });
+
+      expect(onDismiss).toHaveBeenCalledTimes(1);
+      expect(screen.queryByText("Auto-dismiss alert")).not.toBeInTheDocument();
+    });
+
+    it("does not auto-dismiss without timeout prop", () => {
+      const onDismiss = vi.fn();
+      render(<Alert onDismiss={onDismiss}>No timeout</Alert>);
+
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+
+      expect(onDismiss).not.toHaveBeenCalled();
+      expect(screen.getByText("No timeout")).toBeInTheDocument();
+    });
+
+    it("auto-dismisses after custom timeout duration", async () => {
+      const onDismiss = vi.fn();
+      render(
+        <Alert timeout={1500} onDismiss={onDismiss}>
+          Custom timeout
+        </Alert>
+      );
+
+      // Advance time to trigger timeout
+      act(() => {
+        vi.advanceTimersByTime(1500);
+      });
+
+      // Advance time for exit animation (300ms)
+      act(() => {
+        vi.advanceTimersByTime(300);
+      });
+
+      expect(onDismiss).toHaveBeenCalledTimes(1);
+      expect(screen.queryByText("Custom timeout")).not.toBeInTheDocument();
+    });
+
+    it("clears timeout when component unmounts", () => {
+      const onDismiss = vi.fn();
+      const { unmount } = render(
+        <Alert timeout={3000} onDismiss={onDismiss}>
+          Alert
+        </Alert>
+      );
+
+      unmount();
+
+      act(() => {
+        vi.advanceTimersByTime(3000);
+      });
+
+      expect(onDismiss).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("Animation", () => {
+    it("applies animation classes on mount", () => {
+      const { container } = render(<Alert>Animated alert</Alert>);
+      const alert = container.firstChild as HTMLElement;
+      expect(alert.style.animation).toContain("slideInDown");
+    });
+
+    it("applies exit animation when dismissed", () => {
+      const { container } = render(<Alert dismissible>Alert</Alert>);
+      const alert = container.firstChild as HTMLElement;
+
+      const dismissButton = screen.getByLabelText("Dismiss");
+
+      act(() => {
+        fireEvent.click(dismissButton);
+      });
+
+      expect(alert.style.animation).toContain("slideOutUp");
+    });
+  });
+
+  describe("Integration", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("renders floating alert with timeout and position", () => {
+      const { container } = render(
+        <Alert
+          floating
+          position="top-right"
+          timeout={3000}
+          variant="success"
+          title="Success"
+        >
+          Complete integration test
+        </Alert>
+      );
+
+      const alert = container.firstChild as HTMLElement;
+      expect(alert).toHaveClass(
+        "fixed",
+        "top-4",
+        "right-4",
+        "bg-green-50",
+        "border-green-200"
+      );
+      expect(screen.getByText("Success")).toBeInTheDocument();
+      expect(screen.getByText("Complete integration test")).toBeInTheDocument();
+    });
+
+    it("allows manual dismiss before timeout expires", () => {
+      const onDismiss = vi.fn();
+
+      render(
+        <Alert dismissible timeout={5000} onDismiss={onDismiss}>
+          Alert with timeout
+        </Alert>
+      );
+
+      // Advance time slightly (but less than timeout)
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+
+      const dismissButton = screen.getByLabelText("Dismiss");
+
+      act(() => {
+        fireEvent.click(dismissButton);
+      });
+
+      // Advance time for exit animation (300ms)
+      act(() => {
+        vi.advanceTimersByTime(300);
+      });
+
+      // onDismiss should be called once from manual dismiss
+      expect(onDismiss).toHaveBeenCalledTimes(1);
+      expect(screen.queryByText("Alert with timeout")).not.toBeInTheDocument();
+    });
   });
 });

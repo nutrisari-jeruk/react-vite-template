@@ -1,4 +1,10 @@
-import { useState, type HTMLAttributes, type ReactNode } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 
 interface AlertProps extends HTMLAttributes<HTMLDivElement> {
   variant?: "info" | "success" | "warning" | "error";
@@ -7,6 +13,9 @@ interface AlertProps extends HTMLAttributes<HTMLDivElement> {
   dismissible?: boolean;
   onDismiss?: () => void;
   children: ReactNode;
+  floating?: boolean;
+  position?: "top-center" | "top-right" | "bottom-right" | "bottom-left";
+  timeout?: number;
 }
 
 export default function Alert({
@@ -17,9 +26,36 @@ export default function Alert({
   onDismiss,
   children,
   className = "",
+  floating = false,
+  position = "top-center",
+  timeout,
   ...props
 }: AlertProps) {
   const [isVisible, setIsVisible] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+
+  const handleDismiss = useCallback(() => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      onDismiss?.();
+    }, 300);
+  }, [onDismiss]);
+
+  useEffect(() => {
+    setIsAnimating(true);
+  }, []);
+
+  useEffect(() => {
+    if (timeout && timeout > 0) {
+      const timer = setTimeout(() => {
+        handleDismiss();
+      }, timeout);
+
+      return () => clearTimeout(timer);
+    }
+  }, [timeout, handleDismiss]);
 
   const variantStyles = {
     info: "bg-blue-50 border-blue-200 text-blue-900",
@@ -94,19 +130,38 @@ export default function Alert({
     ),
   };
 
-  const handleDismiss = () => {
-    setIsVisible(false);
-    onDismiss?.();
-  };
-
   if (!isVisible) return null;
 
   const displayIcon = icon || defaultIcons[variant];
 
+  const animationClasses = isExiting
+    ? "animate-[slideOutUp_0.3s_ease-in-out_forwards]"
+    : isAnimating
+      ? "animate-[slideInDown_0.5s_ease-out_forwards]"
+      : "";
+
+  const positionClasses = {
+    "top-center":
+      "fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md shadow-lg",
+    "top-right": "fixed top-4 right-4 z-50 w-full max-w-md shadow-lg",
+    "bottom-right": "fixed bottom-4 right-4 z-50 w-full max-w-md shadow-lg",
+    "bottom-left": "fixed bottom-4 left-4 z-50 w-full max-w-md shadow-lg",
+  };
+
+  const floatingClasses = floating ? positionClasses[position] : "";
+  const positionClass = floating ? "" : "relative";
+
   return (
     <div
-      className={`relative flex gap-3 p-4 border rounded-lg ${variantStyles[variant]} ${className}`}
+      className={`${positionClass} flex gap-3 p-4 border rounded-lg ${variantStyles[variant]} ${animationClasses} ${floatingClasses} ${className}`}
       role="alert"
+      style={{
+        animation: isExiting
+          ? "slideOutUp 0.3s ease-in-out forwards"
+          : isAnimating
+            ? "slideInDown 0.5s ease-out forwards"
+            : undefined,
+      }}
       {...props}
     >
       <div className={`shrink-0 ${iconColors[variant]}`}>{displayIcon}</div>

@@ -597,7 +597,7 @@ export default function Components() {
               description="Dropdown select input with label and error states."
               preview={
                 <div className="w-full space-y-4">
-                  <Select label="Country" placeholder="Select a country">
+                  <Select label="Country">
                     <option value="">Select a country</option>
                     <option value="us">United States</option>
                     <option value="uk">United Kingdom</option>

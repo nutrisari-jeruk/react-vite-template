@@ -131,10 +131,7 @@ export default function Avatar({
   };
 
   return (
-    <div
-      className={cn("relative inline-block flex-shrink-0", className)}
-      {...props}
-    >
+    <div className={cn("relative inline-block shrink-0", className)} {...props}>
       <div
         className={cn(
           "flex items-center justify-center overflow-hidden font-semibold text-white",

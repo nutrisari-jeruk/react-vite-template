@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import FormInput from "../components/FormInput";
-import FormSelect from "../components/FormSelect";
-import FormTextarea from "../components/FormTextarea";
+import Input from "../components/Input";
+import Select from "../components/Select";
+import Textarea from "../components/Textarea";
+import Checkbox from "../components/Checkbox";
 import Button from "../components/Button";
 
 const userRegistrationSchema = z
@@ -177,7 +178,7 @@ export default function FormValidationExample() {
             onSubmit={registrationForm.handleSubmit(onRegistrationSubmit)}
             className="space-y-4"
           >
-            <FormInput
+            <Input
               id="username"
               label="Username"
               placeholder="johndoe123"
@@ -185,7 +186,7 @@ export default function FormValidationExample() {
               {...registrationForm.register("username")}
             />
 
-            <FormInput
+            <Input
               id="email"
               label="Email Address"
               type="email"
@@ -194,7 +195,7 @@ export default function FormValidationExample() {
               {...registrationForm.register("email")}
             />
 
-            <FormInput
+            <Input
               id="age"
               label="Age"
               type="number"
@@ -203,7 +204,7 @@ export default function FormValidationExample() {
               {...registrationForm.register("age")}
             />
 
-            <FormInput
+            <Input
               id="password"
               label="Password"
               type="password"
@@ -212,7 +213,7 @@ export default function FormValidationExample() {
               {...registrationForm.register("password")}
             />
 
-            <FormInput
+            <Input
               id="confirmPassword"
               label="Confirm Password"
               type="password"
@@ -221,15 +222,21 @@ export default function FormValidationExample() {
               {...registrationForm.register("confirmPassword")}
             />
 
-            <FormSelect
+            <Select
               id="country"
               label="Country"
-              options={countryOptions}
               error={registrationForm.formState.errors.country?.message}
               {...registrationForm.register("country")}
-            />
+            >
+              <option value="">Select an option</option>
+              {countryOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
 
-            <FormTextarea
+            <Textarea
               id="bio"
               label="Bio (Optional)"
               placeholder="Tell us about yourself..."
@@ -238,24 +245,12 @@ export default function FormValidationExample() {
               {...registrationForm.register("bio")}
             />
 
-            <div className="flex flex-col gap-1">
-              <div className="flex items-start gap-2">
-                <input
-                  id="acceptTerms"
-                  type="checkbox"
-                  className="mt-1"
-                  {...registrationForm.register("acceptTerms")}
-                />
-                <label htmlFor="acceptTerms" className="text-sm text-gray-700">
-                  I accept the terms and conditions
-                </label>
-              </div>
-              {registrationForm.formState.errors.acceptTerms && (
-                <span className="text-sm text-red-600">
-                  {registrationForm.formState.errors.acceptTerms.message}
-                </span>
-              )}
-            </div>
+            <Checkbox
+              id="acceptTerms"
+              label="I accept the terms and conditions"
+              error={registrationForm.formState.errors.acceptTerms?.message}
+              {...registrationForm.register("acceptTerms")}
+            />
 
             <div className="flex gap-4 pt-4">
               <Button
@@ -288,7 +283,7 @@ export default function FormValidationExample() {
             onSubmit={contactForm.handleSubmit(onContactSubmit)}
             className="space-y-4"
           >
-            <FormInput
+            <Input
               id="contact-name"
               label="Name"
               placeholder="Your full name"
@@ -296,7 +291,7 @@ export default function FormValidationExample() {
               {...contactForm.register("name")}
             />
 
-            <FormInput
+            <Input
               id="contact-email"
               label="Email Address"
               type="email"
@@ -305,7 +300,7 @@ export default function FormValidationExample() {
               {...contactForm.register("email")}
             />
 
-            <FormInput
+            <Input
               id="subject"
               label="Subject"
               placeholder="How can we help?"
@@ -313,15 +308,21 @@ export default function FormValidationExample() {
               {...contactForm.register("subject")}
             />
 
-            <FormSelect
+            <Select
               id="priority"
               label="Priority"
-              options={priorityOptions}
               error={contactForm.formState.errors.priority?.message}
               {...contactForm.register("priority")}
-            />
+            >
+              <option value="">Select an option</option>
+              {priorityOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
 
-            <FormTextarea
+            <Textarea
               id="message"
               label="Message"
               placeholder="Please describe your inquiry in detail..."

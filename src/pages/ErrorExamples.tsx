@@ -15,6 +15,9 @@ import {
   NotFoundError,
   ServerError,
 } from "@/lib/api-error";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import Alert from "@/components/Alert";
 
 export default function ErrorExamples() {
   const { error, isError, clearError, handleApiError, getFieldError } =
@@ -89,21 +92,17 @@ export default function ErrorExamples() {
 
       {/* Error Display Banner */}
       {isError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-semibold text-red-800">Error</h3>
-              <p className="text-red-700">{error?.message}</p>
-            </div>
-            <button
-              onClick={clearError}
-              className="text-red-600 hover:text-red-800"
-              aria-label="Close error"
-            >
-              ×
-            </button>
-          </div>
-        </div>
+        <Alert
+          variant="error"
+          title="Error"
+          dismissible
+          onDismiss={clearError}
+          floating
+          position="top-right"
+          timeout={3000}
+        >
+          {error?.message}
+        </Alert>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -114,67 +113,70 @@ export default function ErrorExamples() {
             Click the button to trigger a render error that will be caught by
             the Error Boundary.
           </p>
-          <button
+          <Button
+            variant="danger"
             onClick={() => setShouldError(true)}
-            className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+            className="w-full"
           >
             Trigger Render Error
-          </button>
+          </Button>
         </div>
 
         {/* API Error Simulation Card */}
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Simulate API Errors</h2>
           <div className="space-y-3">
-            <button
+            <Button
               onClick={() => simulateError("network")}
               disabled={loading}
-              className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-yellow-600 hover:bg-yellow-700"
             >
               Network Error
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => simulateError("timeout")}
               disabled={loading}
-              className="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-orange-600 hover:bg-orange-700"
             >
               Timeout
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => simulateError("validation")}
               disabled={loading}
-              className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-purple-600 hover:bg-purple-700"
             >
               Validation Error
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => simulateError("401")}
               disabled={loading}
-              className="w-full px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-amber-600 hover:bg-amber-700"
             >
               401 Unauthorized
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => simulateError("403")}
               disabled={loading}
-              className="w-full px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-rose-600 hover:bg-rose-700"
             >
               403 Forbidden
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => simulateError("404")}
               disabled={loading}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="primary"
+              className="w-full"
             >
               404 Not Found
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => simulateError("500")}
               disabled={loading}
-              className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="danger"
+              className="w-full"
             >
               500 Server Error
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -182,70 +184,37 @@ export default function ErrorExamples() {
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Form with Validation</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className={`w-full px-3 py-2 border rounded-lg ${
-                  getFieldError("email") ? "border-red-500" : "border-gray-300"
-                }`}
-                aria-invalid={!!getFieldError("email")}
-                aria-describedby={
-                  getFieldError("email") ? "email-error" : undefined
-                }
-              />
-              {getFieldError("email") && (
-                <p id="email-error" className="text-sm text-red-600 mt-1">
-                  {getFieldError("email")}
-                </p>
-              )}
-            </div>
+            <Input
+              id="email"
+              type="email"
+              label="Email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              error={getFieldError("email") || undefined}
+            />
 
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-1"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                className={`w-full px-3 py-2 border rounded-lg ${
-                  getFieldError("password")
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-                aria-invalid={!!getFieldError("password")}
-                aria-describedby={
-                  getFieldError("password") ? "password-error" : undefined
-                }
-              />
-              {getFieldError("password") && (
-                <p id="password-error" className="text-sm text-red-600 mt-1">
-                  {getFieldError("password")}
-                </p>
-              )}
-            </div>
+            <Input
+              id="password"
+              type="password"
+              label="Password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              error={getFieldError("password") || undefined}
+            />
 
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              loading={loading}
+              variant="primary"
+              className="w-full"
             >
-              {loading ? "Submitting..." : "Submit"}
-            </button>
+              Submit
+            </Button>
           </form>
         </div>
       </div>

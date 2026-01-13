@@ -16,13 +16,13 @@ describe("Card", () => {
   it("applies outlined variant", () => {
     const { container } = render(<Card variant="outlined">Content</Card>);
     const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass("border-2", "border-gray-300");
+    expect(card).toHaveClass("border-2", "border-gray-200");
   });
 
   it("applies elevated variant", () => {
     const { container } = render(<Card variant="elevated">Content</Card>);
     const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass("shadow-xl");
+    expect(card).toHaveClass("shadow-lg", "shadow-gray-300/50");
   });
 
   it("applies flat variant", () => {

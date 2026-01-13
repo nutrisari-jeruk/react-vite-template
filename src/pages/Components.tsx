@@ -9,6 +9,8 @@ import Switch from "../components/Switch";
 import Select from "../components/Select";
 import Combobox from "../components/Combobox";
 import Textarea from "../components/Textarea";
+import Avatar from "../components/Avatar";
+import AvatarGroup from "../components/AvatarGroup";
 
 // Icon components for demos
 const SearchIcon = () => (
@@ -94,6 +96,12 @@ export default function Components() {
             <nav className="sticky top-8 space-y-1 bg-white rounded-lg shadow p-4">
               <h3 className="font-semibold text-gray-900 mb-3">Components</h3>
               <a
+                href="#avatar"
+                className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+              >
+                Avatar
+              </a>
+              <a
                 href="#button"
                 className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
               >
@@ -157,6 +165,215 @@ export default function Components() {
           </aside>
 
           <main className="lg:col-span-9">
+            {/* Avatar Component */}
+            <ComponentDemo
+              title="Avatar"
+              description="Display user avatars with images or initials, supporting various sizes, shapes, and status indicators."
+              preview={
+                <div className="space-y-8">
+                  {/* Sizes */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      Sizes
+                    </h4>
+                    <div className="flex items-end gap-3">
+                      <Avatar initials="XS" size="xs" />
+                      <Avatar initials="SM" size="sm" />
+                      <Avatar initials="MD" size="md" />
+                      <Avatar initials="LG" size="lg" />
+                      <Avatar initials="XL" size="xl" />
+                      <Avatar initials="2X" size="2xl" />
+                    </div>
+                  </div>
+
+                  {/* Shapes */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      Shapes
+                    </h4>
+                    <div className="flex items-center gap-3">
+                      <Avatar initials="TG" shape="circle" size="lg" />
+                      <Avatar initials="TG" shape="square" size="lg" />
+                    </div>
+                  </div>
+
+                  {/* Colors */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      Colors
+                    </h4>
+                    <div className="flex items-center gap-3">
+                      <Avatar initials="TG" backgroundColor="blue" size="lg" />
+                      <Avatar initials="TG" backgroundColor="green" size="lg" />
+                      <Avatar initials="TG" backgroundColor="red" size="lg" />
+                      <Avatar
+                        initials="TG"
+                        backgroundColor="purple"
+                        size="lg"
+                      />
+                      <Avatar
+                        initials="TG"
+                        backgroundColor="yellow"
+                        size="lg"
+                      />
+                      <Avatar initials="TG" backgroundColor="gray" size="lg" />
+                    </div>
+                  </div>
+
+                  {/* With Status */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      With Status Indicator
+                    </h4>
+                    <div className="flex items-center gap-3">
+                      <Avatar
+                        initials="TG"
+                        size="lg"
+                        status
+                        statusColor="green"
+                      />
+                      <Avatar
+                        initials="TG"
+                        size="lg"
+                        status
+                        statusColor="red"
+                      />
+                      <Avatar
+                        initials="TG"
+                        size="lg"
+                        status
+                        statusColor="yellow"
+                      />
+                      <Avatar
+                        initials="TG"
+                        size="lg"
+                        status
+                        statusColor="gray"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Avatar Group */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                      Avatar Group
+                    </h4>
+                    <div className="space-y-4">
+                      <AvatarGroup>
+                        <Avatar initials="JD" backgroundColor="blue" />
+                        <Avatar initials="AS" backgroundColor="green" />
+                        <Avatar initials="MK" backgroundColor="purple" />
+                        <Avatar initials="LW" backgroundColor="red" />
+                      </AvatarGroup>
+                      <AvatarGroup max={3}>
+                        <Avatar initials="JD" backgroundColor="blue" />
+                        <Avatar initials="AS" backgroundColor="green" />
+                        <Avatar initials="MK" backgroundColor="purple" />
+                        <Avatar initials="LW" backgroundColor="red" />
+                        <Avatar initials="TH" backgroundColor="yellow" />
+                      </AvatarGroup>
+                    </div>
+                  </div>
+                </div>
+              }
+              code={`// Basic Avatar
+<Avatar initials="TG" />
+
+// Different Sizes
+<Avatar initials="XS" size="xs" />
+<Avatar initials="SM" size="sm" />
+<Avatar initials="MD" size="md" />
+<Avatar initials="LG" size="lg" />
+<Avatar initials="XL" size="xl" />
+<Avatar initials="2X" size="2xl" />
+
+// Shapes
+<Avatar initials="TG" shape="circle" />
+<Avatar initials="TG" shape="square" />
+
+// Colors
+<Avatar initials="TG" backgroundColor="blue" />
+<Avatar initials="TG" backgroundColor="green" />
+<Avatar initials="TG" backgroundColor="purple" />
+
+// With Status Indicator
+<Avatar initials="TG" status statusColor="green" />
+<Avatar initials="TG" status statusColor="red" />
+
+// With Image
+<Avatar src="https://example.com/avatar.jpg" alt="User" />
+
+// Avatar Group
+<AvatarGroup>
+  <Avatar initials="JD" backgroundColor="blue" />
+  <Avatar initials="AS" backgroundColor="green" />
+  <Avatar initials="MK" backgroundColor="purple" />
+</AvatarGroup>
+
+// Avatar Group with Max
+<AvatarGroup max={3}>
+  <Avatar initials="JD" />
+  <Avatar initials="AS" />
+  <Avatar initials="MK" />
+  <Avatar initials="LW" />
+  <Avatar initials="TH" />
+</AvatarGroup>`}
+              props={[
+                {
+                  name: "size",
+                  type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+                  default: "'md'",
+                  description: "Size of the avatar",
+                },
+                {
+                  name: "shape",
+                  type: "'circle' | 'square'",
+                  default: "'circle'",
+                  description: "Shape of the avatar",
+                },
+                {
+                  name: "src",
+                  type: "string",
+                  description: "Image source URL",
+                },
+                {
+                  name: "alt",
+                  type: "string",
+                  default: "'Avatar'",
+                  description: "Alt text for the image",
+                },
+                {
+                  name: "initials",
+                  type: "string",
+                  description: "Initials to display (max 2 chars)",
+                },
+                {
+                  name: "status",
+                  type: "boolean",
+                  default: "false",
+                  description: "Show status indicator",
+                },
+                {
+                  name: "statusColor",
+                  type: "'green' | 'red' | 'yellow' | 'gray'",
+                  default: "'green'",
+                  description: "Status indicator color",
+                },
+                {
+                  name: "statusPosition",
+                  type: "'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'",
+                  default: "'bottom-right'",
+                  description: "Position of status indicator",
+                },
+                {
+                  name: "backgroundColor",
+                  type: "'blue' | 'gray' | 'red' | 'green' | 'yellow' | 'purple' | 'pink'",
+                  default: "'blue'",
+                  description: "Background color for initials",
+                },
+              ]}
+            />
+
             {/* Button Component */}
             <ComponentDemo
               title="Button"

@@ -48,6 +48,62 @@ describe("Alert", () => {
     expect(screen.getByLabelText("Dismiss")).toBeInTheDocument();
   });
 
+  it("shows loading spinner when dismissing", () => {
+    vi.useFakeTimers();
+    const { container } = render(<Alert dismissible>Alert</Alert>);
+
+    const dismissButton = screen.getByLabelText("Dismiss");
+
+    act(() => {
+      fireEvent.click(dismissButton);
+    });
+
+    // Check for loading spinner (animate-spin class)
+    const spinner = container.querySelector(".animate-spin");
+    expect(spinner).toBeInTheDocument();
+
+    // Button should be disabled
+    expect(dismissButton).toBeDisabled();
+
+    vi.useRealTimers();
+  });
+
+  it("shows progress bar when timeout is set", () => {
+    render(<Alert timeout={3000}>Auto-dismiss alert</Alert>);
+    const progressBar = screen.getByRole("progressbar");
+    expect(progressBar).toBeInTheDocument();
+  });
+
+  it("does not show progress bar when timeout is not set", () => {
+    render(<Alert>Normal alert</Alert>);
+    const progressBar = screen.queryByRole("progressbar");
+    expect(progressBar).not.toBeInTheDocument();
+  });
+
+  it("progress bar decreases over time", () => {
+    vi.useFakeTimers();
+    render(<Alert timeout={1000}>Auto-dismiss alert</Alert>);
+
+    const progressBar = screen.getByRole("progressbar");
+
+    // Initial progress should be 100
+    expect(progressBar).toHaveAttribute("aria-valuenow", "100");
+
+    // Advance time by half the timeout
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    // Progress should be approximately 50 (allow some variance due to timing)
+    const currentProgress = parseFloat(
+      progressBar.getAttribute("aria-valuenow") || "0"
+    );
+    expect(currentProgress).toBeLessThan(60);
+    expect(currentProgress).toBeGreaterThan(40);
+
+    vi.useRealTimers();
+  });
+
   it("calls onDismiss and hides alert when dismiss button is clicked", () => {
     vi.useFakeTimers();
     const onDismiss = vi.fn();
@@ -63,9 +119,9 @@ describe("Alert", () => {
       fireEvent.click(dismissButton);
     });
 
-    // Wait for the exit animation delay (300ms)
+    // Wait for loading delay (500ms) + exit animation (300ms)
     act(() => {
-      vi.advanceTimersByTime(300);
+      vi.advanceTimersByTime(800);
     });
 
     expect(onDismiss).toHaveBeenCalledTimes(1);
@@ -176,9 +232,9 @@ describe("Alert", () => {
         vi.advanceTimersByTime(3000);
       });
 
-      // Advance time for exit animation (300ms)
+      // Advance time for loading (500ms) + exit animation (300ms)
       act(() => {
-        vi.advanceTimersByTime(300);
+        vi.advanceTimersByTime(800);
       });
 
       expect(onDismiss).toHaveBeenCalledTimes(1);
@@ -210,9 +266,9 @@ describe("Alert", () => {
         vi.advanceTimersByTime(1500);
       });
 
-      // Advance time for exit animation (300ms)
+      // Advance time for loading (500ms) + exit animation (300ms)
       act(() => {
-        vi.advanceTimersByTime(300);
+        vi.advanceTimersByTime(800);
       });
 
       expect(onDismiss).toHaveBeenCalledTimes(1);
@@ -245,6 +301,7 @@ describe("Alert", () => {
     });
 
     it("applies exit animation when dismissed", () => {
+      vi.useFakeTimers();
       const { container } = render(<Alert dismissible>Alert</Alert>);
       const alert = container.firstChild as HTMLElement;
 
@@ -254,7 +311,14 @@ describe("Alert", () => {
         fireEvent.click(dismissButton);
       });
 
+      // Advance time past loading delay (500ms) to start exit animation
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+
       expect(alert.style.animation).toContain("slideOutUp");
+
+      vi.useRealTimers();
     });
   });
 
@@ -312,9 +376,9 @@ describe("Alert", () => {
         fireEvent.click(dismissButton);
       });
 
-      // Advance time for exit animation (300ms)
+      // Advance time for loading (500ms) + exit animation (300ms)
       act(() => {
-        vi.advanceTimersByTime(300);
+        vi.advanceTimersByTime(800);
       });
 
       // onDismiss should be called once from manual dismiss

@@ -34,13 +34,18 @@ export default function Alert({
   const [isVisible, setIsVisible] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [isDismissing, setIsDismissing] = useState(false);
+  const [progress, setProgress] = useState(100);
 
   const handleDismiss = useCallback(() => {
-    setIsExiting(true);
+    setIsDismissing(true);
     setTimeout(() => {
-      setIsVisible(false);
-      onDismiss?.();
-    }, 300);
+      setIsExiting(true);
+      setTimeout(() => {
+        setIsVisible(false);
+        onDismiss?.();
+      }, 300);
+    }, 500);
   }, [onDismiss]);
 
   useEffect(() => {
@@ -49,11 +54,27 @@ export default function Alert({
 
   useEffect(() => {
     if (timeout && timeout > 0) {
+      const startTime = Date.now();
+      const updateInterval = 50; // Update every 50ms for smooth animation
+
+      const progressInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 100 - (elapsed / timeout) * 100);
+        setProgress(remaining);
+
+        if (remaining <= 0) {
+          clearInterval(progressInterval);
+        }
+      }, updateInterval);
+
       const timer = setTimeout(() => {
         handleDismiss();
       }, timeout);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        clearInterval(progressInterval);
+      };
     }
   }, [timeout, handleDismiss]);
 
@@ -151,9 +172,16 @@ export default function Alert({
   const floatingClasses = floating ? positionClasses[position] : "";
   const positionClass = floating ? "" : "relative";
 
+  const progressBarColors = {
+    info: "bg-blue-500",
+    success: "bg-green-500",
+    warning: "bg-yellow-500",
+    error: "bg-red-500",
+  };
+
   return (
     <div
-      className={`${positionClass} flex gap-3 p-4 border rounded-lg ${variantStyles[variant]} ${animationClasses} ${floatingClasses} ${className}`}
+      className={`${positionClass} flex flex-col overflow-hidden border rounded-lg ${variantStyles[variant]} ${animationClasses} ${floatingClasses} ${className}`}
       role="alert"
       style={{
         animation: isExiting
@@ -164,31 +192,72 @@ export default function Alert({
       }}
       {...props}
     >
-      <div className={`shrink-0 ${iconColors[variant]}`}>{displayIcon}</div>
-      <div className="flex-1 min-w-0">
-        {title && <h4 className="font-semibold mb-1 text-sm">{title}</h4>}
-        <div className="text-sm">{children}</div>
-      </div>
-      {dismissible && (
-        <button
-          type="button"
-          onClick={handleDismiss}
-          className={`shrink-0 ml-auto -mr-1 -mt-1 p-1.5 rounded-lg hover:bg-black/5 transition-colors ${iconColors[variant]}`}
-          aria-label="Dismiss"
-        >
-          <svg
-            className="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
+      <div className="flex gap-3 p-4">
+        <div className={`shrink-0 ${iconColors[variant]}`}>{displayIcon}</div>
+        <div className="flex-1 min-w-0">
+          {title && <h4 className="font-semibold mb-1 text-sm">{title}</h4>}
+          <div className="text-sm">{children}</div>
+        </div>
+        {dismissible && (
+          <button
+            type="button"
+            onClick={handleDismiss}
+            disabled={isDismissing}
+            className={`shrink-0 ml-auto -mr-1 -mt-1 p-1.5 rounded-lg hover:bg-black/5 transition-colors ${iconColors[variant]} ${isDismissing ? "cursor-not-allowed opacity-70" : ""}`}
+            aria-label="Dismiss"
           >
-            <path
-              fillRule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
+            {isDismissing ? (
+              <svg
+                className="w-5 h-5 animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+          </button>
+        )}
+      </div>
+      {timeout && timeout > 0 && (
+        <div className="h-1 bg-black/10 w-full">
+          <div
+            className={`h-full ${progressBarColors[variant]} transition-all ease-linear`}
+            style={{
+              width: `${progress}%`,
+              transitionDuration: "50ms",
+            }}
+            role="progressbar"
+            aria-valuenow={progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          />
+        </div>
       )}
     </div>
   );

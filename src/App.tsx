@@ -7,6 +7,7 @@ import Contact from "./pages/Contact";
 import Components from "./pages/Components";
 import ErrorExamples from "./pages/ErrorExamples";
 import AuthExample from "./pages/AuthExample";
+import FormValidationExample from "./pages/FormValidationExample";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path="components" element={<Components />} />
             <Route path="error-examples" element={<ErrorExamples />} />
             <Route path="auth-example" element={<AuthExample />} />
+            <Route path="form-validation" element={<FormValidationExample />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

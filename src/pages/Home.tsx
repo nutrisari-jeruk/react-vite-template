@@ -23,6 +23,12 @@ export default function Home() {
         >
           Contact
         </Link>
+        <Link
+          to="/form-validation"
+          className="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 transition-colors"
+        >
+          Form Validation
+        </Link>
       </div>
     </div>
   );

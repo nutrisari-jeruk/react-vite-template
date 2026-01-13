@@ -13,6 +13,7 @@ const menuItems: MenuItem[] = [
   { path: "/components", label: "Components" },
   { path: "/error-examples", label: "Error Examples" },
   { path: "/auth-example", label: "Auth Example" },
+  { path: "/form-validation", label: "Form Validation" },
 ];
 
 export default function Navbar() {

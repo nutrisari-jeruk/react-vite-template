@@ -10,6 +10,7 @@ const menuItems: MenuItem[] = [
   { path: "/", label: "Home" },
   { path: "/about", label: "About" },
   { path: "/contact", label: "Contact" },
+  { path: "/components", label: "Components" },
   { path: "/error-examples", label: "Error Examples" },
   { path: "/auth-example", label: "Auth Example" },
 ];

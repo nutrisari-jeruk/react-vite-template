@@ -1421,21 +1421,23 @@ const dismissAlert = (id) => {
               description="Dropdown select input with label and error states."
               preview={
                 <div className="w-full space-y-4">
-                  <Select label="Country">
-                    <option value="">Select a country</option>
-                    <option value="us">United States</option>
-                    <option value="uk">United Kingdom</option>
-                    <option value="ca">Canada</option>
+                  <Select label="Label">
+                    <option value="">Dropdown</option>
+                    <option value="1">Item 1</option>
+                    <option value="2">Item 2</option>
+                    <option value="3">Item 3</option>
                   </Select>
-                  <Select label="Size" selectSize="sm">
-                    <option value="sm">Small</option>
-                    <option value="md">Medium</option>
-                    <option value="lg">Large</option>
+                  <Select label="Label" defaultValue="1">
+                    <option value="">Dropdown</option>
+                    <option value="1">Item 1</option>
+                    <option value="2">Item 2</option>
+                    <option value="3">Item 3</option>
                   </Select>
-                  <Select label="Category" error="Please select a category">
-                    <option value="">Select category</option>
-                    <option value="tech">Technology</option>
-                    <option value="health">Health</option>
+                  <Select label="Label" disabled>
+                    <option value="">Dropdown</option>
+                    <option value="1">Item 1</option>
+                    <option value="2">Item 2</option>
+                    <option value="3">Item 3</option>
                   </Select>
                 </div>
               }

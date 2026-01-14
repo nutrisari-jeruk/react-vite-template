@@ -1,11 +1,23 @@
-import type { SelectHTMLAttributes, ReactNode } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import type { ReactNode } from "react";
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface SelectProps {
   label?: string;
   error?: string;
   helperText?: string;
   selectSize?: "sm" | "md" | "lg";
-  children: ReactNode;
+  children?: ReactNode;
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+  disabled?: boolean;
+  className?: string;
+  id?: string;
 }
 
 export default function Select({
@@ -17,9 +29,34 @@ export default function Select({
   id,
   disabled,
   children,
+  value: controlledValue,
+  defaultValue,
+  onChange,
   ...props
 }: SelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [internalValue, setInternalValue] = useState(defaultValue || "");
+  const containerRef = useRef<HTMLDivElement>(null);
   const selectId = id || label?.toLowerCase().replace(/\s+/g, "-");
+
+  const isControlled = controlledValue !== undefined;
+  const value = isControlled ? controlledValue : internalValue;
+
+  const options: SelectOption[] = [];
+  if (children) {
+    React.Children.forEach(children, (child) => {
+      if (React.isValidElement(child) && child.type === "option") {
+        const props = child.props as { value?: string; children?: ReactNode };
+        options.push({
+          value: props.value || "",
+          label: props.children?.toString() || "",
+        });
+      }
+    });
+  }
+
+  const selectedOption = options.find((opt) => opt.value === value);
+  const displayText = selectedOption?.label || options[0]?.label || "";
 
   const sizeStyles = {
     sm: "px-3 py-1.5 text-sm",
@@ -28,39 +65,82 @@ export default function Select({
   };
 
   const baseStyles =
-    "w-full rounded-lg border transition-colors focus:outline-none focus:ring-2 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 appearance-none bg-white";
+    "w-full rounded-[5.5px] border border-[1px] transition-all focus:outline-none bg-white cursor-pointer";
 
   const borderStyle = error
-    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-    : "border-gray-300 focus:border-blue-500 focus:ring-blue-500";
+    ? "border-red-500"
+    : disabled
+      ? "border-[#F3F4F6] bg-[#E5E7EB]"
+      : isOpen
+        ? "border-[#3758F9] border-[1.5px] rounded-[5.25px]"
+        : "border-[#DFE4EA]";
+
+  const textStyle = disabled
+    ? "text-[#6B7280]"
+    : error
+      ? "text-gray-900"
+      : "text-[#637381]";
+
+  const labelStyle = disabled ? "text-[#6B7280]" : "text-[#111928]";
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleToggle = () => {
+    if (!disabled) {
+      setIsOpen(!isOpen);
+    }
+  };
+
+  const handleSelect = (optionValue: string) => {
+    if (!isControlled) {
+      setInternalValue(optionValue);
+    }
+    onChange?.(optionValue);
+    setIsOpen(false);
+  };
 
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
+    <div className={`flex flex-col gap-1.5 ${className}`} ref={containerRef}>
       {label && (
-        <label htmlFor={selectId} className="text-sm font-medium text-gray-700">
+        <label
+          htmlFor={selectId}
+          className={`text-sm font-medium ${labelStyle}`}
+        >
           {label}
         </label>
       )}
       <div className="relative">
-        <select
+        <button
+          type="button"
           id={selectId}
-          className={`${baseStyles} ${sizeStyles[selectSize]} ${borderStyle} pr-10`}
+          onClick={handleToggle}
           disabled={disabled}
-          aria-invalid={!!error}
-          aria-describedby={
-            error
-              ? `${selectId}-error`
-              : helperText
-                ? `${selectId}-helper`
-                : undefined
-          }
+          className={`${baseStyles} ${sizeStyles[selectSize]} ${borderStyle} ${textStyle} pr-10 text-left disabled:cursor-not-allowed`}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
           {...props}
         >
-          {children}
-        </select>
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+          {displayText}
+        </button>
+        <div
+          className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
+            disabled ? "text-[#6B7280]" : "text-primary-text"
+          }`}
+        >
           <svg
-            className="w-5 h-5"
+            className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -74,6 +154,36 @@ export default function Select({
             />
           </svg>
         </div>
+
+        {isOpen && !disabled && (
+          <ul
+            role="listbox"
+            className="absolute z-10 w-full mt-1 bg-white border border-[#DFE4EA] rounded-[6px] shadow-lg max-h-60 overflow-auto"
+            style={{
+              boxShadow:
+                "0px 1px 3px 0px rgba(166, 175, 195, 0.4), 0px 1px 2px 0px rgba(166, 175, 195, 0.4)",
+            }}
+          >
+            {options.map((option) => {
+              const isSelected = option.value === value;
+              return (
+                <li
+                  key={option.value}
+                  role="option"
+                  aria-selected={isSelected}
+                  onClick={() => handleSelect(option.value)}
+                  className={`px-4 py-2 cursor-pointer transition-colors ${
+                    isSelected
+                      ? "bg-[#3758F9] text-white"
+                      : "bg-white text-primary-text hover:bg-blue-50 hover:text-[#3758F9]"
+                  }`}
+                >
+                  {option.label}
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
       {error && (
         <p id={`${selectId}-error`} className="text-sm text-red-600">

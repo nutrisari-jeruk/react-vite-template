@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Input from "../components/Input";
@@ -222,19 +222,26 @@ export default function FormValidationExample() {
               {...registrationForm.register("confirmPassword")}
             />
 
-            <Select
-              id="country"
-              label="Country"
-              error={registrationForm.formState.errors.country?.message}
-              {...registrationForm.register("country")}
-            >
-              <option value="">Select an option</option>
-              {countryOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
+            <Controller
+              name="country"
+              control={registrationForm.control}
+              render={({ field }) => (
+                <Select
+                  id="country"
+                  label="Country"
+                  value={field.value || ""}
+                  onChange={(value) => field.onChange(value)}
+                  error={registrationForm.formState.errors.country?.message}
+                >
+                  <option value="">Select an option</option>
+                  {countryOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            />
 
             <Textarea
               id="bio"
@@ -308,19 +315,26 @@ export default function FormValidationExample() {
               {...contactForm.register("subject")}
             />
 
-            <Select
-              id="priority"
-              label="Priority"
-              error={contactForm.formState.errors.priority?.message}
-              {...contactForm.register("priority")}
-            >
-              <option value="">Select an option</option>
-              {priorityOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
+            <Controller
+              name="priority"
+              control={contactForm.control}
+              render={({ field }) => (
+                <Select
+                  id="priority"
+                  label="Priority"
+                  value={field.value || ""}
+                  onChange={(value) => field.onChange(value)}
+                  error={contactForm.formState.errors.priority?.message}
+                >
+                  <option value="">Select an option</option>
+                  {priorityOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            />
 
             <Textarea
               id="message"

@@ -31,7 +31,7 @@ export default function Navbar() {
       {!isOpen && (
         <button
           onClick={toggleMenu}
-          className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 transition-colors shadow-lg"
+          className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-primary dark:bg-[color-dark-2] text-white hover:bg-[color-blue-dark] dark:hover:bg-[color-dark-3] transition-colors shadow-lg"
           aria-label="Open menu"
         >
           <svg
@@ -53,7 +53,7 @@ export default function Navbar() {
       {/* Mobile overlay backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/50 dark:bg-black/70 z-30 md:hidden"
           onClick={closeMenu}
         />
       )}
@@ -62,17 +62,17 @@ export default function Navbar() {
       <aside
         className={`
           fixed md:static inset-y-0 left-0 z-40
-          w-64 bg-gray-800 text-white shadow-lg
+          w-64 bg-primary dark:bg-[color-dark-2] text-white shadow-lg
           transform ${isOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0 transition-transform duration-300 ease-in-out
           flex flex-col
         `}
       >
         {/* Logo and Close Button */}
-        <div className="p-6 border-b border-gray-700 flex items-center justify-between">
+        <div className="p-6 border-b border-white/20 dark:border-[color-dark-3] flex items-center justify-between">
           <Link
             to="/"
-            className="text-xl font-bold hover:text-gray-300 transition-colors"
+            className="text-xl font-bold hover:text-white/80 dark:hover:text-[color-dark-7] transition-colors"
             onClick={closeMenu}
           >
             React Template
@@ -80,7 +80,7 @@ export default function Navbar() {
           {/* Close button - only visible on mobile when sidebar is open */}
           <button
             onClick={closeMenu}
-            className="md:hidden p-2 rounded-md hover:bg-gray-700 transition-colors"
+            className="md:hidden p-2 rounded-md hover:bg-white/10 dark:hover:bg-[color-dark-3] transition-colors"
             aria-label="Close menu"
           >
             <svg
@@ -106,8 +106,10 @@ export default function Navbar() {
               key={item.path}
               to={item.path}
               onClick={closeMenu}
-              className={`block px-4 py-3 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive(item.path) ? "bg-gray-700" : ""
+              className={`block px-4 py-3 rounded-md hover:bg-white/10 dark:hover:bg-[color-dark-3] transition-colors ${
+                isActive(item.path)
+                  ? "bg-secondary dark:bg-[color-dark-3] text-white"
+                  : ""
               }`}
             >
               {item.label}

@@ -4,10 +4,10 @@ import Footer from "./Footer";
 
 export default function MainLayout() {
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex bg-[color-gray-1] dark:bg-[color-dark]">
       <Navbar />
       <div className="flex flex-col flex-1">
-        <main className="grow p-4 md:p-6">
+        <main className="grow p-4 md:p-6 dark:text-white">
           <Outlet />
         </main>
         <Footer />

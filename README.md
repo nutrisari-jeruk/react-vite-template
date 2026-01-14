@@ -410,6 +410,20 @@ Navigate to `/api-error-example` to see the error handling in action with:
 - Automatic retry behavior
 - User-friendly error messages
 
+### Example: Try Form Validation
+
+Navigate to `/form-validation` to see a comprehensive form validation example with:
+- Username validation (length, regex pattern)
+- Email validation
+- Age validation (number, integer, min/max)
+- Password strength validation (uppercase, lowercase, number, special character)
+- Password confirmation matching
+- Country selection dropdown
+- Optional bio field with validation
+- Required terms checkbox
+- Real-time validation on blur
+- User-friendly error messages
+
 ## Error Handling
 
 ### Error Boundary

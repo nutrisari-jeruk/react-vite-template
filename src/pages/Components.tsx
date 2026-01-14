@@ -6,7 +6,7 @@ import Card from "../components/Card";
 import Badge from "../components/Badge";
 import Alert from "../components/Alert";
 import Checkbox from "../components/Checkbox";
-import Switch from "../components/Switch";
+import Toggle from "../components/Toggle";
 import Select from "../components/Select";
 import Combobox from "../components/Combobox";
 import Textarea from "../components/Textarea";
@@ -184,10 +184,10 @@ export default function Components() {
                 Checkbox
               </a>
               <a
-                href="#switch"
+                href="#toggle"
                 className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
               >
-                Switch
+                Toggle
               </a>
               <a
                 href="#select"
@@ -1087,33 +1087,80 @@ const dismissAlert = (id) => {
               ]}
             />
 
-            {/* Switch Component */}
+            {/* Toggle Component */}
             <ComponentDemo
-              title="Switch"
+              title="Toggle"
               description="Toggle switch for binary options."
               preview={
                 <div className="space-y-4">
-                  <Switch label="Enable notifications" />
-                  <Switch
+                  <Toggle label="Enable notifications" />
+                  <Toggle
                     label="Dark mode"
                     helperText="Switch between light and dark theme"
                   />
-                  <Switch label="Disabled switch" disabled />
+                  <Toggle label="Disabled toggle" disabled />
+                  <Toggle label="Label on left" labelPosition="left" />
+                  <Toggle
+                    label="Left label with helper"
+                    labelPosition="left"
+                    helperText="Helper text for left label variant"
+                  />
+                  <Toggle leftLabel="Light" rightLabel="Dark" />
+                  <Toggle leftLabel="Light" rightLabel="Dark" />
+                  <Toggle
+                    leftLabel="Yes"
+                    rightLabel="No"
+                    disabled
+                    helperText="Theme selection disabled"
+                  />
                 </div>
               }
-              code={`<Switch label="Enable notifications" />
-<Switch label="Dark mode" helperText="Switch between light and dark theme" />
-<Switch label="Disabled switch" disabled />`}
+              code={`<Toggle label="Enable notifications" />
+<Toggle label="Dark mode" helperText="Switch between light and dark theme" />
+<Toggle label="Disabled toggle" disabled />
+<Toggle label="Label on left" labelPosition="left" />
+<Toggle
+  label="Left label with helper"
+  labelPosition="left"
+  helperText="Helper text for left label variant"
+/>
+<Toggle leftLabel="Light" rightLabel="Dark" />
+<Toggle leftLabel="Light" rightLabel="Dark" defaultChecked={true} />
+<Toggle
+  leftLabel="Light"
+  rightLabel="Dark"
+  disabled
+  helperText="Theme selection disabled"
+/>`}
               props={[
                 {
                   name: "label",
                   type: "string",
-                  description: "Label text for the switch",
+                  description: "Label text for the toggle (single label mode)",
+                },
+                {
+                  name: "leftLabel",
+                  type: "string",
+                  description:
+                    "Left label text (dual label mode - use with rightLabel)",
+                },
+                {
+                  name: "rightLabel",
+                  type: "string",
+                  description:
+                    "Right label text (dual label mode - use with leftLabel)",
+                },
+                {
+                  name: "labelPosition",
+                  type: '"left" | "right"',
+                  default: '"right"',
+                  description:
+                    "Position of the label relative to the toggle (single label mode only)",
                 },
                 {
                   name: "helperText",
                   type: "string",
-                  description: "Helper text below switch",
+                  description: "Helper text below toggle",
                 },
                 {
                   name: "checked",
@@ -1134,7 +1181,7 @@ const dismissAlert = (id) => {
                   name: "disabled",
                   type: "boolean",
                   default: "false",
-                  description: "Disables the switch",
+                  description: "Disables the toggle",
                 },
               ]}
             />

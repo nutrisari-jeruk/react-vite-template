@@ -57,24 +57,48 @@ npm run test:coverage    # Run tests with coverage
 
 ## Project Structure
 
+This project follows the **Bulletproof React** architecture pattern:
+
 ```
 src/
-├── assets/           # Static assets (images, fonts, etc.)
-├── components/       # Reusable UI components
-│   └── __tests__/   # Component tests
-├── layouts/          # Page layouts (Navbar, Footer, etc.)
-├── pages/            # Route pages
-│   └── __tests__/   # Page tests
-├── hooks/            # Custom React hooks
-├── lib/              # Third-party integrations (api, query providers)
-├── services/         # API services
-├── utils/            # Utility functions
-├── types/            # TypeScript type definitions
-├── test/             # Test setup and utilities
-├── App.tsx           # Root component with Router
-├── main.tsx          # Entry point
-└── index.css         # Global styles + Tailwind directives
+├── app/                  # Application layer
+│   ├── index.tsx        # Main App component
+│   ├── provider.tsx     # Centralized providers (QueryClient, etc.)
+│   └── router.tsx       # Route configuration with lazy loading
+├── components/           # Shared components
+│   ├── ui/              # UI primitives (Button, Input, Card, etc.)
+│   ├── layouts/         # Layout components (MainLayout, Navbar, Footer)
+│   ├── __tests__/       # Component tests
+│   └── *.tsx            # Shared components (ErrorBoundary, Combobox, etc.)
+├── config/              # Configuration
+│   ├── env.ts           # Environment variables (validated)
+│   ├── constants.ts     # Routes, API endpoints, query keys
+│   └── index.ts         # Barrel export
+├── features/            # Feature modules (self-contained)
+│   └── auth/            # Authentication feature
+│       ├── components/  # Feature-specific components
+│       ├── hooks/       # Feature-specific hooks
+│       ├── lib/         # Feature utilities
+│       ├── types/       # Feature types
+│       └── index.ts     # Public API
+├── hooks/               # Shared custom hooks
+├── lib/                 # Core utilities
+│   ├── api-client.ts    # Axios instance with interceptors
+│   ├── api-error.ts     # Custom error classes
+│   └── index.ts         # Barrel export
+├── pages/               # Route page components
+│   └── __tests__/       # Page tests
+├── testing/             # Test utilities
+│   ├── setup.ts         # Test configuration
+│   ├── test-utils.tsx   # Custom render with providers
+│   └── mocks/           # MSW handlers (future)
+├── types/               # Shared TypeScript types
+├── utils/               # Utility functions
+├── main.tsx             # Entry point
+└── index.css            # Global styles + Tailwind directives
 ```
+
+> **For AI Assistants:** See [AGENTS.md](./AGENTS.md) for detailed conventions and guidelines.
 
 ## Key Features
 
@@ -144,7 +168,7 @@ src/
 
 ```typescript
 import { useQuery, useMutation } from '@tanstack/react-query'
-import api from '@/lib/api'
+import { api } from '@/lib'
 
 // Fetch data
 const { data, isLoading, error } = useQuery({
@@ -171,7 +195,7 @@ const mutation = useMutation({
 ### Using Axios Directly
 
 ```typescript
-import api from '@/lib/api'
+import { api } from '@/lib'
 
 // GET request
 const response = await api.get('/users')
@@ -207,13 +231,13 @@ import {
   RateLimitError,
   ServerError,
   ServiceUnavailableError,
-} from '@/lib/api-error'
+} from '@/lib'
 ```
 
 ### Using useApiError Hook
 
 ```typescript
-import { useApiError } from '@/hooks/useApiError'
+import { useApiError } from '@/hooks'
 
 function MyComponent() {
   const { error, fieldErrors, isError, clearError, handleApiError, getFieldError } = useApiError()
@@ -281,7 +305,7 @@ On 401 errors:
 ### Using Authentication
 
 ```typescript
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/features/auth'
 
 function MyComponent() {
   const { isAuthenticated, accessToken, logout, tokenExpiresIn } = useAuth()
@@ -313,11 +337,10 @@ The authentication system uses secure token storage:
 import {
   getAccessToken,
   setAccessToken,
-  removeAccessToken,
-  isAuthenticated,
+  clearAuthTokens,
   parseJWT,
   isTokenExpired,
-} from '@/lib/auth'
+} from '@/features/auth'
 
 // Get token
 const token = getAccessToken()
@@ -350,7 +373,7 @@ if (isTokenExpired(token)) {
 Use the `useTokenRefresh` hook to manage token refresh:
 
 ```typescript
-import { useTokenRefresh } from '@/hooks/useAuth'
+import { useTokenRefresh } from '@/features/auth'
 
 function App() {
   const { shouldRefresh, refresh } = useTokenRefresh()
@@ -383,7 +406,7 @@ import {
   getFieldErrors,
   isRetryableError,
   isAxiosError,
-} from '@/lib/api-error'
+} from '@/lib'
 
 // Get user-friendly error message
 const message = getErrorMessage(error)
@@ -436,7 +459,7 @@ The Error Boundary is already wrapped around the entire app in `main.tsx`:
 You can wrap specific sections of your app:
 
 ```typescript
-import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { ErrorBoundary } from '@/components'
 
 function MyComponent() {
   return (
@@ -477,7 +500,7 @@ function CustomErrorFallback({
 #### Higher-Order Component
 
 ```typescript
-import { withErrorBoundary } from '@/components/ErrorBoundary'
+import { withErrorBoundary } from '@/components'
 
 const ProtectedComponent = withErrorBoundary(MyComponent, {
   fallback: CustomErrorFallback,
@@ -555,7 +578,7 @@ function MyForm() {
 ### useLocalStorage
 
 ```typescript
-import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { useLocalStorage } from '@/hooks'
 
 const [value, setValue] = useLocalStorage('key', defaultValue)
 ```
@@ -613,7 +636,7 @@ npm run build:production
 
 ### Environment Configuration
 
-The project includes a type-safe environment configuration system at `src/utils/env.ts` that:
+The project includes a type-safe environment configuration system at `src/config/env.ts` that:
 
 - Validates all required environment variables at startup
 - Provides type-safe access via `env` object
@@ -624,7 +647,7 @@ The project includes a type-safe environment configuration system at `src/utils/
 ### Usage
 
 ```typescript
-import { env, isProduction, isDevelopment } from '@/utils/env'
+import { env, isProduction, isDevelopment } from '@/config'
 
 // Access configuration
 console.log(env.apiUrl)
@@ -688,21 +711,35 @@ Pre-commit hooks are configured to run lint-staged:
 
 ### Adding a New Route
 
-1. Create page component in `src/pages/`
-2. Add route in `src/App.tsx`
-3. Update navigation in `src/layouts/Navbar.tsx`
+1. Create page component in `src/pages/` (kebab-case, e.g., `my-page.tsx`)
+2. Use default export for lazy loading compatibility
+3. Add route in `src/app/router.tsx` with lazy loading
+4. Add route constant in `src/config/constants.ts`
+5. Update navigation in `src/components/layouts/navbar.tsx`
 
-### Creating a Component
+### Creating a UI Component
 
-1. Create component in `src/components/`
-2. Create tests in `src/components/__tests__/`
-3. Export and use in pages or other components
+1. Create folder `src/components/ui/[name]/`
+2. Create component file `[name].tsx`
+3. Create barrel export `index.ts`
+4. Export from `src/components/ui/index.ts`
+5. Create tests in `src/components/__tests__/`
 
-### API Service
+### Creating a Feature Module
 
-1. Create service in `src/services/`
+1. Create folder `src/features/[name]/`
+2. Add subfolders: `components/`, `hooks/`, `lib/`, `types/`
+3. Create public API in `index.ts`
+4. Only export what's needed publicly
+
+### API Integration
+
+1. Use the API client from `@/lib`
 2. Use TanStack Query hooks for data fetching
-3. Type your API responses in `src/types/`
+3. Define query keys in `src/config/constants.ts`
+4. Type your API responses in `src/types/`
+
+> **For detailed conventions:** See [AGENTS.md](./AGENTS.md)
 
 ## Build Optimization
 

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import FormValidationExample from "../FormValidationExample";
+import FormValidationExample from "../form-validation-example";
 
 describe("FormValidationExample", () => {
   const renderWithRouter = (component: React.ReactElement) => {

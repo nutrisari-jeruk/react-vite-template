@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Combobox from "../Combobox";
+import { Combobox } from "../combobox";
 
 const mockOptions = [
   { value: "1", label: "Option 1" },

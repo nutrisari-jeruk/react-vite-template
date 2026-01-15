@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, type ReactNode } from "react";
+import { useState, useRef, useEffect, useId, type ReactNode } from "react";
+import { cn } from "@/utils/cn";
 
 export interface ComboboxOption {
   value: string;
@@ -9,68 +10,41 @@ interface ComboboxProps {
   options: ComboboxOption[];
   value?: string;
   onChange?: (value: string) => void;
-  label?: string;
   placeholder?: string;
+  label?: string;
   error?: string;
   helperText?: string;
-  comboboxSize?: "sm" | "md" | "lg";
-  iconLeft?: ReactNode;
   disabled?: boolean;
+  iconLeft?: ReactNode;
   className?: string;
-  id?: string;
 }
 
-export default function Combobox({
+export function Combobox({
   options,
   value,
   onChange,
+  placeholder = "Select...",
   label,
-  placeholder = "Search...",
   error,
   helperText,
-  comboboxSize = "md",
-  iconLeft,
   disabled = false,
-  className = "",
-  id,
+  iconLeft,
+  className,
 }: ComboboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const listboxRef = useRef<HTMLUListElement>(null);
+  const id = useId();
 
-  const comboboxId = id || label?.toLowerCase().replace(/\s+/g, "-");
-  const listId = `${comboboxId}-list`;
+  const selectedOption = options.find((opt) => opt.value === value);
+  const displayValue = selectedOption?.label || "";
 
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const selectedOption = options.find((opt) => opt.value === value);
-  const displayValue = isOpen ? searchQuery : selectedOption?.label || "";
-
-  const sizeStyles = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2 text-base",
-    lg: "px-5 py-3 text-lg",
-  };
-
-  const iconSizeStyles = {
-    sm: "w-4 h-4",
-    md: "w-5 h-5",
-    lg: "w-6 h-6",
-  };
-
-  const baseStyles =
-    "w-full rounded-lg border transition-colors focus:outline-none focus:ring-2 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60";
-
-  const borderStyle = error
-    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-    : "border-gray-300 focus:border-blue-500 focus:ring-blue-500";
-
-  const paddingWithIcon = iconLeft ? "pl-10" : "";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -80,7 +54,6 @@ export default function Combobox({
       ) {
         setIsOpen(false);
         setSearchQuery("");
-        setHighlightedIndex(-1);
       }
     };
 
@@ -88,31 +61,39 @@ export default function Combobox({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setHighlightedIndex(0);
+    }
+  }, [isOpen]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    setIsOpen(true);
-    setHighlightedIndex(-1);
+    if (!isOpen) {
+      setIsOpen(true);
+    }
+    setHighlightedIndex(0);
   };
 
   const handleInputFocus = () => {
     setIsOpen(true);
   };
 
-  const handleOptionClick = (option: ComboboxOption) => {
+  const handleSelect = (option: ComboboxOption) => {
     onChange?.(option.value);
-    setSearchQuery("");
     setIsOpen(false);
-    setHighlightedIndex(-1);
-    inputRef.current?.blur();
+    setSearchQuery("");
+    inputRef.current?.focus();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!isOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
-      setIsOpen(true);
+    if (!isOpen) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        setIsOpen(true);
+        e.preventDefault();
+      }
       return;
     }
-
-    if (!isOpen) return;
 
     switch (e.key) {
       case "ArrowDown":
@@ -123,84 +104,73 @@ export default function Combobox({
         break;
       case "ArrowUp":
         e.preventDefault();
-        setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : -1));
+        setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : 0));
         break;
       case "Enter":
         e.preventDefault();
-        if (highlightedIndex >= 0 && filteredOptions[highlightedIndex]) {
-          handleOptionClick(filteredOptions[highlightedIndex]);
+        if (filteredOptions[highlightedIndex]) {
+          handleSelect(filteredOptions[highlightedIndex]);
         }
         break;
       case "Escape":
+        e.preventDefault();
         setIsOpen(false);
         setSearchQuery("");
-        setHighlightedIndex(-1);
-        inputRef.current?.blur();
         break;
     }
   };
 
-  useEffect(() => {
-    if (highlightedIndex >= 0 && listRef.current) {
-      const highlightedElement = listRef.current.children[
-        highlightedIndex
-      ] as HTMLElement;
-      if (highlightedElement && highlightedElement.scrollIntoView) {
-        highlightedElement.scrollIntoView({ block: "nearest" });
-      }
-    }
-  }, [highlightedIndex]);
-
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`} ref={containerRef}>
+    <div ref={containerRef} className={cn("relative", className)}>
       {label && (
         <label
-          htmlFor={comboboxId}
-          className="text-sm font-medium text-gray-700"
+          htmlFor={id}
+          className="mb-1 block text-sm font-medium text-gray-700"
         >
           {label}
         </label>
       )}
+
       <div className="relative">
         {iconLeft && (
-          <div
-            className={`absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none ${iconSizeStyles[comboboxSize]}`}
-          >
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             {iconLeft}
           </div>
         )}
+
         <input
           ref={inputRef}
-          id={comboboxId}
+          id={id}
           type="text"
-          value={displayValue}
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-controls={`${id}-listbox`}
+          aria-autocomplete="list"
+          aria-invalid={!!error}
+          value={isOpen ? searchQuery : displayValue}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           disabled={disabled}
-          className={`${baseStyles} ${sizeStyles[comboboxSize]} ${borderStyle} ${paddingWithIcon} pr-10`}
-          role="combobox"
-          aria-expanded={isOpen}
-          aria-controls={listId}
-          aria-activedescendant={
-            highlightedIndex >= 0
-              ? `${comboboxId}-option-${highlightedIndex}`
-              : undefined
-          }
-          aria-invalid={!!error}
-          aria-describedby={
+          className={cn(
+            "w-full rounded-md border px-3 py-2 text-sm transition-colors",
+            "focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20",
             error
-              ? `${comboboxId}-error`
-              : helperText
-                ? `${comboboxId}-helper`
-                : undefined
-          }
-          autoComplete="off"
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+              : "border-gray-300",
+            disabled && "cursor-not-allowed bg-gray-100 text-gray-500",
+            iconLeft && "pl-10"
+          )}
         />
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
           <svg
-            className={`transition-transform ${iconSizeStyles[comboboxSize]} ${isOpen ? "rotate-180" : ""}`}
+            className={cn(
+              "h-4 w-4 text-gray-400 transition-transform",
+              isOpen && "rotate-180"
+            )}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -213,51 +183,45 @@ export default function Combobox({
             />
           </svg>
         </div>
-
-        {isOpen && (
-          <ul
-            ref={listRef}
-            id={listId}
-            role="listbox"
-            className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
-          >
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map((option, index) => (
-                <li
-                  key={option.value}
-                  id={`${comboboxId}-option-${index}`}
-                  role="option"
-                  aria-selected={option.value === value}
-                  onClick={() => handleOptionClick(option)}
-                  className={`px-4 py-2 cursor-pointer transition-colors ${
-                    index === highlightedIndex
-                      ? "bg-blue-100"
-                      : option.value === value
-                        ? "bg-blue-50"
-                        : "hover:bg-gray-100"
-                  }`}
-                >
-                  {option.label}
-                </li>
-              ))
-            ) : (
-              <li className="px-4 py-2 text-gray-500 text-center">
-                No results found
-              </li>
-            )}
-          </ul>
-        )}
       </div>
-      {error && (
-        <p id={`${comboboxId}-error`} className="text-sm text-red-600">
-          {error}
-        </p>
+
+      {isOpen && (
+        <ul
+          ref={listboxRef}
+          id={`${id}-listbox`}
+          role="listbox"
+          className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+        >
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((option, index) => (
+              <li
+                key={option.value}
+                role="option"
+                aria-selected={option.value === value}
+                onClick={() => handleSelect(option)}
+                className={cn(
+                  "cursor-pointer px-3 py-2 text-sm",
+                  index === highlightedIndex && "bg-blue-100",
+                  option.value === value && "bg-blue-50 font-medium"
+                )}
+              >
+                {option.label}
+              </li>
+            ))
+          ) : (
+            <li className="px-3 py-2 text-sm text-gray-500">
+              No results found
+            </li>
+          )}
+        </ul>
       )}
-      {!error && helperText && (
-        <p id={`${comboboxId}-helper`} className="text-sm text-gray-600">
-          {helperText}
-        </p>
+
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {helperText && !error && (
+        <p className="mt-1 text-sm text-gray-500">{helperText}</p>
       )}
     </div>
   );
 }
+
+export default Combobox;

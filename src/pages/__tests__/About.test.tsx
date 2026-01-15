@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { describe, it, expect } from "vitest";
-import About from "../About";
+import About from "../about";
 
 describe("About Page", () => {
   const renderAbout = () => {

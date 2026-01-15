@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import Avatar from "../Avatar";
+import { Avatar } from "../ui/avatar";
 
 describe("Avatar", () => {
   it("renders with initials", () => {

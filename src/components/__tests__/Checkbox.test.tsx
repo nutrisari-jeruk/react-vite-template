@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Checkbox from "../Checkbox";
+import { Checkbox } from "../ui/checkbox";
 
 describe("Checkbox", () => {
   it("renders checkbox input", () => {

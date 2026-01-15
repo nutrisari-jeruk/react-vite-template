@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import AvatarGroup from "../AvatarGroup";
-import Avatar from "../Avatar";
+import { AvatarGroup, Avatar } from "../ui/avatar";
 
 describe("AvatarGroup", () => {
   it("renders all avatars when no max is set", () => {

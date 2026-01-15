@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import FormInput from "../FormInput";
+import { FormInput } from "../form-input";
 
 describe("FormInput", () => {
   it("renders label and input correctly", () => {

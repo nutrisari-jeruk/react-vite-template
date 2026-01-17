@@ -119,6 +119,19 @@
   --z-overlay: 50;
 }
 
+/* Safe Area Utilities */
+.safe-top-0 {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-top-4 {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
+}
+
+.safe-left-4 {
+  padding-left: calc(env(safe-area-inset-left, 0px) + 1rem);
+}
+
 @keyframes slideInDown {
   0% {
     opacity: 0;

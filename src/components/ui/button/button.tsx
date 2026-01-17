@@ -14,6 +14,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   iconLeft?: React.ReactNode;
   iconRight?: React.ReactNode;
   iconOnly?: React.ReactNode;
+  ariaLabel?: string;
   children?: React.ReactNode;
 }
 
@@ -24,6 +25,7 @@ export function Button({
   iconLeft,
   iconRight,
   iconOnly,
+  ariaLabel,
   children,
   className = "",
   disabled,
@@ -83,6 +85,7 @@ export function Button({
         className
       )}
       disabled={disabled || loading}
+      aria-label={iconOnly ? ariaLabel || props["aria-label"] : undefined}
       {...props}
     >
       {loading && <LoadingSpinner />}

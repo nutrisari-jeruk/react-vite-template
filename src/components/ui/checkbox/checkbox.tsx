@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes } from "react";
+import { cn } from "@/utils/cn";
 
 interface CheckboxProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -21,7 +22,7 @@ export function Checkbox({
   const checkboxId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className={`flex flex-col gap-1 ${className}`}>
+    <div className={cn("flex flex-col gap-1", className)}>
       <div className="flex items-start gap-3">
         <input
           type="checkbox"

@@ -18,7 +18,7 @@ import { ROUTES } from "@/config/constants";
 
 function ComponentsPage() {
   return (
-    <div className="min-h-[calc(100vh-12rem)] bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-12">
+    <div className="min-h-[calc(100dvh-12rem)] bg-gray-50 px-4 py-12">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 text-center">
           <Link to={ROUTES.HOME}>

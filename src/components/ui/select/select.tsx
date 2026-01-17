@@ -37,7 +37,10 @@ export function Select({
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || "");
+  const [focusedIndex, setFocusedIndex] = useState<number>(-1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const listboxRef = useRef<HTMLUListElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const selectId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
   const isControlled = controlledValue !== undefined;
@@ -91,6 +94,7 @@ export function Select({
         !containerRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setFocusedIndex(-1);
       }
     };
 
@@ -98,9 +102,70 @@ export function Select({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (isOpen && listboxRef.current && focusedIndex >= 0) {
+      const options = listboxRef.current.querySelectorAll('[role="option"]');
+      const focusedOption = options[focusedIndex] as HTMLElement;
+      focusedOption?.focus();
+    }
+  }, [isOpen, focusedIndex]);
+
   const handleToggle = () => {
     if (!disabled) {
       setIsOpen(!isOpen);
+      if (!isOpen) {
+        setFocusedIndex(0);
+      }
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (disabled) return;
+
+    switch (event.key) {
+      case "ArrowDown":
+      case "ArrowUp":
+        event.preventDefault();
+        if (!isOpen) {
+          setIsOpen(true);
+          setFocusedIndex(0);
+        } else {
+          const direction = event.key === "ArrowDown" ? 1 : -1;
+          const newIndex = Math.max(
+            0,
+            Math.min(options.length - 1, focusedIndex + direction)
+          );
+          setFocusedIndex(newIndex);
+        }
+        break;
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        if (isOpen && focusedIndex >= 0) {
+          handleSelect(options[focusedIndex].value);
+        } else {
+          setIsOpen(true);
+          setFocusedIndex(0);
+        }
+        break;
+      case "Escape":
+        event.preventDefault();
+        setIsOpen(false);
+        setFocusedIndex(-1);
+        buttonRef.current?.focus();
+        break;
+      case "Home":
+        event.preventDefault();
+        if (isOpen) {
+          setFocusedIndex(0);
+        }
+        break;
+      case "End":
+        event.preventDefault();
+        if (isOpen) {
+          setFocusedIndex(options.length - 1);
+        }
+        break;
     }
   };
 
@@ -110,12 +175,15 @@ export function Select({
     }
     onChange?.(optionValue);
     setIsOpen(false);
+    setFocusedIndex(-1);
+    buttonRef.current?.focus();
   };
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)} ref={containerRef}>
       {label && (
         <label
+          id={`${selectId}-label`}
           htmlFor={selectId}
           className={cn("text-sm font-medium", labelStyle)}
         >
@@ -126,7 +194,9 @@ export function Select({
         <button
           type="button"
           id={selectId}
+          ref={buttonRef}
           onClick={handleToggle}
+          onKeyDown={handleKeyDown}
           disabled={disabled}
           className={cn(
             baseStyles,
@@ -137,6 +207,12 @@ export function Select({
           )}
           aria-expanded={isOpen}
           aria-haspopup="listbox"
+          aria-labelledby={label ? `${selectId}-label` : undefined}
+          aria-activedescendant={
+            isOpen && focusedIndex >= 0
+              ? `${selectId}-option-${focusedIndex}`
+              : undefined
+          }
           {...props}
         >
           {displayText}
@@ -168,22 +244,34 @@ export function Select({
 
         {isOpen && !disabled && (
           <ul
+            ref={listboxRef}
             role="listbox"
+            tabIndex={-1}
             className="z-dropdown absolute mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-lg"
           >
-            {options.map((option) => {
+            {options.map((option, index) => {
               const isSelected = option.value === value;
+              const isFocused = index === focusedIndex;
               return (
                 <li
                   key={option.value}
                   role="option"
+                  id={`${selectId}-option-${index}`}
                   aria-selected={isSelected}
+                  tabIndex={isFocused ? 0 : -1}
                   onClick={() => handleSelect(option.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleSelect(option.value);
+                    }
+                  }}
                   className={cn(
-                    "cursor-pointer px-4 py-2 transition-colors",
+                    "cursor-pointer px-4 py-2 transition-colors outline-none",
                     isSelected
                       ? "bg-blue-600 text-white"
-                      : "bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                      : "bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600",
+                    isFocused && !isSelected && "bg-blue-50 text-blue-600"
                   )}
                 >
                   {option.label}

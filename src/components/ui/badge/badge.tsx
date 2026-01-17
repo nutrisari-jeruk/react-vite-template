@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from "react";
+import { cn } from "@/utils/cn";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: "default" | "primary" | "success" | "warning" | "danger" | "info";
@@ -47,12 +48,18 @@ export function Badge({
 
   return (
     <span
-      className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${roundedStyle} ${className}`}
+      className={cn(
+        baseStyles,
+        sizeStyles[size],
+        variantStyles[variant],
+        roundedStyle,
+        className
+      )}
       {...props}
     >
       {dot && (
         <span
-          className={`h-2 w-2 rounded-full ${dotColors[variant]}`}
+          className={cn("size-2 rounded-full", dotColors[variant])}
           aria-hidden="true"
         />
       )}

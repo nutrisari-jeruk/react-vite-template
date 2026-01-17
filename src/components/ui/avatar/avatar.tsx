@@ -38,21 +38,21 @@ export function Avatar({
   ...props
 }: AvatarProps) {
   const sizeStyles: Record<AvatarSize, string> = {
-    xs: "w-6 h-6 text-[10px]",
-    sm: "w-8 h-8 text-xs",
-    md: "w-10 h-10 text-sm",
-    lg: "w-12 h-12 text-base",
-    xl: "w-16 h-16 text-lg",
-    "2xl": "w-20 h-20 text-xl",
+    xs: "size-6 text-[10px]",
+    sm: "size-8 text-xs",
+    md: "size-10 text-sm",
+    lg: "size-12 text-base",
+    xl: "size-16 text-lg",
+    "2xl": "size-20 text-xl",
   };
 
   const statusSizes: Record<AvatarSize, string> = {
-    xs: "w-1.5 h-1.5",
-    sm: "w-2 h-2",
-    md: "w-2.5 h-2.5",
-    lg: "w-3 h-3",
-    xl: "w-3.5 h-3.5",
-    "2xl": "w-4 h-4",
+    xs: "size-1.5",
+    sm: "size-2",
+    md: "size-2.5",
+    lg: "size-3",
+    xl: "size-3.5",
+    "2xl": "size-4",
   };
 
   const shapeStyles: Record<AvatarShape, string> = {
@@ -98,7 +98,7 @@ export function Avatar({
           <img
             src={src}
             alt={alt}
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
             onError={(e) => {
               e.currentTarget.style.display = "none";
             }}

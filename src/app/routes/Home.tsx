@@ -4,7 +4,7 @@ import { ROUTES } from "@/config/constants";
 
 function HomePage() {
   return (
-    <div className="min-h-[calc(100vh-12rem)] bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-12">
+    <div className="min-h-[calc(100vh-12rem)] bg-gray-50 px-4 py-12">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 text-center">
           <div className="mb-4 flex items-center justify-center gap-2">
@@ -15,18 +15,20 @@ function HomePage() {
               Production Ready
             </Badge>
           </div>
-          <h1 className="mb-4 text-4xl font-bold text-gray-900">
+          <h1 className="mb-4 text-4xl font-bold text-balance text-gray-900">
             Welcome to React Frontend Template
           </h1>
-          <p className="mx-auto max-w-2xl text-lg text-gray-600">
+          <p className="mx-auto max-w-2xl text-lg text-pretty text-gray-600">
             A production-ready template with React Router, TanStack Query,
             Tailwind CSS, and a beautiful component library.
           </p>
         </div>
 
         <Card className="mb-8 p-6">
-          <h2 className="mb-4 text-xl font-semibold">Quick Navigation</h2>
-          <p className="mb-4 text-gray-600">
+          <h2 className="mb-4 text-xl font-semibold text-balance">
+            Quick Navigation
+          </h2>
+          <p className="mb-4 text-pretty text-gray-600">
             Explore the features and examples available in this template:
           </p>
           <div className="grid gap-3 sm:grid-cols-2">

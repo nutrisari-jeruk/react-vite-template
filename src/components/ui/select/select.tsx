@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import type { ReactNode } from "react";
+import { cn } from "@/utils/cn";
 
 interface SelectOption {
   value: string;
@@ -65,23 +66,23 @@ export function Select({
   };
 
   const baseStyles =
-    "w-full rounded-[5.5px] border border-[1px] transition-all focus:outline-none bg-white cursor-pointer";
+    "w-full rounded border transition-all focus:outline-none bg-white cursor-pointer";
 
   const borderStyle = error
     ? "border-red-500"
     : disabled
-      ? "border-[#F3F4F6] bg-[#E5E7EB]"
+      ? "border-gray-200 bg-gray-100"
       : isOpen
-        ? "border-[#3758F9] border-[1.5px] rounded-[5.25px]"
-        : "border-[#DFE4EA]";
+        ? "border-blue-600 border-2"
+        : "border-gray-300";
 
   const textStyle = disabled
-    ? "text-[#6B7280]"
+    ? "text-gray-500"
     : error
       ? "text-gray-900"
-      : "text-[#637381]";
+      : "text-gray-700";
 
-  const labelStyle = disabled ? "text-[#6B7280]" : "text-[#111928]";
+  const labelStyle = disabled ? "text-gray-500" : "text-gray-900";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -112,11 +113,11 @@ export function Select({
   };
 
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`} ref={containerRef}>
+    <div className={cn("flex flex-col gap-1.5", className)} ref={containerRef}>
       {label && (
         <label
           htmlFor={selectId}
-          className={`text-sm font-medium ${labelStyle}`}
+          className={cn("text-sm font-medium", labelStyle)}
         >
           {label}
         </label>
@@ -127,7 +128,13 @@ export function Select({
           id={selectId}
           onClick={handleToggle}
           disabled={disabled}
-          className={`${baseStyles} ${sizeStyles[selectSize]} ${borderStyle} ${textStyle} pr-10 text-left disabled:cursor-not-allowed`}
+          className={cn(
+            baseStyles,
+            sizeStyles[selectSize],
+            borderStyle,
+            textStyle,
+            "pr-10 text-left disabled:cursor-not-allowed"
+          )}
           aria-expanded={isOpen}
           aria-haspopup="listbox"
           {...props}
@@ -135,12 +142,16 @@ export function Select({
           {displayText}
         </button>
         <div
-          className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
-            disabled ? "text-[#6B7280]" : "text-primary-text"
-          }`}
+          className={cn(
+            "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3",
+            disabled ? "text-gray-500" : "text-gray-700"
+          )}
         >
           <svg
-            className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+            className={cn(
+              "h-5 w-5 transition-transform",
+              isOpen && "rotate-180"
+            )}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -158,11 +169,7 @@ export function Select({
         {isOpen && !disabled && (
           <ul
             role="listbox"
-            className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[6px] border border-[#DFE4EA] bg-white shadow-lg"
-            style={{
-              boxShadow:
-                "0px 1px 3px 0px rgba(166, 175, 195, 0.4), 0px 1px 2px 0px rgba(166, 175, 195, 0.4)",
-            }}
+            className="z-dropdown absolute mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-lg"
           >
             {options.map((option) => {
               const isSelected = option.value === value;
@@ -172,11 +179,12 @@ export function Select({
                   role="option"
                   aria-selected={isSelected}
                   onClick={() => handleSelect(option.value)}
-                  className={`cursor-pointer px-4 py-2 transition-colors ${
+                  className={cn(
+                    "cursor-pointer px-4 py-2 transition-colors",
                     isSelected
-                      ? "bg-[#3758F9] text-white"
-                      : "text-primary-text bg-white hover:bg-blue-50 hover:text-[#3758F9]"
-                  }`}
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                  )}
                 >
                   {option.label}
                 </li>

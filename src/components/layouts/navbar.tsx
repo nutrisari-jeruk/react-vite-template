@@ -30,11 +30,11 @@ export function Navbar() {
       {!isOpen && (
         <button
           onClick={toggleMenu}
-          className="bg-primary fixed top-4 left-4 z-50 rounded-md p-2 text-white shadow-lg transition-colors hover:bg-[color-blue-dark] md:hidden dark:bg-[color-dark-2] dark:hover:bg-[color-dark-3]"
+          className="bg-primary z-overlay fixed top-4 left-4 rounded-md p-2 text-white shadow-lg transition-colors hover:bg-[color-blue-dark] md:hidden dark:bg-[color-dark-2] dark:hover:bg-[color-dark-3]"
           aria-label="Open menu"
         >
           <svg
-            className="h-6 w-6"
+            className="size-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -51,13 +51,13 @@ export function Navbar() {
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 md:hidden dark:bg-black/70"
+          className="z-modal fixed inset-0 bg-black/50 md:hidden dark:bg-black/70"
           onClick={closeMenu}
         />
       )}
 
       <aside
-        className={`bg-primary fixed inset-y-0 left-0 z-40 w-64 transform text-white shadow-lg md:static dark:bg-[color-dark-2] ${isOpen ? "translate-x-0" : "-translate-x-full"} flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0`}
+        className={`bg-primary z-sidebar fixed inset-y-0 left-0 w-64 transform text-white shadow-lg md:static dark:bg-[color-dark-2] ${isOpen ? "translate-x-0" : "-translate-x-full"} flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0`}
       >
         <div className="flex items-center justify-between border-b border-white/20 p-6 dark:border-[color-dark-3]">
           <Link
@@ -73,7 +73,7 @@ export function Navbar() {
             aria-label="Close menu"
           >
             <svg
-              className="h-6 w-6"
+              className="size-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

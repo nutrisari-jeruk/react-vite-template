@@ -110,6 +110,13 @@
   --color-green-light-4: #acefc8;
   --color-green-light-5: #c2f3d6;
   --color-green-light-6: #daf8e6;
+
+  /* Z-Index Scale */
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-modal: 30;
+  --z-sidebar: 40;
+  --z-overlay: 50;
 }
 
 @keyframes slideInDown {

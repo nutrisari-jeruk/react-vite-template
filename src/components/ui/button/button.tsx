@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from "react";
+import { cn } from "@/utils/cn";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
@@ -75,7 +76,12 @@ export function Button({
 
   return (
     <button
-      className={`${baseStyles} ${iconOnlyStyles || sizeStyles[size]} ${variantStyles[variant]} ${className}`}
+      className={cn(
+        baseStyles,
+        iconOnly ? iconOnlyStyles : sizeStyles[size],
+        variantStyles[variant],
+        className
+      )}
       disabled={disabled || loading}
       {...props}
     >

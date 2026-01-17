@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
+import { cn } from "@/utils/cn";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   variant?: "default" | "error" | "success";
@@ -33,9 +34,9 @@ export function Input({
   };
 
   const iconSizeStyles = {
-    sm: "w-4 h-4",
-    md: "w-5 h-5",
-    lg: "w-6 h-6",
+    sm: "size-4",
+    md: "size-5",
+    lg: "size-6",
   };
 
   const variantStyles = {
@@ -52,7 +53,7 @@ export function Input({
   const paddingWithIcon = iconLeft ? "pl-10" : iconRight ? "pr-10" : "";
 
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
+    <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
         <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
           {label}
@@ -61,14 +62,22 @@ export function Input({
       <div className="relative">
         {iconLeft && (
           <div
-            className={`pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-500 ${iconSizeStyles[inputSize]}`}
+            className={cn(
+              "pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-500",
+              iconSizeStyles[inputSize]
+            )}
           >
             {iconLeft}
           </div>
         )}
         <input
           id={inputId}
-          className={`${baseStyles} ${sizeStyles[inputSize]} ${variantStyles[effectiveVariant]} ${paddingWithIcon}`}
+          className={cn(
+            baseStyles,
+            sizeStyles[inputSize],
+            variantStyles[effectiveVariant],
+            paddingWithIcon
+          )}
           disabled={disabled}
           aria-invalid={effectiveVariant === "error"}
           aria-describedby={
@@ -82,7 +91,10 @@ export function Input({
         />
         {iconRight && (
           <div
-            className={`absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 ${iconSizeStyles[inputSize]}`}
+            className={cn(
+              "absolute top-1/2 right-3 -translate-y-1/2 text-gray-500",
+              iconSizeStyles[inputSize]
+            )}
           >
             {iconRight}
           </div>

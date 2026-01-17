@@ -5,6 +5,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from "react";
+import { cn } from "@/utils/cn";
 
 interface AlertProps extends HTMLAttributes<HTMLDivElement> {
   variant?: "info" | "success" | "warning" | "error";
@@ -95,7 +96,7 @@ export function Alert({
   const defaultIcons = {
     info: (
       <svg
-        className="h-5 w-5"
+        className="size-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +110,7 @@ export function Alert({
     ),
     success: (
       <svg
-        className="h-5 w-5"
+        className="size-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +124,7 @@ export function Alert({
     ),
     warning: (
       <svg
-        className="h-5 w-5"
+        className="size-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +138,7 @@ export function Alert({
     ),
     error: (
       <svg
-        className="h-5 w-5"
+        className="size-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -163,10 +164,11 @@ export function Alert({
 
   const positionClasses = {
     "top-center":
-      "fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md shadow-lg",
-    "top-right": "fixed top-4 right-4 z-50 w-full max-w-md shadow-lg",
-    "bottom-right": "fixed bottom-4 right-4 z-50 w-full max-w-md shadow-lg",
-    "bottom-left": "fixed bottom-4 left-4 z-50 w-full max-w-md shadow-lg",
+      "fixed top-4 left-1/2 -translate-x-1/2 z-overlay w-full max-w-md shadow-lg",
+    "top-right": "fixed top-4 right-4 z-overlay w-full max-w-md shadow-lg",
+    "bottom-right":
+      "fixed bottom-4 right-4 z-overlay w-full max-w-md shadow-lg",
+    "bottom-left": "fixed bottom-4 left-4 z-overlay w-full max-w-md shadow-lg",
   };
 
   const floatingClasses = floating ? positionClasses[position] : "";
@@ -181,7 +183,14 @@ export function Alert({
 
   return (
     <div
-      className={`${positionClass} flex flex-col overflow-hidden rounded-lg border ${variantStyles[variant]} ${animationClasses} ${floatingClasses} ${className}`}
+      className={cn(
+        positionClass,
+        "flex flex-col overflow-hidden rounded-lg border",
+        variantStyles[variant],
+        animationClasses,
+        floatingClasses,
+        className
+      )}
       role="alert"
       style={{
         animation: isExiting
@@ -203,12 +212,16 @@ export function Alert({
             type="button"
             onClick={handleDismiss}
             disabled={isDismissing}
-            className={`-mt-1 -mr-1 ml-auto shrink-0 rounded-lg p-1.5 transition-colors hover:bg-black/5 ${iconColors[variant]} ${isDismissing ? "cursor-not-allowed opacity-70" : ""}`}
+            className={cn(
+              "-mt-1 -mr-1 ml-auto shrink-0 rounded-lg p-1.5 transition-colors hover:bg-black/5",
+              iconColors[variant],
+              isDismissing && "cursor-not-allowed opacity-70"
+            )}
             aria-label="Dismiss"
           >
             {isDismissing ? (
               <svg
-                className="h-5 w-5 animate-spin"
+                className="size-5 animate-spin"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -229,7 +242,7 @@ export function Alert({
               </svg>
             ) : (
               <svg
-                className="h-5 w-5"
+                className="size-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"

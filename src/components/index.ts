@@ -9,8 +9,8 @@ export { ErrorBoundary, withErrorBoundary } from "./error-boundary";
 export type { ErrorFallbackProps } from "./error-boundary";
 export { CodeBlock } from "./code-block";
 export { ComponentDemo } from "./component-demo";
-export { Combobox } from "./combobox";
-export type { ComboboxOption } from "./combobox";
+export { Combobox } from "./Combobox";
+export type { ComboboxOption } from "./Combobox";
 
 // Form Components (with react-hook-form integration)
 export { FormInput } from "./form-input";

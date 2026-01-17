@@ -306,7 +306,7 @@ describe("ErrorExamples Page", () => {
 
       const buttons = screen
         .getAllByRole("button")
-        .filter((btn) => !btn.disabled);
+        .filter((btn) => !(btn as HTMLButtonElement).disabled);
 
       for (const button of buttons) {
         if (button.textContent === "Trigger Render Error") continue;

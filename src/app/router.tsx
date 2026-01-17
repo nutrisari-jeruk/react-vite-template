@@ -2,16 +2,16 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { MainLayout } from "@/components/layouts";
 
-const Home = lazy(() => import("@/pages/home"));
-const About = lazy(() => import("@/pages/about"));
-const Contact = lazy(() => import("@/pages/contact"));
-const Components = lazy(() => import("@/pages/components"));
-const ErrorExamples = lazy(() => import("@/pages/error-examples"));
-const AuthExample = lazy(() => import("@/pages/auth-example"));
+const Home = lazy(() => import("@/app/routes/Home"));
+const About = lazy(() => import("@/app/routes/About"));
+const Contact = lazy(() => import("@/app/routes/Contact"));
+const Components = lazy(() => import("@/app/routes/Components"));
+const ErrorExamples = lazy(() => import("@/app/routes/error-examples"));
+const AuthExample = lazy(() => import("@/app/routes/auth-example"));
 const FormValidationExample = lazy(
-  () => import("@/pages/form-validation-example")
+  () => import("@/app/routes/form-validation-example")
 );
-const NotFound = lazy(() => import("@/pages/not-found"));
+const NotFound = lazy(() => import("@/app/routes/not-found"));
 
 function PageLoader() {
   return (

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { describe, it, expect, vi } from "vitest";
-import Contact from "../contact";
+import Contact from "../Contact";
 
 describe("Contact Page", () => {
   const renderContact = () => {

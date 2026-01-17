@@ -347,10 +347,10 @@ describe("Token Storage Utilities", () => {
   describe("SSR Safety", () => {
     it("handles missing window object gracefully", () => {
       // Save original window
-      const originalWindow = global.window;
+      const originalWindow = globalThis.window;
 
       // @ts-expect-error - Simulate SSR environment
-      delete global.window;
+      delete globalThis.window;
 
       expect(() => {
         getAccessToken();
@@ -358,18 +358,18 @@ describe("Token Storage Utilities", () => {
       }).not.toThrow();
 
       // Restore window
-      global.window = originalWindow;
+      globalThis.window = originalWindow;
     });
 
     it("handles missing document object gracefully", () => {
-      const originalDocument = global.document;
+      const originalDocument = globalThis.document;
 
       // @ts-expect-error - Simulate SSR environment
-      delete global.document;
+      delete globalThis.document;
 
       expect(() => getAccessToken()).not.toThrow();
 
-      global.document = originalDocument;
+      globalThis.document = originalDocument;
     });
   });
 

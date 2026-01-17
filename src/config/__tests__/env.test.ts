@@ -38,7 +38,6 @@ describe("Environment Configuration", () => {
     // Reset environment
     Object.keys(mockEnv).forEach((key) => {
       if (key in import.meta.env) {
-        // @ts-expect-error - Testing environment variable mutation
         import.meta.env[key] = mockEnv[key as keyof typeof mockEnv];
       }
     });
@@ -76,7 +75,6 @@ describe("Environment Configuration", () => {
 
     it("detects production environment", () => {
       // Mock production environment
-      // @ts-expect-error - Testing environment variable mutation
       import.meta.env.VITE_APP_ENV = "production";
 
       expect(typeof isProduction).toBe("boolean");

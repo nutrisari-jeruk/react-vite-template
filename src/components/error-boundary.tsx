@@ -95,7 +95,7 @@ function DefaultErrorFallback({
     <div
       role="alert"
       aria-live="assertive"
-      className="flex min-h-screen items-center justify-center bg-gray-50 px-4"
+      className="flex min-h-dvh items-center justify-center bg-gray-50 px-4"
     >
       <div className="w-full max-w-2xl rounded-lg bg-white p-8 shadow-lg">
         <div className="text-center">

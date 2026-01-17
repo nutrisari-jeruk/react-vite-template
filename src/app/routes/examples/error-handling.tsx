@@ -1,5 +1,5 @@
 import { useState } from "react";
-import api from "@/lib/api-client";
+import { useNavigate } from "react-router-dom";
 import { useApiError } from "@/hooks/use-api-error";
 import {
   NetworkError,
@@ -10,34 +10,18 @@ import {
   NotFoundError,
   ServerError,
 } from "@/lib/api-error";
-import { Button, Input, Alert } from "@/components/ui";
+import { Button, Alert } from "@/components/ui";
 
 export default function ErrorExamples() {
-  const { error, isError, clearError, handleApiError, getFieldError } =
-    useApiError();
+  const navigate = useNavigate();
+  const { error, isError, clearError, handleApiError } = useApiError();
 
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "" });
   const [shouldError, setShouldError] = useState(false);
 
   if (shouldError) {
     throw new Error("This is a test error thrown on purpose!");
   }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    clearError();
-
-    try {
-      const response = await api.post("/auth/login", formData);
-      console.log("Success:", response.data);
-    } catch (err) {
-      handleApiError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const simulateError = async (type: string) => {
     clearError();
@@ -100,13 +84,22 @@ export default function ErrorExamples() {
           <p className="mb-4 text-gray-600">
             Click the button to trigger a render error.
           </p>
-          <Button
-            variant="danger"
-            onClick={() => setShouldError(true)}
-            className="w-full"
-          >
-            Trigger Render Error
-          </Button>
+          <div className="space-y-3">
+            <Button
+              variant="danger"
+              onClick={() => setShouldError(true)}
+              className="w-full"
+            >
+              Trigger Render Error
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => navigate("/this-route-does-not-exist")}
+              className="w-full"
+            >
+              Trigger Not Found Page
+            </Button>
+          </div>
         </div>
 
         <div className="rounded-lg bg-white p-6 shadow">
@@ -157,43 +150,6 @@ export default function ErrorExamples() {
               500 Server Error
             </Button>
           </div>
-        </div>
-
-        <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold">Form with Validation</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              id="email"
-              type="email"
-              label="Email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              error={getFieldError("email") || undefined}
-            />
-
-            <Input
-              id="password"
-              type="password"
-              label="Password"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              error={getFieldError("password") || undefined}
-            />
-
-            <Button
-              type="submit"
-              disabled={loading}
-              loading={loading}
-              variant="primary"
-              className="w-full"
-            >
-              Submit
-            </Button>
-          </form>
         </div>
       </div>
 

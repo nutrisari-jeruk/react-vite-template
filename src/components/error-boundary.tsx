@@ -92,7 +92,11 @@ function DefaultErrorFallback({
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div
+      role="alert"
+      aria-live="assertive"
+      className="min-h-screen flex items-center justify-center bg-gray-50 px-4"
+    >
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-lg p-8">
         <div className="text-center">
           <div className="mx-auto w-16 h-16 mb-4 text-red-500">

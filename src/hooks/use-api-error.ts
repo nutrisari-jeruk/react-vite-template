@@ -36,23 +36,34 @@ export function useApiError(): UseApiErrorResult {
     const errors = getFieldErrors(error);
     if (errors) {
       setFieldErrors(errors);
+    } else {
+      // Clear field errors if the new error doesn't have field errors
+      setFieldErrors({});
     }
 
     if (error instanceof Error) {
       setError(error);
-    } else if (isAxiosError(error)) {
+    } else if (error !== null && isAxiosError(error)) {
       const message = getErrorMessage(error);
       setError(new Error(message));
-    } else {
+    } else if (error !== null) {
       setError(new Error(getErrorMessage(error)));
+    } else {
+      setError(new Error("An unexpected error occurred."));
     }
 
     console.error("API Error:", error);
   }, []);
 
-  const getErrorMessageCallback = useCallback((err?: unknown) => {
-    return err ? getErrorMessage(err) : "";
-  }, []);
+  const getErrorMessageCallback = useCallback(
+    (err?: unknown) => {
+      if (err) {
+        return getErrorMessage(err);
+      }
+      return error ? getErrorMessage(error) : "";
+    },
+    [error]
+  );
 
   const getFieldError = useCallback(
     (field: string) => {

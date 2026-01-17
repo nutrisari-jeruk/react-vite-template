@@ -32,13 +32,12 @@ The application follows the **Bulletproof React** architecture, which emphasizes
 
 ```
 src/
-├── app/              # Application shell (providers, router)
+├── app/              # Application shell (providers, router, routes)
 ├── components/       # Shared components (ui/, layouts/)
 ├── config/           # Configuration (env, constants)
 ├── features/         # Feature modules
 ├── hooks/            # Shared hooks
 ├── lib/              # Core utilities (api, errors)
-├── pages/            # Route pages
 ├── testing/          # Test utilities
 ├── types/            # Shared types
 └── utils/            # Utility functions
@@ -61,10 +60,10 @@ Route configuration with lazy-loaded pages.
 ## Key Patterns
 
 ### Lazy Loading
-All page components are lazy-loaded for better initial bundle size:
+All route components are lazy-loaded for better initial bundle size:
 
 ```typescript
-const Home = lazy(() => import("@/pages/home"));
+const Home = lazy(() => import("@/app/routes/home"));
 ```
 
 ### Barrel Exports

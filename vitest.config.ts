@@ -12,6 +12,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: "./src/test/setup.ts",
+    setupFiles: "./src/testing/setup.ts",
+    // Set mode to development so import.meta.env.DEV is true during tests
+    mode: "development",
   },
 });

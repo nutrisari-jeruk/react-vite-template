@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { act } from "react";
-import Alert from "../Alert";
+import { Alert } from "../ui/alert";
 
 describe("Alert", () => {
   it("renders children correctly", () => {

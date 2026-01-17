@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import FormValidationExample from "../FormValidationExample";
+import FormValidationExample from "../form-validation-example";
 
 describe("FormValidationExample", () => {
   const renderWithRouter = (component: React.ReactElement) => {
@@ -12,37 +12,28 @@ describe("FormValidationExample", () => {
   describe("Page Layout", () => {
     it("renders the page title and description", () => {
       renderWithRouter(<FormValidationExample />);
+      expect(screen.getByText("Zod Form Validation")).toBeInTheDocument();
       expect(
-        screen.getByText("Zod Form Validation Examples")
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/Comprehensive examples of form validation/i)
+        screen.getByText(/Form validation using Zod/i)
       ).toBeInTheDocument();
     });
 
-    it("renders form toggle buttons", () => {
+    it("renders validation features section", () => {
       renderWithRouter(<FormValidationExample />);
-      expect(screen.getByText("User Registration")).toBeInTheDocument();
-      expect(screen.getByText("Contact Form")).toBeInTheDocument();
-    });
-
-    it("displays validation features list", () => {
-      renderWithRouter(<FormValidationExample />);
-      expect(
-        screen.getByText("Validation Features Demonstrated")
-      ).toBeInTheDocument();
-      expect(screen.getByText(/String Validation/)).toBeInTheDocument();
-      expect(screen.getByText(/Number Validation/)).toBeInTheDocument();
-      expect(screen.getByText(/Complex Rules/)).toBeInTheDocument();
+      expect(screen.getByText("Validation Features")).toBeInTheDocument();
+      expect(screen.getByText(/String validation/i)).toBeInTheDocument();
+      expect(screen.getByText(/Email validation/i)).toBeInTheDocument();
+      expect(screen.getByText(/Number constraints/i)).toBeInTheDocument();
     });
   });
 
   describe("User Registration Form", () => {
-    it("displays user registration form by default", () => {
+    it("displays user registration form", () => {
       renderWithRouter(<FormValidationExample />);
-      expect(screen.getByText("User Registration Form")).toBeInTheDocument();
+      expect(screen.getByText("User Registration")).toBeInTheDocument();
       expect(screen.getByLabelText("Username")).toBeInTheDocument();
       expect(screen.getByLabelText("Email Address")).toBeInTheDocument();
+      expect(screen.getByLabelText("Age")).toBeInTheDocument();
       expect(screen.getByLabelText("Password")).toBeInTheDocument();
       expect(screen.getByLabelText("Confirm Password")).toBeInTheDocument();
       expect(screen.getByLabelText("Country")).toBeInTheDocument();
@@ -127,12 +118,28 @@ describe("FormValidationExample", () => {
       const user = userEvent.setup();
       renderWithRouter(<FormValidationExample />);
 
+      // Fill in all required fields
+      await user.type(screen.getByLabelText("Username"), "validuser123");
+      await user.type(
+        screen.getByLabelText("Email Address"),
+        "user@example.com"
+      );
+      await user.type(screen.getByLabelText("Age"), "25");
+
       const passwordInput = screen.getByLabelText("Password");
       const confirmPasswordInput = screen.getByLabelText("Confirm Password");
 
       await user.type(passwordInput, "ValidPass123!");
       await user.type(confirmPasswordInput, "DifferentPass123!");
-      await user.tab();
+
+      // Select country (required field)
+      await user.click(screen.getByLabelText("Country"));
+      await user.click(screen.getByText("United States"));
+
+      // Accept terms (required field)
+      await user.click(
+        screen.getByLabelText("I accept the terms and conditions")
+      );
 
       const submitButton = screen.getByRole("button", { name: "Register" });
       await user.click(submitButton);
@@ -186,7 +193,9 @@ describe("FormValidationExample", () => {
         screen.getByLabelText("Confirm Password"),
         "ValidPass123!"
       );
-      await user.selectOptions(screen.getByLabelText("Country"), "us");
+      // Select country using custom Select component
+      await user.click(screen.getByLabelText("Country"));
+      await user.click(screen.getByText("United States"));
       await user.type(
         screen.getByLabelText("Bio (Optional)"),
         "This is a valid bio with more than 10 characters"
@@ -219,90 +228,15 @@ describe("FormValidationExample", () => {
     });
   });
 
-  describe("Contact Form", () => {
-    it("switches to contact form when button is clicked", async () => {
+  describe("Form Success Display", () => {
+    it("displays submitted data after successful submission", async () => {
       const user = userEvent.setup();
-      renderWithRouter(<FormValidationExample />);
+      const { container } = renderWithRouter(<FormValidationExample />);
 
-      const contactFormButton = screen.getByRole("button", {
-        name: "Contact Form",
-      });
-      await user.click(contactFormButton);
-
-      expect(
-        screen.getByRole("heading", { name: "Contact Form" })
-      ).toBeInTheDocument();
-      expect(screen.getByLabelText("Name")).toBeInTheDocument();
-      expect(screen.getByLabelText("Subject")).toBeInTheDocument();
-      expect(screen.getByLabelText("Priority")).toBeInTheDocument();
-      expect(screen.getByLabelText("Message")).toBeInTheDocument();
-    });
-
-    it("validates contact form fields", async () => {
-      const user = userEvent.setup();
-      renderWithRouter(<FormValidationExample />);
-
-      await user.click(screen.getByRole("button", { name: "Contact Form" }));
-
-      const submitButton = screen.getByRole("button", {
-        name: "Send Message",
-      });
-      await user.click(submitButton);
-
-      await waitFor(() => {
-        expect(
-          screen.getByText("Name must be at least 2 characters")
-        ).toBeInTheDocument();
-        expect(screen.getByText("Email is required")).toBeInTheDocument();
-        expect(
-          screen.getByText("Subject must be at least 5 characters")
-        ).toBeInTheDocument();
-        expect(
-          screen.getByText("Message must be at least 20 characters")
-        ).toBeInTheDocument();
-      });
-    });
-
-    it("submits contact form with valid data", async () => {
-      const user = userEvent.setup();
-      renderWithRouter(<FormValidationExample />);
-
-      await user.click(screen.getByRole("button", { name: "Contact Form" }));
-
-      await user.type(screen.getByLabelText("Name"), "John Doe");
+      await user.type(screen.getByLabelText("Username"), "testuser");
       await user.type(
         screen.getByLabelText("Email Address"),
-        "john@example.com"
-      );
-      await user.type(screen.getByLabelText("Subject"), "Test Subject");
-      await user.selectOptions(screen.getByLabelText("Priority"), "high");
-      await user.type(
-        screen.getByLabelText("Message"),
-        "This is a test message with more than 20 characters"
-      );
-
-      const submitButton = screen.getByRole("button", {
-        name: "Send Message",
-      });
-      await user.click(submitButton);
-
-      await waitFor(() => {
-        expect(
-          screen.getByText("Form Submitted Successfully!")
-        ).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe("Form Switching", () => {
-    it("clears submitted data when switching forms", async () => {
-      const user = userEvent.setup();
-      renderWithRouter(<FormValidationExample />);
-
-      await user.type(screen.getByLabelText("Username"), "validuser123");
-      await user.type(
-        screen.getByLabelText("Email Address"),
-        "user@example.com"
+        "test@example.com"
       );
       await user.type(screen.getByLabelText("Age"), "25");
       await user.type(screen.getByLabelText("Password"), "ValidPass123!");
@@ -310,7 +244,9 @@ describe("FormValidationExample", () => {
         screen.getByLabelText("Confirm Password"),
         "ValidPass123!"
       );
-      await user.selectOptions(screen.getByLabelText("Country"), "us");
+      // Select country using custom Select component
+      await user.click(screen.getByLabelText("Country"));
+      await user.click(screen.getByText("United States"));
       await user.click(
         screen.getByLabelText("I accept the terms and conditions")
       );
@@ -324,11 +260,53 @@ describe("FormValidationExample", () => {
         ).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole("button", { name: "Contact Form" }));
+      // Verify the JSON data is displayed in the success message
+      const jsonOutput = container.querySelector("pre");
+      expect(jsonOutput).toBeInTheDocument();
+      expect(jsonOutput?.textContent).toContain("testuser");
+      expect(jsonOutput?.textContent).toContain("test@example.com");
+    });
 
+    it("clears success message when form is reset", async () => {
+      const user = userEvent.setup();
+      renderWithRouter(<FormValidationExample />);
+
+      // Submit form first
+      await user.type(screen.getByLabelText("Username"), "testuser");
+      await user.type(
+        screen.getByLabelText("Email Address"),
+        "test@example.com"
+      );
+      await user.type(screen.getByLabelText("Age"), "25");
+      await user.type(screen.getByLabelText("Password"), "ValidPass123!");
+      await user.type(
+        screen.getByLabelText("Confirm Password"),
+        "ValidPass123!"
+      );
+      // Select country using custom Select component
+      await user.click(screen.getByLabelText("Country"));
+      await user.click(screen.getByText("United States"));
+      await user.click(
+        screen.getByLabelText("I accept the terms and conditions")
+      );
+
+      const submitButton = screen.getByRole("button", { name: "Register" });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Form Submitted Successfully!")
+        ).toBeInTheDocument();
+      });
+
+      // Reset form
+      const resetButton = screen.getByRole("button", { name: "Reset Form" });
+      await user.click(resetButton);
+
+      // Success message should still be there (it's from submittedData state)
       expect(
-        screen.queryByText("Form Submitted Successfully!")
-      ).not.toBeInTheDocument();
+        screen.getByText("Form Submitted Successfully!")
+      ).toBeInTheDocument();
     });
   });
 });

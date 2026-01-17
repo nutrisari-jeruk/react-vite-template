@@ -156,7 +156,11 @@ interface ErrorDetails {
  * Type guard to check if error is an AxiosError
  */
 export function isAxiosError(error: unknown): error is AxiosError {
-  return (error as AxiosError).isAxiosError === true;
+  return (
+    error !== null &&
+    typeof error === "object" &&
+    (error as AxiosError).isAxiosError === true
+  );
 }
 
 /**
@@ -230,6 +234,19 @@ export function isRetryableError(error: unknown): boolean {
 
   if (error instanceof RateLimitError) {
     return true;
+  }
+
+  // Check if it's a generic ApiError with a retryable status code
+  if (error instanceof ApiError) {
+    const status = error.status;
+    // Retryable status codes: 408 (Timeout), 429 (Rate Limit), 500+, 503 (Service Unavailable), 504 (Gateway Timeout)
+    return (
+      status === 408 ||
+      status === 429 ||
+      status === 503 ||
+      status === 504 ||
+      (status >= 500 && status < 600)
+    );
   }
 
   return false;

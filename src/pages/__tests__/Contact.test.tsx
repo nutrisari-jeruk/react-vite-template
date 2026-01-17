@@ -1,18 +1,9 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import Contact from "../Contact";
+import { describe, it, expect, vi } from "vitest";
+import Contact from "../contact";
 
 describe("Contact Page", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.useRealTimers();
-  });
-
   const renderContact = () => {
     return render(
       <BrowserRouter>
@@ -38,7 +29,7 @@ describe("Contact Page", () => {
 
     it("renders back to home button", () => {
       renderContact();
-      const backButton = screen.getByRole("link");
+      const backButton = screen.getByRole("link", { name: /back to home/i });
       expect(backButton).toHaveAttribute("href", "/");
       expect(backButton).toBeInTheDocument();
     });
@@ -195,14 +186,15 @@ describe("Contact Page", () => {
 
       expect(screen.getByRole("alert")).toBeInTheDocument();
 
-      // Fast-forward time by 3 seconds
-      vi.advanceTimersByTime(3000);
-
-      await waitFor(() => {
-        expect(nameInput.value).toBe("");
-        expect(emailInput.value).toBe("");
-        expect(messageInput.value).toBe("");
-      });
+      // Wait for the timeout (3 seconds) to reset the form
+      await waitFor(
+        () => {
+          expect(nameInput.value).toBe("");
+          expect(emailInput.value).toBe("");
+          expect(messageInput.value).toBe("");
+        },
+        { timeout: 4000 }
+      );
     });
 
     it("allows dismissing success alert manually", () => {

@@ -63,12 +63,12 @@ export function Switch({
         )}
         <label
           htmlFor={switchId}
-          className="relative inline-flex items-center cursor-pointer"
+          className="relative inline-flex cursor-pointer items-center"
         >
           <input
             type="checkbox"
             id={switchId}
-            className="sr-only peer"
+            className="peer sr-only"
             disabled={disabled}
             checked={isChecked}
             onChange={handleChange}
@@ -76,67 +76,50 @@ export function Switch({
             {...props}
           />
           <div
-            className={`
-              relative flex items-center gap-1 p-0.5 rounded-lg
-              peer peer-focus:ring-2 peer-focus:ring-blue-500 peer-focus:ring-offset-2
-              transition-colors
-              ${
-                disabled
-                  ? "bg-gray-200 cursor-not-allowed"
-                  : "bg-gray-200 peer-hover:bg-gray-300"
-              }
-            `}
+            className={`peer relative flex items-center gap-1 rounded-lg p-0.5 transition-colors peer-focus:ring-2 peer-focus:ring-blue-500 peer-focus:ring-offset-2 ${
+              disabled
+                ? "cursor-not-allowed bg-gray-200"
+                : "bg-gray-200 peer-hover:bg-gray-300"
+            } `}
           >
             <div
-              className={`
-                flex items-center justify-center w-8 h-8 rounded-md transition-all
-                ${
-                  disabled
-                    ? "opacity-50"
-                    : !isChecked
-                      ? "bg-blue-600"
-                      : "bg-transparent"
-                }
-              `}
+              className={`flex h-8 w-8 items-center justify-center rounded-md transition-all ${
+                disabled
+                  ? "opacity-50"
+                  : !isChecked
+                    ? "bg-blue-600"
+                    : "bg-transparent"
+              } `}
             >
               <span
-                className={`
-                  transition-colors
-                  ${
-                    disabled
-                      ? "text-gray-400"
-                      : !isChecked
-                        ? "text-white"
-                        : "text-gray-500"
-                  }
-                `}
+                className={`transition-colors ${
+                  disabled
+                    ? "text-gray-400"
+                    : !isChecked
+                      ? "text-white"
+                      : "text-gray-500"
+                } `}
               >
                 {leftIcon}
               </span>
             </div>
             <div
-              className={`
-                flex items-center justify-center w-8 h-8 rounded-md transition-all
-                ${
-                  disabled
-                    ? "opacity-50"
-                    : isChecked
-                      ? "bg-blue-600"
-                      : "bg-transparent"
-                }
-              `}
+              className={`flex h-8 w-8 items-center justify-center rounded-md transition-all ${
+                disabled
+                  ? "opacity-50"
+                  : isChecked
+                    ? "bg-blue-600"
+                    : "bg-transparent"
+              } `}
             >
               <span
-                className={`
-                  transition-colors
-                  ${
-                    disabled
-                      ? "text-gray-400"
-                      : isChecked
-                        ? "text-white"
-                        : "text-gray-500"
-                  }
-                `}
+                className={`transition-colors ${
+                  disabled
+                    ? "text-gray-400"
+                    : isChecked
+                      ? "text-white"
+                      : "text-gray-500"
+                } `}
               >
                 {rightIcon}
               </span>
@@ -162,12 +145,12 @@ export function Switch({
         )}
         <label
           htmlFor={switchId}
-          className="relative inline-flex items-center cursor-pointer"
+          className="relative inline-flex cursor-pointer items-center"
         >
           <input
             type="checkbox"
             id={switchId}
-            className="sr-only peer"
+            className="peer sr-only"
             disabled={disabled}
             checked={isChecked}
             onChange={handleChange}
@@ -175,21 +158,13 @@ export function Switch({
             {...props}
           />
           <div
-            className={`
-              w-11 h-6 rounded-full
-              peer peer-focus:ring-2 peer-focus:ring-blue-500 peer-focus:ring-offset-2
-              peer-checked:after:translate-x-5
-              after:content-[''] after:absolute after:top-0.5 after:left-[2px]
-              after:bg-white after:rounded-full after:h-5 after:w-5
-              after:transition-all
-              ${
-                disabled
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : isChecked
-                    ? "bg-blue-600"
-                    : "bg-gray-300 peer-hover:bg-gray-400"
-              }
-            `}
+            className={`peer h-6 w-11 rounded-full peer-focus:ring-2 peer-focus:ring-blue-500 peer-focus:ring-offset-2 after:absolute after:top-0.5 after:left-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-5 ${
+              disabled
+                ? "cursor-not-allowed bg-gray-300"
+                : isChecked
+                  ? "bg-blue-600"
+                  : "bg-gray-300 peer-hover:bg-gray-400"
+            } `}
           />
         </label>
         {label && !isLabelLeft && (

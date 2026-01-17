@@ -52,7 +52,7 @@ export function Badge({
     >
       {dot && (
         <span
-          className={`w-2 h-2 rounded-full ${dotColors[variant]}`}
+          className={`h-2 w-2 rounded-full ${dotColors[variant]}`}
           aria-hidden="true"
         />
       )}

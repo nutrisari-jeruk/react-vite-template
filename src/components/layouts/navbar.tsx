@@ -11,9 +11,9 @@ const menuItems: MenuItem[] = [
   { path: "/about", label: "About" },
   { path: "/contact", label: "Contact" },
   { path: "/components", label: "Components" },
-  { path: "/error-examples", label: "Error Examples" },
-  { path: "/auth-example", label: "Auth Example" },
-  { path: "/form-validation", label: "Form Validation" },
+  { path: "/examples/error-handling", label: "Error Examples" },
+  { path: "/examples/auth", label: "Auth Example" },
+  { path: "/examples/form-validation", label: "Form Validation" },
 ];
 
 export function Navbar() {
@@ -30,11 +30,11 @@ export function Navbar() {
       {!isOpen && (
         <button
           onClick={toggleMenu}
-          className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-primary dark:bg-[color-dark-2] text-white hover:bg-[color-blue-dark] dark:hover:bg-[color-dark-3] transition-colors shadow-lg"
+          className="bg-primary fixed top-4 left-4 z-50 rounded-md p-2 text-white shadow-lg transition-colors hover:bg-[color-blue-dark] md:hidden dark:bg-[color-dark-2] dark:hover:bg-[color-dark-3]"
           aria-label="Open menu"
         >
           <svg
-            className="w-6 h-6"
+            className="h-6 w-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -51,35 +51,29 @@ export function Navbar() {
 
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 dark:bg-black/70 z-30 md:hidden"
+          className="fixed inset-0 z-30 bg-black/50 md:hidden dark:bg-black/70"
           onClick={closeMenu}
         />
       )}
 
       <aside
-        className={`
-          fixed md:static inset-y-0 left-0 z-40
-          w-64 bg-primary dark:bg-[color-dark-2] text-white shadow-lg
-          transform ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0 transition-transform duration-300 ease-in-out
-          flex flex-col
-        `}
+        className={`bg-primary fixed inset-y-0 left-0 z-40 w-64 transform text-white shadow-lg md:static dark:bg-[color-dark-2] ${isOpen ? "translate-x-0" : "-translate-x-full"} flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0`}
       >
-        <div className="p-6 border-b border-white/20 dark:border-[color-dark-3] flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-white/20 p-6 dark:border-[color-dark-3]">
           <Link
             to="/"
-            className="text-xl font-bold hover:text-white/80 dark:hover:text-[color-dark-7] transition-colors"
+            className="text-xl font-bold transition-colors hover:text-white/80 dark:hover:text-[color-dark-7]"
             onClick={closeMenu}
           >
             React Template
           </Link>
           <button
             onClick={closeMenu}
-            className="md:hidden p-2 rounded-md hover:bg-white/10 dark:hover:bg-[color-dark-3] transition-colors"
+            className="rounded-md p-2 transition-colors hover:bg-white/10 md:hidden dark:hover:bg-[color-dark-3]"
             aria-label="Close menu"
           >
             <svg
-              className="w-6 h-6"
+              className="h-6 w-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -94,15 +88,15 @@ export function Navbar() {
           </button>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-2">
+        <nav className="flex-1 space-y-2 px-4 py-6">
           {menuItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
               onClick={closeMenu}
-              className={`block px-4 py-3 rounded-md hover:bg-white/10 dark:hover:bg-[color-dark-3] transition-colors ${
+              className={`block rounded-md px-4 py-3 transition-colors hover:bg-white/10 dark:hover:bg-[color-dark-3] ${
                 isActive(item.path)
-                  ? "bg-secondary dark:bg-[color-dark-3] text-white"
+                  ? "bg-secondary text-white dark:bg-[color-dark-3]"
                   : ""
               }`}
             >

@@ -83,14 +83,14 @@ export default function FormValidationExample() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-2">Zod Form Validation</h1>
-      <p className="text-gray-600 mb-8">
+    <div className="mx-auto max-w-4xl p-8">
+      <h1 className="mb-2 text-4xl font-bold">Zod Form Validation</h1>
+      <p className="mb-8 text-gray-600">
         Form validation using Zod + React Hook Form
       </p>
 
-      <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-        <h2 className="text-2xl font-bold mb-6">User Registration</h2>
+      <div className="mb-8 rounded-xl bg-white p-8 shadow-lg">
+        <h2 className="mb-6 text-2xl font-bold">User Registration</h2>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <Input
@@ -190,20 +190,20 @@ export default function FormValidationExample() {
       </div>
 
       {submittedData && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-6">
-          <h3 className="text-xl font-bold text-green-800 mb-4">
+        <div className="rounded-xl border border-green-200 bg-green-50 p-6">
+          <h3 className="mb-4 text-xl font-bold text-green-800">
             Form Submitted Successfully!
           </h3>
-          <div className="bg-white rounded-lg p-4">
-            <pre className="text-sm overflow-x-auto">
+          <div className="rounded-lg bg-white p-4">
+            <pre className="overflow-x-auto text-sm">
               {JSON.stringify(submittedData, null, 2)}
             </pre>
           </div>
         </div>
       )}
 
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mt-8">
-        <h3 className="text-xl font-bold text-blue-800 mb-4">
+      <div className="mt-8 rounded-xl border border-blue-200 bg-blue-50 p-6">
+        <h3 className="mb-4 text-xl font-bold text-blue-800">
           Validation Features
         </h3>
         <ul className="space-y-2 text-sm text-gray-700">

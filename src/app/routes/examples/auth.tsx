@@ -56,13 +56,13 @@ export default function AuthExample() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-center">
+      <div className="mx-auto max-w-md">
+        <h1 className="mb-6 text-center text-3xl font-bold">
           Authentication Example
         </h1>
 
         {!isAuthenticated ? (
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="rounded-lg bg-white p-6 shadow">
             <form onSubmit={handleLogin} className="space-y-4">
               <Input
                 id="email"
@@ -118,16 +118,16 @@ export default function AuthExample() {
               </Button>
             </form>
 
-            <p className="mt-4 text-sm text-center text-gray-600">
+            <p className="mt-4 text-center text-sm text-gray-600">
               Demo: Enter any email and password to sign in
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="rounded-lg bg-white p-6 shadow">
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                 <svg
-                  className="w-8 h-8 text-green-600"
+                  className="h-8 w-8 text-green-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -141,9 +141,9 @@ export default function AuthExample() {
                 </svg>
               </div>
 
-              <h2 className="text-xl font-semibold mb-2">Welcome back!</h2>
+              <h2 className="mb-2 text-xl font-semibold">Welcome back!</h2>
 
-              <div className="space-y-2 text-sm text-gray-600 mb-6">
+              <div className="mb-6 space-y-2 text-sm text-gray-600">
                 <div className="flex justify-between">
                   <span>Status:</span>
                   <span className="font-medium text-green-600">
@@ -183,8 +183,8 @@ export default function AuthExample() {
           </div>
         )}
 
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-800 mb-2">
+        <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <h3 className="mb-2 font-semibold text-blue-800">
             Secure Token Storage Features
           </h3>
           <ul className="space-y-1 text-sm text-blue-700">

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import AuthExample from "../auth-example";
+import AuthExample from "../examples/auth";
 
 // Mock useAuth hook
 const mockLogin = vi.fn();

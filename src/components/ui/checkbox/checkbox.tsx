@@ -26,7 +26,7 @@ export function Checkbox({
         <input
           type="checkbox"
           id={checkboxId}
-          className="mt-0.5 w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-0.5 h-4 w-4 rounded border-gray-300 bg-white text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={disabled}
           aria-invalid={!!error}
           aria-describedby={
@@ -41,19 +41,19 @@ export function Checkbox({
         {label && (
           <label
             htmlFor={checkboxId}
-            className="text-sm font-medium text-gray-700 cursor-pointer select-none"
+            className="cursor-pointer text-sm font-medium text-gray-700 select-none"
           >
             {label}
           </label>
         )}
       </div>
       {error && (
-        <p id={`${checkboxId}-error`} className="text-sm text-red-600 ml-7">
+        <p id={`${checkboxId}-error`} className="ml-7 text-sm text-red-600">
           {error}
         </p>
       )}
       {!error && helperText && (
-        <p id={`${checkboxId}-helper`} className="text-sm text-gray-600 ml-7">
+        <p id={`${checkboxId}-helper`} className="ml-7 text-sm text-gray-600">
           {helperText}
         </p>
       )}

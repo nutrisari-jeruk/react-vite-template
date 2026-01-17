@@ -28,18 +28,18 @@ export function CodeBlock({
   const lines = code.split("\n");
 
   return (
-    <div className={`relative group ${className}`}>
-      <div className="flex items-center justify-between bg-gray-800 text-gray-200 px-4 py-2 rounded-t-lg border-b border-gray-700">
-        <span className="text-sm font-mono">{language}</span>
+    <div className={`group relative ${className}`}>
+      <div className="flex items-center justify-between rounded-t-lg border-b border-gray-700 bg-gray-800 px-4 py-2 text-gray-200">
+        <span className="font-mono text-sm">{language}</span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-2 px-3 py-1 text-sm bg-gray-700 hover:bg-gray-600 rounded transition-colors"
+          className="flex items-center gap-2 rounded bg-gray-700 px-3 py-1 text-sm transition-colors hover:bg-gray-600"
           aria-label="Copy code"
         >
           {copied ? (
             <>
               <svg
-                className="w-4 h-4"
+                className="h-4 w-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -56,7 +56,7 @@ export function CodeBlock({
           ) : (
             <>
               <svg
-                className="w-4 h-4"
+                className="h-4 w-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -73,14 +73,14 @@ export function CodeBlock({
           )}
         </button>
       </div>
-      <pre className="bg-gray-900 text-gray-100 p-4 rounded-b-lg overflow-x-auto">
+      <pre className="overflow-x-auto rounded-b-lg bg-gray-900 p-4 text-gray-100">
         <code className="font-mono text-sm">
           {showLineNumbers ? (
             <table className="w-full">
               <tbody>
                 {lines.map((line, index) => (
                   <tr key={index}>
-                    <td className="text-gray-500 pr-4 select-none text-right align-top">
+                    <td className="pr-4 text-right align-top text-gray-500 select-none">
                       {index + 1}
                     </td>
                     <td className="whitespace-pre">{line || "\n"}</td>

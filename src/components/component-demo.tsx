@@ -31,22 +31,22 @@ export function ComponentDemo({
       id={title.toLowerCase().replace(/\s+/g, "-")}
     >
       <div className="mb-4">
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">{title}</h3>
+        <h3 className="mb-2 text-2xl font-bold text-gray-900">{title}</h3>
         {description && <p className="text-gray-600">{description}</p>}
       </div>
 
       <div className="space-y-6">
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">
+          <h4 className="mb-3 text-sm font-semibold tracking-wide text-gray-700 uppercase">
             Preview
           </h4>
-          <div className="bg-white border border-gray-200 rounded-lg p-8 flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4 rounded-lg border border-gray-200 bg-white p-8">
             {preview}
           </div>
         </div>
 
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">
+          <h4 className="mb-3 text-sm font-semibold tracking-wide text-gray-700 uppercase">
             Code
           </h4>
           <CodeBlock code={code} language="tsx" />
@@ -54,24 +54,24 @@ export function ComponentDemo({
 
         {props && props.length > 0 && (
           <div>
-            <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">
+            <h4 className="mb-3 text-sm font-semibold tracking-wide text-gray-700 uppercase">
               Props
             </h4>
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-50 border-b border-gray-200">
+                  <thead className="border-b border-gray-200 bg-gray-50">
                     <tr>
-                      <th className="text-left px-4 py-3 font-semibold text-gray-700">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-700">
                         Name
                       </th>
-                      <th className="text-left px-4 py-3 font-semibold text-gray-700">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-700">
                         Type
                       </th>
-                      <th className="text-left px-4 py-3 font-semibold text-gray-700">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-700">
                         Default
                       </th>
-                      <th className="text-left px-4 py-3 font-semibold text-gray-700">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-700">
                         Description
                       </th>
                     </tr>

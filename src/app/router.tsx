@@ -6,17 +6,19 @@ const Home = lazy(() => import("@/app/routes/Home"));
 const About = lazy(() => import("@/app/routes/About"));
 const Contact = lazy(() => import("@/app/routes/Contact"));
 const Components = lazy(() => import("@/app/routes/Components"));
-const ErrorExamples = lazy(() => import("@/app/routes/error-examples"));
-const AuthExample = lazy(() => import("@/app/routes/auth-example"));
+const AuthExample = lazy(() => import("@/app/routes/examples/auth"));
+const ErrorExamples = lazy(
+  () => import("@/app/routes/examples/error-handling")
+);
 const FormValidationExample = lazy(
-  () => import("@/app/routes/form-validation-example")
+  () => import("@/app/routes/examples/form-validation")
 );
 const NotFound = lazy(() => import("@/app/routes/not-found"));
 
 function PageLoader() {
   return (
-    <div className="flex items-center justify-center min-h-[50vh]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    <div className="flex min-h-[50vh] items-center justify-center">
+      <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
     </div>
   );
 }
@@ -63,7 +65,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "error-examples",
+        path: "examples/error-handling",
         element: (
           <LazyPage>
             <ErrorExamples />
@@ -71,7 +73,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "auth-example",
+        path: "examples/auth",
         element: (
           <LazyPage>
             <AuthExample />
@@ -79,7 +81,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "form-validation",
+        path: "examples/form-validation",
         element: (
           <LazyPage>
             <FormValidationExample />

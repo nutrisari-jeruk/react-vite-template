@@ -7,9 +7,11 @@ export const ROUTES = {
   ABOUT: "/about",
   CONTACT: "/contact",
   COMPONENTS: "/components",
-  ERROR_EXAMPLES: "/error-examples",
-  AUTH_EXAMPLE: "/auth-example",
-  FORM_VALIDATION: "/form-validation",
+  EXAMPLES: {
+    ERROR_HANDLING: "/examples/error-handling",
+    AUTH: "/examples/auth",
+    FORM_VALIDATION: "/examples/form-validation",
+  },
   LOGIN: "/login",
   NOT_FOUND: "*",
 } as const;

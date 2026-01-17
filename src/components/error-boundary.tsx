@@ -95,18 +95,18 @@ function DefaultErrorFallback({
     <div
       role="alert"
       aria-live="assertive"
-      className="min-h-screen flex items-center justify-center bg-gray-50 px-4"
+      className="flex min-h-screen items-center justify-center bg-gray-50 px-4"
     >
-      <div className="max-w-2xl w-full bg-white rounded-lg shadow-lg p-8">
+      <div className="w-full max-w-2xl rounded-lg bg-white p-8 shadow-lg">
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 mb-4 text-red-500">
+          <div className="mx-auto mb-4 h-16 w-16 text-red-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={2}
               stroke="currentColor"
-              className="w-full h-full"
+              className="h-full w-full"
             >
               <path
                 strokeLinecap="round"
@@ -116,50 +116,50 @@ function DefaultErrorFallback({
             </svg>
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="mb-2 text-2xl font-bold text-gray-900">
             Something went wrong
           </h1>
 
-          <p className="text-gray-600 mb-6">
+          <p className="mb-6 text-gray-600">
             {error.message || "An unexpected error occurred. Please try again."}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <button
               onClick={resetError}
               autoFocus
-              className="inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-2.5 text-white transition-colors hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
             >
               Try again
             </button>
             <button
               onClick={handleGoHome}
-              className="inline-flex items-center justify-center px-6 py-2.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+              className="inline-flex items-center justify-center rounded-lg bg-gray-600 px-6 py-2.5 text-white transition-colors hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
             >
               Go home
             </button>
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center justify-center px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors"
+              className="inline-flex items-center justify-center rounded-lg bg-gray-200 px-6 py-2.5 text-gray-700 transition-colors hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none"
             >
               Reload page
             </button>
           </div>
 
-          <p className="mt-4 text-xs text-gray-400 font-mono">
+          <p className="mt-4 font-mono text-xs text-gray-400">
             Error ID: {errorId}
           </p>
 
           {isDevelopment && (
             <details className="mt-6 text-left">
-              <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700 font-medium">
+              <summary className="cursor-pointer text-sm font-medium text-gray-500 hover:text-gray-700">
                 Show error details
               </summary>
-              <div className="mt-3 p-4 bg-gray-100 rounded-lg overflow-auto">
-                <p className="text-xs font-mono text-gray-700 mb-2">
+              <div className="mt-3 overflow-auto rounded-lg bg-gray-100 p-4">
+                <p className="mb-2 font-mono text-xs text-gray-700">
                   <strong>Error:</strong> {error.name}
                 </p>
-                <pre className="text-xs text-gray-600 whitespace-pre-wrap">
+                <pre className="text-xs whitespace-pre-wrap text-gray-600">
                   {error.stack}
                 </pre>
               </div>

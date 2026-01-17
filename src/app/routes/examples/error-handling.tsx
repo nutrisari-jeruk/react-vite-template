@@ -78,7 +78,7 @@ export default function ErrorExamples() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Error Handling Examples</h1>
+      <h1 className="mb-6 text-3xl font-bold">Error Handling Examples</h1>
 
       {isError && (
         <Alert
@@ -94,10 +94,10 @@ export default function ErrorExamples() {
         </Alert>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">ErrorBoundary Demo</h2>
-          <p className="text-gray-600 mb-4">
+      <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-lg bg-white p-6 shadow">
+          <h2 className="mb-4 text-xl font-semibold">ErrorBoundary Demo</h2>
+          <p className="mb-4 text-gray-600">
             Click the button to trigger a render error.
           </p>
           <Button
@@ -109,8 +109,8 @@ export default function ErrorExamples() {
           </Button>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Simulate API Errors</h2>
+        <div className="rounded-lg bg-white p-6 shadow">
+          <h2 className="mb-4 text-xl font-semibold">Simulate API Errors</h2>
           <div className="space-y-3">
             <Button
               onClick={() => simulateError("network")}
@@ -159,8 +159,8 @@ export default function ErrorExamples() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Form with Validation</h2>
+        <div className="rounded-lg bg-white p-6 shadow">
+          <h2 className="mb-4 text-xl font-semibold">Form with Validation</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               id="email"
@@ -197,23 +197,23 @@ export default function ErrorExamples() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+          <h3 className="mb-2 text-lg font-semibold text-yellow-800">
             What is an Error Boundary?
           </h3>
-          <p className="text-yellow-700 text-sm">
+          <p className="text-sm text-yellow-700">
             Error boundaries are React components that catch JavaScript errors
             anywhere in their child component tree, log those errors, and
             display a fallback UI.
           </p>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-800 mb-3">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
+          <h3 className="mb-3 text-lg font-semibold text-blue-800">
             Error Handling Features
           </h3>
-          <ul className="space-y-2 text-blue-700 text-sm">
+          <ul className="space-y-2 text-sm text-blue-700">
             <li>✓ Automatic retry for network errors</li>
             <li>✓ Exponential backoff with jitter</li>
             <li>✓ 401 unauthorized with auto-redirect</li>

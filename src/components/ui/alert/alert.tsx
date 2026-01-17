@@ -95,7 +95,7 @@ export function Alert({
   const defaultIcons = {
     info: (
       <svg
-        className="w-5 h-5"
+        className="h-5 w-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +109,7 @@ export function Alert({
     ),
     success: (
       <svg
-        className="w-5 h-5"
+        className="h-5 w-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +123,7 @@ export function Alert({
     ),
     warning: (
       <svg
-        className="w-5 h-5"
+        className="h-5 w-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +137,7 @@ export function Alert({
     ),
     error: (
       <svg
-        className="w-5 h-5"
+        className="h-5 w-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -181,7 +181,7 @@ export function Alert({
 
   return (
     <div
-      className={`${positionClass} flex flex-col overflow-hidden border rounded-lg ${variantStyles[variant]} ${animationClasses} ${floatingClasses} ${className}`}
+      className={`${positionClass} flex flex-col overflow-hidden rounded-lg border ${variantStyles[variant]} ${animationClasses} ${floatingClasses} ${className}`}
       role="alert"
       style={{
         animation: isExiting
@@ -194,8 +194,8 @@ export function Alert({
     >
       <div className="flex gap-3 p-4">
         <div className={`shrink-0 ${iconColors[variant]}`}>{displayIcon}</div>
-        <div className="flex-1 min-w-0">
-          {title && <h4 className="font-semibold mb-1 text-sm">{title}</h4>}
+        <div className="min-w-0 flex-1">
+          {title && <h4 className="mb-1 text-sm font-semibold">{title}</h4>}
           <div className="text-sm">{children}</div>
         </div>
         {dismissible && (
@@ -203,12 +203,12 @@ export function Alert({
             type="button"
             onClick={handleDismiss}
             disabled={isDismissing}
-            className={`shrink-0 ml-auto -mr-1 -mt-1 p-1.5 rounded-lg hover:bg-black/5 transition-colors ${iconColors[variant]} ${isDismissing ? "cursor-not-allowed opacity-70" : ""}`}
+            className={`-mt-1 -mr-1 ml-auto shrink-0 rounded-lg p-1.5 transition-colors hover:bg-black/5 ${iconColors[variant]} ${isDismissing ? "cursor-not-allowed opacity-70" : ""}`}
             aria-label="Dismiss"
           >
             {isDismissing ? (
               <svg
-                className="w-5 h-5 animate-spin"
+                className="h-5 w-5 animate-spin"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -229,7 +229,7 @@ export function Alert({
               </svg>
             ) : (
               <svg
-                className="w-5 h-5"
+                className="h-5 w-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -245,7 +245,7 @@ export function Alert({
         )}
       </div>
       {timeout && timeout > 0 && (
-        <div className="h-1 bg-black/10 w-full">
+        <div className="h-1 w-full bg-black/10">
           <div
             className={`h-full ${progressBarColors[variant]} transition-all ease-linear`}
             style={{

@@ -61,7 +61,7 @@ export function Input({
       <div className="relative">
         {iconLeft && (
           <div
-            className={`absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none ${iconSizeStyles[inputSize]}`}
+            className={`pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-500 ${iconSizeStyles[inputSize]}`}
           >
             {iconLeft}
           </div>
@@ -82,7 +82,7 @@ export function Input({
         />
         {iconRight && (
           <div
-            className={`absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 ${iconSizeStyles[inputSize]}`}
+            className={`absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 ${iconSizeStyles[inputSize]}`}
           >
             {iconRight}
           </div>

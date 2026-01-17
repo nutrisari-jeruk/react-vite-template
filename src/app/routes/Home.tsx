@@ -40,7 +40,7 @@ function HomePage() {
                 Contact
               </Button>
             </Link>
-            <Link to={ROUTES.FORM_VALIDATION}>
+            <Link to={ROUTES.EXAMPLES.FORM_VALIDATION}>
               <Button variant="outline-primary" className="w-full">
                 Form Validation
               </Button>

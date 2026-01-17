@@ -135,12 +135,12 @@ export function Select({
           {displayText}
         </button>
         <div
-          className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
+          className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
             disabled ? "text-[#6B7280]" : "text-primary-text"
           }`}
         >
           <svg
-            className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+            className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -158,7 +158,7 @@ export function Select({
         {isOpen && !disabled && (
           <ul
             role="listbox"
-            className="absolute z-10 w-full mt-1 bg-white border border-[#DFE4EA] rounded-[6px] shadow-lg max-h-60 overflow-auto"
+            className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[6px] border border-[#DFE4EA] bg-white shadow-lg"
             style={{
               boxShadow:
                 "0px 1px 3px 0px rgba(166, 175, 195, 0.4), 0px 1px 2px 0px rgba(166, 175, 195, 0.4)",
@@ -172,10 +172,10 @@ export function Select({
                   role="option"
                   aria-selected={isSelected}
                   onClick={() => handleSelect(option.value)}
-                  className={`px-4 py-2 cursor-pointer transition-colors ${
+                  className={`cursor-pointer px-4 py-2 transition-colors ${
                     isSelected
                       ? "bg-[#3758F9] text-white"
-                      : "bg-white text-primary-text hover:bg-blue-50 hover:text-[#3758F9]"
+                      : "text-primary-text bg-white hover:bg-blue-50 hover:text-[#3758F9]"
                   }`}
                 >
                   {option.label}

@@ -4,7 +4,6 @@ import { MainLayout } from "@/components/layouts";
 
 const Home = lazy(() => import("@/app/routes/Home"));
 const About = lazy(() => import("@/app/routes/About"));
-const Contact = lazy(() => import("@/app/routes/Contact"));
 const Components = lazy(() => import("@/app/routes/Components"));
 const AuthExample = lazy(() => import("@/app/routes/examples/auth"));
 const ErrorExamples = lazy(
@@ -45,14 +44,6 @@ const router = createBrowserRouter([
         element: (
           <LazyPage>
             <About />
-          </LazyPage>
-        ),
-      },
-      {
-        path: "contact",
-        element: (
-          <LazyPage>
-            <Contact />
           </LazyPage>
         ),
       },

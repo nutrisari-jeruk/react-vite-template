@@ -42,7 +42,6 @@ describe("Home Page", () => {
   it("renders all navigation links", () => {
     renderHome();
     expect(screen.getByRole("link", { name: /about/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /contact/i })).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /form validation/i })
     ).toBeInTheDocument();
@@ -87,7 +86,6 @@ describe("Home Page", () => {
   it("renders buttons with correct variants", () => {
     renderHome();
     const aboutButton = screen.getByRole("button", { name: /about/i });
-    const contactButton = screen.getByRole("button", { name: /contact/i });
     const formButton = screen.getByRole("button", {
       name: /form validation/i,
     });
@@ -96,7 +94,6 @@ describe("Home Page", () => {
     });
 
     expect(aboutButton).toBeInTheDocument();
-    expect(contactButton).toBeInTheDocument();
     expect(formButton).toBeInTheDocument();
     expect(componentsButton).toBeInTheDocument();
   });

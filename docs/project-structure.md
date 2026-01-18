@@ -142,7 +142,6 @@ pages/
 ├── __tests__/
 ├── home.tsx
 ├── about.tsx
-├── contact.tsx
 ├── components.tsx
 ├── auth-example.tsx
 ├── error-examples.tsx

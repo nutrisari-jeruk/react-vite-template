@@ -5,7 +5,6 @@
 export const ROUTES = {
   HOME: "/",
   ABOUT: "/about",
-  CONTACT: "/contact",
   COMPONENTS: "/components",
   EXAMPLES: {
     ERROR_HANDLING: "/examples/error-handling",

@@ -10,7 +10,6 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { path: "/", label: "Home" },
   { path: "/about", label: "About" },
-  { path: "/contact", label: "Contact" },
   { path: "/components", label: "Components" },
   {
     path: "/examples",

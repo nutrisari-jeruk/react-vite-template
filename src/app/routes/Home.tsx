@@ -37,13 +37,8 @@ function HomePage() {
                 About
               </Button>
             </Link>
-            <Link to={ROUTES.CONTACT}>
-              <Button variant="outline-secondary" className="w-full">
-                Contact
-              </Button>
-            </Link>
             <Link to={ROUTES.EXAMPLES.FORM_VALIDATION}>
-              <Button variant="outline-primary" className="w-full">
+              <Button variant="outline-secondary" className="w-full">
                 Form Validation
               </Button>
             </Link>

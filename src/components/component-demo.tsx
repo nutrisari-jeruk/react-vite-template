@@ -37,7 +37,7 @@ export function ComponentDemo({
 
       <div className="space-y-6">
         <div>
-          <h4 className="mb-3 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+          <h4 className="mb-3 text-sm font-semibold text-gray-700 uppercase">
             Preview
           </h4>
           <div className="flex flex-wrap items-center gap-4 rounded-lg border border-gray-200 bg-white p-8">
@@ -46,7 +46,7 @@ export function ComponentDemo({
         </div>
 
         <div>
-          <h4 className="mb-3 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+          <h4 className="mb-3 text-sm font-semibold text-gray-700 uppercase">
             Code
           </h4>
           <CodeBlock code={code} language="tsx" />
@@ -54,7 +54,7 @@ export function ComponentDemo({
 
         {props && props.length > 0 && (
           <div>
-            <h4 className="mb-3 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+            <h4 className="mb-3 text-sm font-semibold text-gray-700 uppercase">
               Props
             </h4>
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">

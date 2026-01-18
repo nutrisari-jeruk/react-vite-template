@@ -4,6 +4,7 @@ import { useState } from "react";
 interface MenuItem {
   path: string;
   label: string;
+  children?: MenuItem[];
 }
 
 const menuItems: MenuItem[] = [
@@ -11,19 +12,36 @@ const menuItems: MenuItem[] = [
   { path: "/about", label: "About" },
   { path: "/contact", label: "Contact" },
   { path: "/components", label: "Components" },
-  { path: "/examples/error-handling", label: "Error Examples" },
-  { path: "/examples/auth", label: "Auth Example" },
-  { path: "/examples/form-validation", label: "Form Validation" },
+  {
+    path: "/examples",
+    label: "Examples",
+    children: [
+      { path: "/examples/error-handling", label: "Error Handling" },
+      { path: "/examples/auth", label: "Authentication" },
+      { path: "/examples/form-validation", label: "Form Validation" },
+    ],
+  },
 ];
 
 export function Navbar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const isActive = (path: string) => location.pathname === path;
+  const isParentActive = (item: MenuItem) => {
+    if (isActive(item.path)) return true;
+    return item.children?.some((child) => isActive(child.path));
+  };
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
+
+  const toggleDropdown = (path: string) => {
+    setOpenDropdown(openDropdown === path ? null : path);
+  };
+
+  const closeDropdown = () => setOpenDropdown(null);
 
   return (
     <>
@@ -89,20 +107,82 @@ export function Navbar() {
         </div>
 
         <nav className="flex-1 space-y-2 px-4 py-6">
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={closeMenu}
-              className={`block rounded-md px-4 py-3 transition-colors hover:bg-white/10 dark:hover:bg-gray-700 ${
-                isActive(item.path)
-                  ? "bg-secondary text-white dark:bg-gray-700"
-                  : ""
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const hasChildren = item.children && item.children.length > 0;
+
+            if (hasChildren) {
+              const isDropdownOpen = openDropdown === item.path;
+              const isParentActiveState = isParentActive(item);
+
+              return (
+                <div key={item.path} className="space-y-1">
+                  <button
+                    onClick={() => toggleDropdown(item.path)}
+                    className={`flex w-full items-center justify-between rounded-md px-4 py-3 transition-colors hover:bg-white/10 dark:hover:bg-gray-700 ${
+                      isParentActiveState
+                        ? "bg-secondary text-white dark:bg-gray-700"
+                        : ""
+                    }`}
+                    aria-expanded={isDropdownOpen}
+                    aria-haspopup="true"
+                  >
+                    <span>{item.label}</span>
+                    <svg
+                      className={`size-4 transform transition-transform ${
+                        isDropdownOpen ? "rotate-180" : ""
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {isDropdownOpen && (
+                    <div className="ml-4 space-y-1 border-l-2 border-white/20 pl-4 dark:border-gray-600">
+                      {item.children?.map((child) => (
+                        <Link
+                          key={child.path}
+                          to={child.path}
+                          onClick={() => {
+                            closeMenu();
+                            closeDropdown();
+                          }}
+                          className={`block rounded-md px-4 py-2 text-sm transition-colors hover:bg-white/10 dark:hover:bg-gray-700 ${
+                            isActive(child.path)
+                              ? "bg-secondary text-white dark:bg-gray-700"
+                              : ""
+                          }`}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={closeMenu}
+                className={`block rounded-md px-4 py-3 transition-colors hover:bg-white/10 dark:hover:bg-gray-700 ${
+                  isActive(item.path)
+                    ? "bg-secondary text-white dark:bg-gray-700"
+                    : ""
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
       </aside>
     </>

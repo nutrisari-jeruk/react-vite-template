@@ -131,28 +131,3 @@
 .safe-left-4 {
   padding-left: calc(env(safe-area-inset-left, 0px) + 1rem);
 }
-
-@keyframes slideInDown {
-  0% {
-    opacity: 0;
-    transform: translateY(-100px) scale(0.95);
-  }
-  50% {
-    transform: translateY(10px) scale(1);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes slideOutUp {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-50px) scale(0.9);
-  }
-}

@@ -5,9 +5,18 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@/utils/cn";
 
-interface AlertProps extends HTMLAttributes<HTMLDivElement> {
+interface AlertProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  | "onDrag"
+  | "onDragStart"
+  | "onDragEnd"
+  | "onAnimationStart"
+  | "onAnimationEnd"
+  | "onAnimationIteration"
+> {
   variant?: "info" | "success" | "warning" | "error";
   title?: string;
   icon?: ReactNode;
@@ -33,25 +42,19 @@ export function Alert({
   ...props
 }: AlertProps) {
   const [isVisible, setIsVisible] = useState(true);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
   const [isDismissing, setIsDismissing] = useState(false);
   const [progress, setProgress] = useState(100);
+  const prefersReducedMotion = useReducedMotion();
 
   const handleDismiss = useCallback(() => {
     setIsDismissing(true);
-    setTimeout(() => {
-      setIsExiting(true);
-      setTimeout(() => {
-        setIsVisible(false);
-        onDismiss?.();
-      }, 300);
-    }, 500);
-  }, [onDismiss]);
+    const dismissDelay = prefersReducedMotion ? 0 : 150;
 
-  useEffect(() => {
-    setIsAnimating(true);
-  }, []);
+    setTimeout(() => {
+      setIsVisible(false);
+      onDismiss?.();
+    }, dismissDelay);
+  }, [onDismiss, prefersReducedMotion]);
 
   useEffect(() => {
     if (timeout && timeout > 0) {
@@ -152,23 +155,17 @@ export function Alert({
     ),
   };
 
-  if (!isVisible) return null;
-
   const displayIcon = icon || defaultIcons[variant];
-
-  const animationClasses = isExiting
-    ? "animate-[slideOutUp_0.3s_ease-in-out_forwards]"
-    : isAnimating
-      ? "animate-[slideInDown_0.5s_ease-out_forwards]"
-      : "";
 
   const positionClasses = {
     "top-center":
-      "fixed top-4 left-1/2 -translate-x-1/2 z-overlay w-full max-w-md shadow-lg",
-    "top-right": "fixed top-4 right-4 z-overlay w-full max-w-md shadow-lg",
+      "fixed top-2 left-1/2 -translate-x-1/2 z-overlay w-full max-w-md shadow-lg safe-top-0",
+    "top-right":
+      "fixed top-2 right-2 z-overlay w-full max-w-md shadow-lg safe-top-0 safe-right-0",
     "bottom-right":
-      "fixed bottom-4 right-4 z-overlay w-full max-w-md shadow-lg",
-    "bottom-left": "fixed bottom-4 left-4 z-overlay w-full max-w-md shadow-lg",
+      "fixed bottom-2 right-2 z-overlay w-full max-w-md shadow-lg safe-bottom-0 safe-right-0",
+    "bottom-left":
+      "fixed bottom-2 left-2 z-overlay w-full max-w-md shadow-lg safe-bottom-0 safe-left-0",
   };
 
   const floatingClasses = floating ? positionClasses[position] : "";
@@ -181,98 +178,121 @@ export function Alert({
     error: "bg-red-500",
   };
 
+  const animationConfig = prefersReducedMotion
+    ? {
+        initial: { opacity: 1 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0 },
+      }
+    : {
+        initial: { opacity: 0, y: -20 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -20 },
+        transition: {
+          duration: 0.2,
+          ease: "easeOut" as const,
+        },
+      };
+
   return (
-    <div
-      className={cn(
-        positionClass,
-        "flex flex-col overflow-hidden rounded-lg border",
-        variantStyles[variant],
-        animationClasses,
-        floatingClasses,
-        className
-      )}
-      role="alert"
-      style={{
-        animation: isExiting
-          ? "slideOutUp 0.3s ease-in-out forwards"
-          : isAnimating
-            ? "slideInDown 0.5s ease-out forwards"
-            : undefined,
-      }}
-      {...props}
-    >
-      <div className="flex gap-3 p-4">
-        <div className={`shrink-0 ${iconColors[variant]}`}>{displayIcon}</div>
-        <div className="min-w-0 flex-1">
-          {title && <h4 className="mb-1 text-sm font-semibold">{title}</h4>}
-          <div className="text-sm">{children}</div>
-        </div>
-        {dismissible && (
-          <button
-            type="button"
-            onClick={handleDismiss}
-            disabled={isDismissing}
-            className={cn(
-              "-mt-1 -mr-1 ml-auto shrink-0 rounded-lg p-1.5 transition-colors hover:bg-black/5",
-              iconColors[variant],
-              isDismissing && "cursor-not-allowed opacity-70"
-            )}
-            aria-label="Dismiss"
-          >
-            {isDismissing ? (
-              <svg
-                className="size-5 animate-spin"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
+    <AnimatePresence mode="wait">
+      {isVisible && (
+        <motion.div
+          className={cn(
+            positionClass,
+            "relative flex flex-col overflow-hidden rounded-lg border",
+            variantStyles[variant],
+            floatingClasses,
+            className
+          )}
+          role="alert"
+          initial={animationConfig.initial}
+          animate={animationConfig.animate}
+          exit={animationConfig.exit}
+          transition={animationConfig.transition}
+          {...props}
+        >
+          <div className="flex gap-3 p-4">
+            <div className={`shrink-0 ${iconColors[variant]}`}>
+              {displayIcon}
+            </div>
+            <div className="min-w-0 flex-1">
+              {title && (
+                <h4 className="mb-1 text-sm font-semibold text-balance">
+                  {title}
+                </h4>
+              )}
+              <div className="text-sm text-pretty">{children}</div>
+            </div>
+            {dismissible && (
+              <button
+                type="button"
+                onClick={handleDismiss}
+                disabled={isDismissing}
+                className={cn(
+                  "-mt-1 -mr-1 ml-auto shrink-0 rounded-lg p-1.5 transition-colors duration-150 hover:bg-black/5",
+                  iconColors[variant],
+                  isDismissing && "cursor-not-allowed opacity-70"
+                )}
+                aria-label="Dismiss"
               >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-            ) : (
-              <svg
-                className="size-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
+                {isDismissing ? (
+                  <svg
+                    className="size-5 animate-spin"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="size-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
+              </button>
             )}
-          </button>
-        )}
-      </div>
-      {timeout && timeout > 0 && (
-        <div className="h-1 w-full bg-black/10">
-          <div
-            className={`h-full ${progressBarColors[variant]} transition-all ease-linear`}
-            style={{
-              width: `${progress}%`,
-              transitionDuration: "50ms",
-            }}
-            role="progressbar"
-            aria-valuenow={progress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          />
-        </div>
+          </div>
+          {timeout && timeout > 0 && (
+            <div className="absolute inset-x-0 bottom-0 h-1 overflow-hidden rounded-b-lg bg-black/10">
+              <div
+                className={`h-full ${progressBarColors[variant]} transition-all ease-linear`}
+                style={{
+                  width: `${progress}%`,
+                  transitionDuration: "50ms",
+                }}
+                role="progressbar"
+                aria-valuenow={progress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              />
+            </div>
+          )}
+        </motion.div>
       )}
-    </div>
+    </AnimatePresence>
   );
 }
 

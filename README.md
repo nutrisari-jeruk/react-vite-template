@@ -12,6 +12,7 @@ A production-ready React frontend template built with modern tools and best prac
 - **Axios** - HTTP client
 - **React Hook Form** - Performant form validation
 - **Zod** - TypeScript-first schema validation
+- **Lucide React** - Beautiful icon library
 - **Vitest** - Testing framework
 - **Husky** - Git hooks
 - **Lint-staged** - Run linters on staged files
@@ -82,21 +83,24 @@ src/
 │       ├── not-found.tsx
 │       └── examples/    # Example pages
 │           ├── auth.tsx
+│           ├── data-table.tsx
 │           ├── error-handling.tsx
 │           └── form-validation.tsx
 ├── components/           # Shared components
 │   ├── ui/              # UI primitives (lowercase folders, PascalCase exports)
 │   │   ├── alert/       # Alert component with animations
 │   │   ├── avatar/      # Avatar and AvatarGroup
-│   │   ├── badge/       # Badge component
+│   │   ├── badge/       # Badge component with Tailwind UI styling
 │   │   ├── button/      # Button with variants and sizes
 │   │   ├── card/        # Card container
 │   │   ├── checkbox/    # Checkbox input
 │   │   ├── input/       # Text input with validation
 │   │   ├── select/      # Select dropdown
 │   │   ├── switch/      # Toggle switch
+│   │   ├── table/       # Table components (Table, TableHeader, TableBody, etc.)
 │   │   ├── textarea/    # Multi-line text input
 │   │   └── toggle/      # Toggle button
+│   ├── data-table/      # Server-side data table component
 │   ├── layouts/         # Layout components (MainLayout, Navbar, Sidebar)
 │   ├── __tests__/       # Component tests
 │   └── *.tsx            # Shared components (ErrorBoundary, etc.)
@@ -147,8 +151,10 @@ The project includes a comprehensive set of **custom-built UI components** with 
 **Display Components:**
 - `Button` - Multiple variants (primary, secondary, ghost, danger), sizes, and loading states
 - `Card` - Container component with header, body, and footer slots
-- `Badge` - Status badges and labels
+- `Badge` - Status badges and labels with Tailwind UI styling
 - `Avatar` - User avatars with fallback and group support
+- `Table` - Table components (Table, TableHeader, TableBody, TableRow, TableCell, etc.)
+- `DataTable` - Full-featured data table with server-side capabilities
 
 **Feedback Components:**
 - `Alert` - Dismissible alerts with floating positions and animations
@@ -177,6 +183,136 @@ All components include:
 - ✅ Composable APIs
 - ✅ Validation state support
 
+### DataTable Component
+
+The `DataTable` component provides a full-featured data table with server-side pagination, sorting, and filtering capabilities.
+
+**Features:**
+- Server-side pagination with customizable page sizes (10, 25, 50, 100)
+- Server-side sorting with visual indicators
+- Real-time filtering/search
+- Loading, error, and empty states
+- TanStack Query integration
+- Tailwind UI styling
+- Fully responsive design
+- Custom cell rendering (Badges, Avatars, etc.)
+
+**Usage:**
+```typescript
+import { DataTable, type Column } from '@/components/data-table'
+import { Badge } from '@/components/ui/badge/badge'
+
+interface User {
+  id: number
+  name: string
+  email: string
+  role: 'Admin' | 'User' | 'Editor'
+  status: 'Active' | 'Inactive'
+}
+
+const columns: Column<User>[] = [
+  {
+    id: 'id',
+    header: 'ID',
+    accessorKey: 'id',
+    sortable: true,
+  },
+  {
+    id: 'name',
+    header: 'Name',
+    accessorKey: 'name',
+    sortable: true,
+  },
+  {
+    id: 'email',
+    header: 'Email',
+    accessorKey: 'email',
+    sortable: true,
+  },
+  {
+    id: 'role',
+    header: 'Role',
+    accessorKey: 'role',
+    sortable: true,
+    cell: (row) => (
+      <Badge variant={row.role === 'Admin' ? 'danger' : 'primary'} pill>
+        {row.role}
+      </Badge>
+    ),
+  },
+]
+
+function MyTable() {
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+  const [sorting, setSorting] = useState({})
+  const [filter, setFilter] = useState('')
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['users', pagination, sorting, filter],
+    queryFn: () => fetchUsers({
+      pageIndex: pagination.pageIndex,
+      pageSize: pagination.pageSize,
+      columnId: sorting.columnId,
+      direction: sorting.direction,
+      filter,
+    }),
+  })
+
+  return (
+    <DataTable
+      data={data?.data || []}
+      columns={columns}
+      pagination
+      paginationState={pagination}
+      pageCount={data?.pageCount || 0}
+      onPaginationChange={setPagination}
+      pageSizeOptions={[10, 25, 50, 100]}
+      sorting
+      sortingState={sorting}
+      onSortingChange={setSorting}
+      filtering
+      filterValue={filter}
+      onFilterChange={setFilter}
+      isLoading={isLoading}
+      error={error ? 'Failed to load data' : null}
+      emptyMessage="No users found"
+    />
+  )
+}
+```
+
+**Props:**
+- `data` - Array of data to display
+- `columns` - Column definitions (id, header, accessorKey, cell, sortable)
+- `pagination` - Enable pagination (default: true)
+- `paginationState` - Current pagination state (pageIndex, pageSize)
+- `pageCount` - Total number of pages
+- `onPaginationChange` - Pagination change handler
+- `pageSizeOptions` - Available page sizes (default: [10, 25, 50, 100])
+- `sorting` - Enable sorting (default: true)
+- `sortingState` - Current sorting state (columnId, direction)
+- `onSortingChange` - Sorting change handler
+- `filtering` - Enable filtering (default: true)
+- `filterValue` - Current filter value
+- `onFilterChange` - Filter change handler
+- `isLoading` - Loading state
+- `error` - Error message
+- `emptyMessage` - Message when no data
+
+**Example:**
+Navigate to `/examples/data-table` to see a fully functional example with:
+- 150 mock users
+- Server-side pagination
+- Sortable columns
+- Real-time search
+- Custom badge components
+- Loading and error states
+
+**Note:** TanStack Table is NOT required for server-side functionality. This custom implementation provides all the essential features while maintaining simplicity and bundle size efficiency.
+
 ### React Router
 - Client-side routing with clean URLs
 - Lazy loading for all route components
@@ -191,6 +327,7 @@ All components include:
 - `/examples/auth` - Authentication examples
 - `/examples/error-handling` - Error handling examples
 - `/examples/form-validation` - Form validation examples
+- `/examples/data-table` - Server-side data table example
 - `*` - Custom 404 page
 
 ### TanStack Query

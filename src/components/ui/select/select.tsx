@@ -149,7 +149,7 @@ export function Select({
             </BaseSelect.Icon>
           </BaseSelect.Trigger>
           <BaseSelect.Portal>
-            <BaseSelect.Positioner side="bottom" align="start" sideOffset={4}>
+            <BaseSelect.Positioner alignItemWithTrigger>
               <BaseSelect.Popup
                 className="z-dropdown"
                 style={{ width: "var(--anchor-width)" }}

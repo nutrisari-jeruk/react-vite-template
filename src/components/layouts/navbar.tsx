@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { cn } from "@/utils/cn";
 
 interface MenuItem {
   path: string;
@@ -47,7 +48,7 @@ export function Navbar() {
       {!isOpen && (
         <button
           onClick={toggleMenu}
-          className="bg-primary z-overlay safe-top-4 safe-left-4 fixed top-4 left-4 rounded-md p-2 text-white shadow-lg transition-colors hover:bg-blue-700 md:hidden dark:bg-gray-800 dark:hover:bg-gray-700"
+          className="bg-primary z-overlay safe-top-0 safe-left-0 fixed top-2 left-2 flex size-12 items-center justify-center rounded-md text-white shadow-lg transition-colors hover:bg-blue-700 md:hidden dark:bg-gray-800 dark:hover:bg-gray-700"
           aria-label="Open menu"
         >
           <svg
@@ -74,7 +75,11 @@ export function Navbar() {
       )}
 
       <aside
-        className={`bg-primary z-sidebar fixed inset-y-0 left-0 w-64 transform text-white shadow-lg md:static dark:bg-gray-800 ${isOpen ? "translate-x-0" : "-translate-x-full"} safe-top-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0`}
+        className={cn(
+          "bg-primary z-sidebar fixed inset-y-0 left-0 w-64 transform text-white shadow-lg md:static dark:bg-gray-800",
+          isOpen ? "translate-x-0" : "-translate-x-full",
+          "safe-top-0 flex flex-col transition-transform duration-300 ease-in-out motion-reduce:transition-none md:translate-x-0"
+        )}
       >
         <div className="flex items-center justify-between border-b border-white/20 p-6 dark:border-gray-700">
           <Link
@@ -117,19 +122,20 @@ export function Navbar() {
                 <div key={item.path} className="space-y-1">
                   <button
                     onClick={() => toggleDropdown(item.path)}
-                    className={`flex w-full items-center justify-between rounded-md px-4 py-3 transition-colors hover:bg-white/10 dark:hover:bg-gray-700 ${
-                      isParentActiveState
-                        ? "bg-secondary text-white dark:bg-gray-700"
-                        : ""
-                    }`}
+                    className={cn(
+                      "flex w-full items-center justify-between rounded-md px-4 py-3 transition-colors hover:bg-white/10 dark:hover:bg-gray-700",
+                      isParentActiveState &&
+                        "bg-secondary text-white dark:bg-gray-700"
+                    )}
                     aria-expanded={isDropdownOpen}
                     aria-haspopup="true"
                   >
                     <span>{item.label}</span>
                     <svg
-                      className={`size-4 transform transition-transform ${
-                        isDropdownOpen ? "rotate-180" : ""
-                      }`}
+                      className={cn(
+                        "size-4 transform transition-transform",
+                        isDropdownOpen && "rotate-180"
+                      )}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -152,11 +158,11 @@ export function Navbar() {
                             closeMenu();
                             closeDropdown();
                           }}
-                          className={`block rounded-md px-4 py-2 text-sm transition-colors hover:bg-white/10 dark:hover:bg-gray-700 ${
-                            isActive(child.path)
-                              ? "bg-secondary text-white dark:bg-gray-700"
-                              : ""
-                          }`}
+                          className={cn(
+                            "block rounded-md px-4 py-2 text-sm transition-colors hover:bg-white/10 dark:hover:bg-gray-700",
+                            isActive(child.path) &&
+                              "bg-secondary text-white dark:bg-gray-700"
+                          )}
                         >
                           {child.label}
                         </Link>
@@ -172,11 +178,11 @@ export function Navbar() {
                 key={item.path}
                 to={item.path}
                 onClick={closeMenu}
-                className={`block rounded-md px-4 py-3 transition-colors hover:bg-white/10 dark:hover:bg-gray-700 ${
-                  isActive(item.path)
-                    ? "bg-secondary text-white dark:bg-gray-700"
-                    : ""
-                }`}
+                className={cn(
+                  "block rounded-md px-4 py-3 transition-colors hover:bg-white/10 dark:hover:bg-gray-700",
+                  isActive(item.path) &&
+                    "bg-secondary text-white dark:bg-gray-700"
+                )}
               >
                 {item.label}
               </Link>

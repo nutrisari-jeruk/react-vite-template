@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Alert,
@@ -7,6 +8,7 @@ import {
   Button,
   Card,
   Checkbox,
+  Combobox,
   ComponentDemo,
   Input,
   Select,
@@ -17,6 +19,10 @@ import {
 import { ROUTES } from "@/config/constants";
 
 function ComponentsPage() {
+  const [fruit, setFruit] = useState<string | undefined>();
+  const [withError, setWithError] = useState<string | undefined>();
+  const [withHelper, setWithHelper] = useState<string | undefined>();
+
   return (
     <div className="min-h-[calc(100dvh-12rem)] bg-gray-50 px-4 py-12">
       <div className="mx-auto max-w-6xl">
@@ -102,6 +108,72 @@ function ComponentsPage() {
   <option value="1">Option 1</option>
   <option value="2">Option 2</option>
 </Select>`}
+          />
+
+          <ComponentDemo
+            title="Combobox"
+            description="Searchable dropdown with type-to-filter"
+            preview={
+              <div className="grid max-w-md gap-4">
+                <div>
+                  <Combobox
+                    options={[
+                      { value: "1", label: "Option 1" },
+                      { value: "2", label: "Option 2" },
+                      { value: "3", label: "Option 3" },
+                      { value: "apple", label: "Apple" },
+                      { value: "banana", label: "Banana" },
+                    ]}
+                    label="Choose a fruit"
+                    placeholder="Type to search..."
+                    value={fruit}
+                    onChange={(v) => setFruit(v ?? undefined)}
+                  />
+                </div>
+                <div>
+                  <Combobox
+                    options={[
+                      { value: "a", label: "Option A" },
+                      { value: "b", label: "Option B" },
+                    ]}
+                    label="With error"
+                    error="This field is required"
+                    value={withError}
+                    onChange={(v) => setWithError(v ?? undefined)}
+                  />
+                </div>
+                <div>
+                  <Combobox
+                    options={[{ value: "1", label: "Only option" }]}
+                    label="With helper"
+                    helperText="Pick one from the list"
+                    value={withHelper}
+                    onChange={(v) => setWithHelper(v ?? undefined)}
+                  />
+                </div>
+                <div>
+                  <Combobox
+                    options={[
+                      { value: "1", label: "Option 1" },
+                      { value: "2", label: "Option 2" },
+                    ]}
+                    label="Disabled"
+                    disabled
+                  />
+                </div>
+              </div>
+            }
+            code={`<Combobox
+  options={[
+    { value: "1", label: "Option 1" },
+    { value: "2", label: "Option 2" },
+    { value: "apple", label: "Apple" },
+  ]}
+  label="Choose a fruit"
+  placeholder="Type to search..."
+/>
+<Combobox options={options} label="With error" error="This field is required" />
+<Combobox options={options} label="Disabled" disabled />`}
           />
 
           <ComponentDemo

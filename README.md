@@ -6,9 +6,9 @@ A production-ready React frontend template built with modern tools and best prac
 
 - **React 19** with TypeScript - UI library
 - **Vite** - Build tool and dev server
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Utility-first CSS framework
-- **TanStack Query** - Data fetching and state management
+- **React Router v7** - Client-side routing
+- **Tailwind CSS v4** - Utility-first CSS framework
+- **TanStack Query v5** - Data fetching and state management
 - **Axios** - HTTP client
 - **React Hook Form** - Performant form validation
 - **Zod** - TypeScript-first schema validation
@@ -17,6 +17,16 @@ A production-ready React frontend template built with modern tools and best prac
 - **Lint-staged** - Run linters on staged files
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
+
+### Animation Approach
+
+This project uses **pure CSS animations** instead of JavaScript animation libraries:
+
+- **CSS keyframes** for entrance animations (defined in `index.css`)
+- **Tailwind's built-in animations** (e.g., `animate-spin`, `animate-pulse`)
+- **Custom animation utilities** using Tailwind's `animate-[...]` syntax
+
+**No motion/framer-motion dependency** - keeping the bundle small and performant.
 
 ## Getting Started
 
@@ -64,12 +74,32 @@ src/
 ├── app/                  # Application layer
 │   ├── index.tsx        # Main App component
 │   ├── provider.tsx     # Centralized providers (QueryClient, etc.)
-│   └── router.tsx       # Route configuration with lazy loading
+│   ├── router.tsx       # Route configuration with lazy loading
+│   └── routes/          # Route components (PascalCase files)
+│       ├── Home.tsx
+│       ├── About.tsx
+│       ├── Components.tsx
+│       ├── not-found.tsx
+│       └── examples/    # Example pages
+│           ├── auth.tsx
+│           ├── error-handling.tsx
+│           └── form-validation.tsx
 ├── components/           # Shared components
-│   ├── ui/              # UI primitives (Button, Input, Card, etc.)
-│   ├── layouts/         # Layout components (MainLayout, Navbar, Footer)
+│   ├── ui/              # UI primitives (lowercase folders, PascalCase exports)
+│   │   ├── alert/       # Alert component with animations
+│   │   ├── avatar/      # Avatar and AvatarGroup
+│   │   ├── badge/       # Badge component
+│   │   ├── button/      # Button with variants and sizes
+│   │   ├── card/        # Card container
+│   │   ├── checkbox/    # Checkbox input
+│   │   ├── input/       # Text input with validation
+│   │   ├── select/      # Select dropdown
+│   │   ├── switch/      # Toggle switch
+│   │   ├── textarea/    # Multi-line text input
+│   │   └── toggle/      # Toggle button
+│   ├── layouts/         # Layout components (MainLayout, Navbar, Sidebar)
 │   ├── __tests__/       # Component tests
-│   └── *.tsx            # Shared components (ErrorBoundary, Combobox, etc.)
+│   └── *.tsx            # Shared components (ErrorBoundary, etc.)
 ├── config/              # Configuration
 │   ├── env.ts           # Environment variables (validated)
 │   ├── constants.ts     # Routes, API endpoints, query keys
@@ -86,8 +116,6 @@ src/
 │   ├── api-client.ts    # Axios instance with interceptors
 │   ├── api-error.ts     # Custom error classes
 │   └── index.ts         # Barrel export
-├── pages/               # Route page components
-│   └── __tests__/       # Page tests
 ├── testing/             # Test utilities
 │   ├── setup.ts         # Test configuration
 │   ├── test-utils.tsx   # Custom render with providers
@@ -95,17 +123,75 @@ src/
 ├── types/               # Shared TypeScript types
 ├── utils/               # Utility functions
 ├── main.tsx             # Entry point
-└── index.css            # Global styles + Tailwind directives
+└── index.css            # Global styles + Tailwind directives + custom animations
 ```
+
+> **Note:** UI components use lowercase folder/file names (e.g., `button/button.tsx`) but export PascalCase component names (`export function Button() {}`). This is a common pattern that avoids case-sensitivity issues while maintaining React conventions.
 
 > **For AI Assistants:** See [AGENTS.md](./AGENTS.md) for detailed conventions and guidelines.
 
 ## Key Features
 
+### UI Components
+
+The project includes a comprehensive set of **custom-built UI components** with TypeScript support, accessibility features, and consistent styling:
+
+**Form Components:**
+- `Input` - Text input with icons, validation states, and error handling
+- `Textarea` - Multi-line text input with auto-resize support
+- `Select` - Dropdown select with custom styling
+- `Checkbox` - Accessible checkbox input
+- `Switch` - Toggle switch for boolean values
+- `Toggle` - Button-style toggle control
+
+**Display Components:**
+- `Button` - Multiple variants (primary, secondary, ghost, danger), sizes, and loading states
+- `Card` - Container component with header, body, and footer slots
+- `Badge` - Status badges and labels
+- `Avatar` - User avatars with fallback and group support
+
+**Feedback Components:**
+- `Alert` - Dismissible alerts with floating positions and animations
+
+**Usage:**
+```typescript
+import { Button, Input, Card, Alert } from '@/components/ui'
+
+function MyComponent() {
+  return (
+    <Card>
+      <Input placeholder="Enter email" />
+      <Button variant="primary" size="md">Submit</Button>
+      <Alert variant="info" dismissible>
+        Information message
+      </Alert>
+    </Card>
+  )
+}
+```
+
+All components include:
+- ✅ Full TypeScript support
+- ✅ ARIA attributes for accessibility
+- ✅ Consistent design tokens
+- ✅ Composable APIs
+- ✅ Validation state support
+
 ### React Router
 - Client-side routing with clean URLs
+- Lazy loading for all route components
 - Nested routes support
 - Active link highlighting in navigation
+- Dropdown menu for example pages
+
+**Available Routes:**
+- `/` - Home page
+- `/about` - About page
+- `/components` - UI components showcase
+- `/examples/auth` - Authentication examples
+- `/examples/error-handling` - Error handling examples
+- `/examples/form-validation` - Form validation examples
+- `*` - Custom 404 page
 
 ### TanStack Query
 - Automatic caching and background updates
@@ -135,12 +221,26 @@ src/
 - Responsive design
 - Custom theme support
 - Dark mode ready
+- Uses `h-dvh` instead of `h-screen` for proper viewport handling
+- Typography utilities: `text-balance` for headings, `text-pretty` for body
+- Tabular nums for data display
+- Safe area inset support for iOS devices
 
 ### Testing
 - Vitest for fast tests
 - React Testing Library
 - User event simulation
 - Coverage reporting
+
+### Accessibility
+- ARIA attributes throughout all UI components
+- Keyboard navigation support for interactive elements
+- Screen reader-friendly labels and roles
+- Focus management in modals and dropdowns
+- Proper heading hierarchy
+- Loading states with `aria-busy`
+- Error states with `aria-invalid`
+- Icon-only buttons include `aria-label`
 
 ### Code Quality
 - ESLint for code linting
@@ -388,7 +488,7 @@ function App() {
 
 ### Example: Try It Out
 
-Navigate to `/auth-example` to see authentication in action:
+Navigate to `/examples/auth` to see authentication in action:
 - Login form with secure token storage
 - Authenticated state display
 - Token expiration tracking
@@ -427,7 +527,7 @@ if (isAxiosError(error)) {
 
 ### Example: Try the Error Handling
 
-Navigate to `/api-error-example` to see the error handling in action with:
+Navigate to `/examples/error-handling` to see the error handling in action with:
 - Form validation with field errors
 - Different error type simulations
 - Automatic retry behavior
@@ -509,7 +609,16 @@ const ProtectedComponent = withErrorBoundary(MyComponent, {
 
 #### Testing the Error Boundary
 
-Navigate to `/error-test` to see the Error Boundary in action. Click the "Trigger Error" button to intentionally throw an error and see the fallback UI.
+The Error Boundary is already integrated into the application. To test it, you can:
+
+1. Navigate to any page and intentionally throw an error in a component
+2. Add a test button that triggers an error:
+```typescript
+<button onClick={() => { throw new Error('Test error') }}>
+  Trigger Error
+</button>
+```
+3. The Error Boundary will catch it and display the fallback UI
 
 ## Form Validation
 
@@ -711,19 +820,55 @@ Pre-commit hooks are configured to run lint-staged:
 
 ### Adding a New Route
 
-1. Create page component in `src/pages/` (kebab-case, e.g., `my-page.tsx`)
+1. Create page component in `src/app/routes/` (PascalCase, e.g., `MyPage.tsx`)
 2. Use default export for lazy loading compatibility
 3. Add route in `src/app/router.tsx` with lazy loading
 4. Add route constant in `src/config/constants.ts`
-5. Update navigation in `src/components/layouts/navbar.tsx`
+5. Update navigation in `src/components/layouts/navbar.tsx` or `sidebar.tsx`
+
+**Example:**
+```typescript
+// src/app/routes/MyPage.tsx
+export default function MyPage() {
+  return <div>My Page</div>
+}
+
+// src/app/router.tsx
+const MyPage = lazy(() => import("@/app/routes/MyPage"))
+
+// Add to routes array
+{
+  path: "my-page",
+  element: <LazyPage><MyPage /></LazyPage>,
+}
+```
 
 ### Creating a UI Component
 
-1. Create folder `src/components/ui/[name]/`
-2. Create component file `[name].tsx`
-3. Create barrel export `index.ts`
-4. Export from `src/components/ui/index.ts`
-5. Create tests in `src/components/__tests__/`
+1. Create folder `src/components/ui/[name]/` (lowercase)
+2. Create component file `[name].tsx` (lowercase)
+3. Export component as PascalCase: `export function ComponentName() {}`
+4. Create barrel export `index.ts`
+5. Export from `src/components/ui/index.ts`
+6. Create tests in `src/components/__tests__/`
+
+**Example:**
+```typescript
+// src/components/ui/my-component/my-component.tsx
+export interface MyComponentProps {
+  variant?: 'primary' | 'secondary'
+}
+
+export function MyComponent({ variant = 'primary' }: MyComponentProps) {
+  return <div className={variant}>Content</div>
+}
+
+// src/components/ui/my-component/index.ts
+export { MyComponent } from './my-component'
+
+// src/components/ui/index.ts
+export { MyComponent } from "./my-component"
+```
 
 ### Creating a Feature Module
 

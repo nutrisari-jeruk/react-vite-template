@@ -12,6 +12,7 @@ const ErrorExamples = lazy(
 const FormValidationExample = lazy(
   () => import("@/app/routes/examples/form-validation")
 );
+const DataTableExample = lazy(() => import("@/app/routes/examples/data-table"));
 const NotFound = lazy(() => import("@/app/routes/not-found"));
 
 function PageLoader() {
@@ -76,6 +77,14 @@ const router = createBrowserRouter([
         element: (
           <LazyPage>
             <FormValidationExample />
+          </LazyPage>
+        ),
+      },
+      {
+        path: "examples/data-table",
+        element: (
+          <LazyPage>
+            <DataTableExample />
           </LazyPage>
         ),
       },

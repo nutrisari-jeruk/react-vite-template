@@ -18,6 +18,7 @@ const menuItems: MenuItem[] = [
       { path: "/examples/error-handling", label: "Error Handling" },
       { path: "/examples/auth", label: "Authentication" },
       { path: "/examples/form-validation", label: "Form Validation" },
+      { path: "/examples/data-table", label: "Data Table" },
     ],
   },
 ];

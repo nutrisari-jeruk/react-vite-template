@@ -171,12 +171,12 @@ import { Button, Input, Card, Alert, Switch, Toggle, Tooltip } from '@/component
 
 function MyComponent() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
-  
+
   return (
     <Card>
       <Input placeholder="Enter email" />
       <Button variant="primary" size="md">Submit</Button>
-      
+
       {/* Segmented control switch */}
       <Switch
         label="Theme"
@@ -187,15 +187,15 @@ function MyComponent() {
         checked={theme === 'dark'}
         onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
       />
-      
+
       {/* Toggle switch */}
       <Toggle label="Enable notifications" />
-      
+
       {/* Tooltip */}
       <Tooltip content="This is a helpful tooltip" variant="dark" placement="top">
         <Button variant="secondary">Hover me</Button>
       </Tooltip>
-      
+
       <Alert variant="info" dismissible>
         Information message
       </Alert>
@@ -233,9 +233,9 @@ import { Tooltip } from '@/components/ui'
 </Tooltip>
 
 // With variant and placement
-<Tooltip 
-  content="Helpful information" 
-  variant="light" 
+<Tooltip
+  content="Helpful information"
+  variant="light"
   placement="bottom"
   sideOffset={12}
 >

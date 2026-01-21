@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Combobox } from "../Combobox";
+import { Combobox } from "../ui/combobox";
 
 const mockOptions = [
   { value: "1", label: "Option 1" },
@@ -83,10 +83,11 @@ describe("Combobox", () => {
     await user.click(combobox);
     await user.keyboard("{ArrowDown}");
     await user.keyboard("{ArrowDown}");
+    await user.keyboard("{ArrowDown}");
 
     const listbox = screen.getByRole("listbox");
     const options = within(listbox).getAllByRole("option");
-    expect(options[2]).toHaveClass("bg-blue-100");
+    expect(options[2]).toHaveClass("bg-blue-50");
   });
 
   it("selects option with Enter key", async () => {
@@ -96,6 +97,7 @@ describe("Combobox", () => {
 
     const combobox = screen.getByRole("combobox");
     await user.click(combobox);
+    await user.keyboard("{ArrowDown}");
     await user.keyboard("{ArrowDown}");
     await user.keyboard("{Enter}");
 

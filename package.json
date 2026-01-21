@@ -20,11 +20,13 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@base-ui/react": "^1.1.0",
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.16",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",
+    "motion": "^12.27.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.70.0",

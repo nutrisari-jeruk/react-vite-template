@@ -62,6 +62,14 @@ describe("Components Page", () => {
       expect(screen.getByText("Dropdown select component")).toBeInTheDocument();
     });
 
+    it("renders Combobox section", () => {
+      renderComponentsPage();
+      expect(screen.getByText("Combobox")).toBeInTheDocument();
+      expect(
+        screen.getByText("Searchable dropdown with type-to-filter")
+      ).toBeInTheDocument();
+    });
+
     it("renders Textarea section", () => {
       renderComponentsPage();
       expect(screen.getByText("Textarea")).toBeInTheDocument();
@@ -151,7 +159,9 @@ describe("Components Page", () => {
 
     it("displays error message on input", () => {
       renderComponentsPage();
-      expect(screen.getByText("This field is required")).toBeInTheDocument();
+      expect(
+        screen.getAllByText("This field is required").length
+      ).toBeGreaterThan(0);
     });
 
     it("displays helper text on input", () => {
@@ -220,14 +230,10 @@ describe("Components Page", () => {
   });
 
   describe("Layout and Styling", () => {
-    it("applies gradient background", () => {
+    it("applies page background", () => {
       const { container } = renderComponentsPage();
       const mainDiv = container.firstChild as HTMLElement;
-      expect(mainDiv).toHaveClass(
-        "bg-gradient-to-br",
-        "from-gray-50",
-        "to-gray-100"
-      );
+      expect(mainDiv).toHaveClass("bg-gray-50");
     });
 
     it("uses max-width container", () => {
@@ -270,6 +276,9 @@ describe("Components Page", () => {
       expect(screen.getByLabelText("Default Input")).toBeInTheDocument();
       expect(screen.getByLabelText("With Error")).toBeInTheDocument();
       expect(screen.getByLabelText("With Helper")).toBeInTheDocument();
+
+      // Check combobox
+      expect(screen.getByLabelText("Choose a fruit")).toBeInTheDocument();
     });
   });
 

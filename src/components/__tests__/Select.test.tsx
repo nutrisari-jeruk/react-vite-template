@@ -9,9 +9,10 @@ describe("Select", () => {
         <option value="1">Option 1</option>
       </Select>
     );
-    const button = screen.getByRole("button", { name: /option 1/i });
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute("aria-haspopup", "listbox");
+    const combobox = screen.getByRole("combobox");
+    expect(combobox).toBeInTheDocument();
+    expect(combobox).toHaveAttribute("aria-haspopup", "listbox");
+    expect(combobox).toHaveTextContent("Option 1");
   });
 
   it("renders label when provided", () => {
@@ -43,8 +44,8 @@ describe("Select", () => {
       </Select>
     );
 
-    const button = screen.getByRole("button");
-    await user.click(button);
+    const combobox = screen.getByRole("combobox");
+    await user.click(combobox);
 
     await waitFor(() => {
       expect(screen.getByRole("listbox")).toBeInTheDocument();
@@ -90,8 +91,8 @@ describe("Select", () => {
       </Select>
     );
 
-    const button = screen.getByRole("button");
-    await user.click(button);
+    const combobox = screen.getByRole("combobox");
+    await user.click(combobox);
 
     await waitFor(() => {
       expect(screen.getByRole("listbox")).toBeInTheDocument();
@@ -101,7 +102,7 @@ describe("Select", () => {
     await user.click(option1);
 
     expect(handleChange).toHaveBeenCalledWith("1");
-    expect(button).toHaveTextContent("Option 1");
+    expect(combobox).toHaveTextContent("Option 1");
   });
 
   it("disables button when disabled prop is true", () => {
@@ -110,8 +111,8 @@ describe("Select", () => {
         <option value="1">Option 1</option>
       </Select>
     );
-    const button = screen.getByRole("button");
-    expect(button).toBeDisabled();
+    const combobox = screen.getByRole("combobox");
+    expect(combobox).toBeDisabled();
   });
 
   it("does not open dropdown when disabled", async () => {
@@ -123,8 +124,8 @@ describe("Select", () => {
       </Select>
     );
 
-    const button = screen.getByRole("button");
-    await user.click(button);
+    const combobox = screen.getByRole("combobox");
+    await user.click(combobox);
 
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
@@ -135,8 +136,8 @@ describe("Select", () => {
         <option value="">Select</option>
       </Select>
     );
-    const button = screen.getByRole("button");
-    expect(button).toHaveClass("border-red-500");
+    const combobox = screen.getByRole("combobox");
+    expect(combobox).toHaveClass("border-red-500");
   });
 
   it("closes dropdown when clicking outside", async () => {
@@ -150,8 +151,8 @@ describe("Select", () => {
       </div>
     );
 
-    const button = screen.getByRole("button");
-    await user.click(button);
+    const combobox = screen.getByRole("combobox");
+    await user.click(combobox);
 
     await waitFor(() => {
       expect(screen.getByRole("listbox")).toBeInTheDocument();
@@ -173,8 +174,8 @@ describe("Select", () => {
       </Select>
     );
 
-    const button = screen.getByRole("button");
-    expect(button).toHaveTextContent("Option 2");
+    const combobox = screen.getByRole("combobox");
+    expect(combobox).toHaveTextContent("Option 2");
   });
 
   it("shows selected option with blue background when dropdown is open", async () => {
@@ -187,15 +188,15 @@ describe("Select", () => {
       </Select>
     );
 
-    const button = screen.getByRole("button");
-    await user.click(button);
+    const combobox = screen.getByRole("combobox");
+    await user.click(combobox);
 
     await waitFor(() => {
       expect(screen.getByRole("listbox")).toBeInTheDocument();
     });
 
     const selectedOption = screen.getByRole("option", { name: "Option 2" });
-    expect(selectedOption).toHaveClass("bg-[#3758F9]");
+    expect(selectedOption).toHaveClass("bg-blue-600");
     expect(selectedOption).toHaveClass("text-white");
     expect(selectedOption).toHaveAttribute("aria-selected", "true");
   });

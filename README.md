@@ -21,13 +21,17 @@ A production-ready React frontend template built with modern tools and best prac
 
 ### Animation Approach
 
-This project uses **pure CSS animations** instead of JavaScript animation libraries:
+This project uses a **hybrid animation strategy** for optimal performance:
 
-- **CSS keyframes** for entrance animations (defined in `index.css`)
-- **Tailwind's built-in animations** (e.g., `animate-spin`, `animate-pulse`)
-- **Custom animation utilities** using Tailwind's `animate-[...]` syntax
-
-**No motion/framer-motion dependency** - keeping the bundle small and performant.
+- **CSS animations** for simple, declarative animations:
+  - CSS keyframes for entrance animations (defined in `index.css`)
+  - Tailwind's built-in animations (e.g., `animate-spin`, `animate-pulse`)
+  - Custom animation utilities using Tailwind's `animate-[...]` syntax
+- **motion/react** (formerly framer-motion) for JavaScript-driven animations:
+  - Complex animations requiring JavaScript logic
+  - Scroll-triggered animations
+  - Interactive animations with state management
+  - Respects `prefers-reduced-motion` for accessibility
 
 ## Getting Started
 
@@ -391,7 +395,7 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 **Available Routes:**
 - `/` - Home page
 - `/about` - About page
-- `/components` - UI components showcase
+- `/components` - UI components showcase with sticky table of contents, scroll tracking, and alphabetical organization
 - `/examples/auth` - Authentication examples
 - `/examples/error-handling` - Error handling examples
 - `/examples/form-validation` - Form validation examples

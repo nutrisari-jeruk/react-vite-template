@@ -212,17 +212,101 @@ function ComponentsPage() {
 
           <ComponentDemo
             title="Switch"
-            description="Toggle switch component"
+            description="Segmented control switch component"
             preview={
               <div className="space-y-4">
-                <Switch label="Enable notifications" />
-                <Switch label="Dark mode" />
-                <Switch label="Disabled" disabled />
+                <Switch
+                  leftLabel="Light mode"
+                  rightLabel="Dark mode"
+                  leftIcon={
+                    <svg
+                      className="size-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                      />
+                    </svg>
+                  }
+                  rightIcon={
+                    <svg
+                      className="size-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                      />
+                    </svg>
+                  }
+                />
+                <Switch
+                  leftIcon={
+                    <svg
+                      className="size-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                      />
+                    </svg>
+                  }
+                  rightIcon={
+                    <svg
+                      className="size-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                      />
+                    </svg>
+                  }
+                />
+                <Switch
+                  label="Theme"
+                  leftLabel="Light"
+                  rightLabel="Dark"
+                  disabled
+                />
               </div>
             }
-            code={`<Switch label="Enable notifications" />
-<Switch label="Dark mode" />
-<Switch label="Disabled" disabled />`}
+            code={`<Switch
+  leftLabel="Light mode"
+  rightLabel="Dark mode"
+  leftIcon={<SunIcon />}
+  rightIcon={<MoonIcon />}
+/>
+
+<Switch
+  leftIcon={<SunIcon />}
+  rightIcon={<MoonIcon />}
+/>
+
+<Switch
+  label="Theme"
+  leftLabel="Light"
+  rightLabel="Dark"
+  disabled
+/>`}
           />
 
           <ComponentDemo

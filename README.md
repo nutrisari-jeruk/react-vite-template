@@ -96,7 +96,7 @@ src/
 │   │   ├── checkbox/    # Checkbox input
 │   │   ├── input/       # Text input with validation
 │   │   ├── select/      # Select dropdown
-│   │   ├── switch/      # Toggle switch
+│   │   ├── switch/      # Segmented control switch
 │   │   ├── table/       # Table components (Table, TableHeader, TableBody, etc.)
 │   │   ├── textarea/    # Multi-line text input
 │   │   └── toggle/      # Toggle button
@@ -145,8 +145,8 @@ The project includes a comprehensive set of **custom-built UI components** with 
 - `Textarea` - Multi-line text input with auto-resize support
 - `Select` - Dropdown select with custom styling
 - `Checkbox` - Accessible checkbox input
-- `Switch` - Toggle switch for boolean values
-- `Toggle` - Button-style toggle control
+- `Switch` - Segmented control switch for choosing between two options (e.g., Light/Dark mode)
+- `Toggle` - Toggle switch for boolean values
 
 **Display Components:**
 - `Button` - Multiple variants (primary, secondary, ghost, danger), sizes, and loading states
@@ -161,13 +161,30 @@ The project includes a comprehensive set of **custom-built UI components** with 
 
 **Usage:**
 ```typescript
-import { Button, Input, Card, Alert } from '@/components/ui'
+import { Button, Input, Card, Alert, Switch, Toggle } from '@/components/ui'
 
 function MyComponent() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  
   return (
     <Card>
       <Input placeholder="Enter email" />
       <Button variant="primary" size="md">Submit</Button>
+      
+      {/* Segmented control switch */}
+      <Switch
+        label="Theme"
+        leftLabel="Light"
+        rightLabel="Dark"
+        leftIcon={<SunIcon />}
+        rightIcon={<MoonIcon />}
+        checked={theme === 'dark'}
+        onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+      />
+      
+      {/* Toggle switch */}
+      <Toggle label="Enable notifications" />
+      
       <Alert variant="info" dismissible>
         Information message
       </Alert>
@@ -175,6 +192,17 @@ function MyComponent() {
   )
 }
 ```
+
+**Switch Component (Segmented Control):**
+The `Switch` component is a segmented control for choosing between two options. It supports:
+- Labels with or without icons
+- Icons only
+- Controlled and uncontrolled modes
+- Disabled state
+- Accessible with Base UI primitives
+
+**Toggle Component:**
+The `Toggle` component is a traditional toggle switch for boolean values.
 
 All components include:
 - ✅ Full TypeScript support

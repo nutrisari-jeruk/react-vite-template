@@ -35,139 +35,107 @@ const MoonIcon = () => (
 );
 
 describe("Switch", () => {
-  it("renders switch input", () => {
-    render(<Switch />);
-    const switchInput = screen.getByRole("checkbox");
+  it("renders segmented control with labels", () => {
+    render(<Switch leftLabel="Light mode" rightLabel="Dark mode" />);
+    expect(screen.getByText("Light mode")).toBeInTheDocument();
+    expect(screen.getByText("Dark mode")).toBeInTheDocument();
+  });
+
+  it("renders segmented control with icons", () => {
+    render(<Switch leftIcon={<SunIcon />} rightIcon={<MoonIcon />} />);
+    const switchInput = screen.getByRole("switch");
     expect(switchInput).toBeInTheDocument();
   });
 
-  it("renders label when provided", () => {
-    render(<Switch label="Enable notifications" />);
-    expect(screen.getByText("Enable notifications")).toBeInTheDocument();
+  it("renders segmented control with labels and icons", () => {
+    render(
+      <Switch
+        leftLabel="Light"
+        rightLabel="Dark"
+        leftIcon={<SunIcon />}
+        rightIcon={<MoonIcon />}
+      />
+    );
+    expect(screen.getByText("Light")).toBeInTheDocument();
+    expect(screen.getByText("Dark")).toBeInTheDocument();
   });
 
-  it("displays helper text", () => {
-    render(<Switch label="Dark mode" helperText="Toggle theme" />);
-    expect(screen.getByText("Toggle theme")).toBeInTheDocument();
-  });
-
-  it("handles switch on/off", async () => {
+  it("handles segmented control toggle", async () => {
     const user = userEvent.setup();
-    render(<Switch label="Switch" />);
-    const switchInput = screen.getByRole("checkbox");
-
-    expect(switchInput).not.toBeChecked();
-    await user.click(switchInput);
-    expect(switchInput).toBeChecked();
-    await user.click(switchInput);
-    expect(switchInput).not.toBeChecked();
-  });
-
-  it("calls onCheckedChange when switched", async () => {
     const onCheckedChange = vi.fn();
-    const user = userEvent.setup();
-    render(<Switch label="Switch" onCheckedChange={onCheckedChange} />);
+    render(
+      <Switch
+        leftLabel="Light"
+        rightLabel="Dark"
+        onCheckedChange={onCheckedChange}
+      />
+    );
 
-    await user.click(screen.getByRole("checkbox"));
+    const rightSegment = screen.getByText("Dark");
+    await user.click(rightSegment);
     expect(onCheckedChange).toHaveBeenCalledWith(true);
   });
 
+  it("highlights left segment when unchecked", () => {
+    render(<Switch leftLabel="Light" rightLabel="Dark" checked={false} />);
+    const leftLabel = screen.getByText("Light");
+    const leftSegment = leftLabel.closest("div.relative.flex");
+    expect(leftSegment).toHaveClass("bg-white", "text-blue-600");
+  });
+
+  it("highlights right segment when checked", () => {
+    render(<Switch leftLabel="Light" rightLabel="Dark" checked={true} />);
+    const rightLabel = screen.getByText("Dark");
+    const rightSegment = rightLabel.closest("div.relative.flex");
+    expect(rightSegment).toHaveClass("bg-white", "text-blue-600");
+  });
+
+  it("disables segmented control when disabled prop is true", () => {
+    render(<Switch leftLabel="Light" rightLabel="Dark" disabled />);
+    const switchInput = screen.getByRole("switch");
+    expect(switchInput).toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("renders label for segmented variant", () => {
+    render(<Switch label="Theme" leftLabel="Light" rightLabel="Dark" />);
+    expect(screen.getByText("Theme")).toBeInTheDocument();
+  });
+
+  it("displays helper text", () => {
+    render(
+      <Switch
+        label="Theme"
+        leftLabel="Light"
+        rightLabel="Dark"
+        helperText="Choose your theme"
+      />
+    );
+    expect(screen.getByText("Choose your theme")).toBeInTheDocument();
+  });
+
   it("respects controlled checked state", () => {
-    const { rerender } = render(<Switch checked={false} />);
-    expect(screen.getByRole("checkbox")).not.toBeChecked();
-
-    rerender(<Switch checked={true} />);
-    expect(screen.getByRole("checkbox")).toBeChecked();
-  });
-
-  it("disables switch when disabled prop is true", () => {
-    render(<Switch label="Disabled" disabled />);
-    expect(screen.getByRole("checkbox")).toBeDisabled();
-  });
-
-  it("renders label on the right by default", () => {
-    render(<Switch label="Test label" />);
-    const labelElement = screen.getByText("Test label");
-    const switchInput = screen.getByRole("checkbox");
-
-    const parent = labelElement.parentElement;
-    const switchParent = switchInput.closest("label")?.parentElement;
-
-    expect(parent).toBe(switchParent);
-    const children = Array.from(parent?.children || []);
-    const switchIndex = children.findIndex((child) =>
-      child.contains(switchInput)
+    const { rerender } = render(
+      <Switch leftLabel="Light" rightLabel="Dark" checked={false} />
     );
-    const labelIndex = children.findIndex((child) => child === labelElement);
+    expect(screen.getByRole("switch")).toHaveAttribute("aria-checked", "false");
 
-    expect(labelIndex).toBeGreaterThan(switchIndex);
+    rerender(<Switch leftLabel="Light" rightLabel="Dark" checked={true} />);
+    expect(screen.getByRole("switch")).toHaveAttribute("aria-checked", "true");
   });
 
-  it("renders label on the left when labelPosition is left", () => {
-    render(<Switch label="Left label" labelPosition="left" />);
-    const labelElement = screen.getByText("Left label");
-    const switchInput = screen.getByRole("checkbox");
-    const parent = labelElement.parentElement;
-    const switchParent = switchInput.closest("label")?.parentElement;
-    expect(parent).toBe(switchParent);
-    const children = Array.from(parent?.children || []);
-    const switchIndex = children.findIndex((child) =>
-      child.contains(switchInput)
-    );
-    const labelIndex = children.findIndex((child) => child === labelElement);
-    expect(labelIndex).toBeLessThan(switchIndex);
-  });
-
-  it("renders icons when leftIcon and rightIcon are provided", () => {
-    render(<Switch leftIcon={<SunIcon />} rightIcon={<MoonIcon />} />);
-    expect(screen.getByRole("checkbox")).toBeInTheDocument();
-    const container = screen.getByRole("checkbox").closest("label");
-    expect(container).toBeInTheDocument();
-  });
-
-  it("highlights left icon when unchecked in icon mode", () => {
-    render(
-      <Switch leftIcon={<SunIcon />} rightIcon={<MoonIcon />} checked={false} />
-    );
-    const switchInput = screen.getByRole("checkbox");
-    const label = switchInput.closest("label");
-    const container = label?.querySelector("div");
-    const leftIconContainer = container?.firstElementChild as HTMLElement;
-    expect(leftIconContainer).toHaveClass("bg-blue-600");
-  });
-
-  it("highlights right icon when checked in icon mode", () => {
-    render(
-      <Switch leftIcon={<SunIcon />} rightIcon={<MoonIcon />} checked={true} />
-    );
-    const switchInput = screen.getByRole("checkbox");
-    const label = switchInput.closest("label");
-    const container = label?.querySelector("div");
-    const rightIconContainer = container?.lastElementChild as HTMLElement;
-    expect(rightIconContainer).toHaveClass("bg-blue-600");
-  });
-
-  it("handles switch in icon mode", async () => {
+  it("calls onCheckedChange when toggled", async () => {
+    const onCheckedChange = vi.fn();
     const user = userEvent.setup();
-    render(<Switch leftIcon={<SunIcon />} rightIcon={<MoonIcon />} />);
-    const switchInput = screen.getByRole("checkbox");
-    const label = switchInput.closest("label");
-    const container = label?.querySelector("div");
-    const leftIconContainer = container?.firstElementChild as HTMLElement;
-    const rightIconContainer = container?.lastElementChild as HTMLElement;
+    render(
+      <Switch
+        leftLabel="Light"
+        rightLabel="Dark"
+        onCheckedChange={onCheckedChange}
+      />
+    );
 
-    expect(switchInput).not.toBeChecked();
-    expect(leftIconContainer).toHaveClass("bg-blue-600");
-    expect(rightIconContainer).not.toHaveClass("bg-blue-600");
-
-    await user.click(switchInput);
-    expect(switchInput).toBeChecked();
-    expect(rightIconContainer).toHaveClass("bg-blue-600");
-    expect(leftIconContainer).not.toHaveClass("bg-blue-600");
-  });
-
-  it("disables icon switch when disabled prop is true", () => {
-    render(<Switch leftIcon={<SunIcon />} rightIcon={<MoonIcon />} disabled />);
-    expect(screen.getByRole("checkbox")).toBeDisabled();
+    const leftSegment = screen.getByText("Light");
+    await user.click(leftSegment);
+    expect(onCheckedChange).toHaveBeenCalledWith(false);
   });
 });

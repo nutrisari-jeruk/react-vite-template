@@ -15,6 +15,7 @@ import {
   Switch,
   Textarea,
   Toggle,
+  Tooltip,
 } from "@/components";
 import { ROUTES } from "@/config/constants";
 
@@ -370,6 +371,86 @@ function ComponentsPage() {
 <Alert variant="success" title="Success">
   Operation completed successfully!
 </Alert>`}
+          />
+
+          <ComponentDemo
+            title="Tooltips"
+            description="Tooltip components with different variants and placements"
+            preview={
+              <div className="space-y-8">
+                <Card className="bg-white p-6">
+                  <div className="flex flex-wrap items-center justify-center gap-6">
+                    <Tooltip content="Tooltip" variant="dark" placement="top">
+                      <Button variant="primary">Top</Button>
+                    </Tooltip>
+                    <Tooltip
+                      content="Tooltip"
+                      variant="dark"
+                      placement="bottom"
+                    >
+                      <Button variant="primary">Bottom</Button>
+                    </Tooltip>
+                    <Tooltip content="Tooltip" variant="dark" placement="left">
+                      <Button variant="primary">Left</Button>
+                    </Tooltip>
+                    <Tooltip content="Tooltip" variant="dark" placement="right">
+                      <Button variant="primary">Right</Button>
+                    </Tooltip>
+                  </div>
+                </Card>
+                <Card variant="flat" className="bg-gray-900 p-6">
+                  <div className="flex flex-wrap items-center justify-center gap-6">
+                    <Tooltip content="Tooltip" variant="light" placement="top">
+                      <Button variant="secondary">Top</Button>
+                    </Tooltip>
+                    <Tooltip
+                      content="Tooltip"
+                      variant="light"
+                      placement="bottom"
+                    >
+                      <Button variant="secondary">Bottom</Button>
+                    </Tooltip>
+                    <Tooltip content="Tooltip" variant="light" placement="left">
+                      <Button variant="secondary">Left</Button>
+                    </Tooltip>
+                    <Tooltip
+                      content="Tooltip"
+                      variant="light"
+                      placement="right"
+                    >
+                      <Button variant="secondary">Right</Button>
+                    </Tooltip>
+                  </div>
+                </Card>
+                <div className="flex flex-wrap items-center justify-center gap-6">
+                  <Tooltip content="Hover over me for more info">
+                    <span className="cursor-pointer text-blue-600 underline">
+                      Hover me
+                    </span>
+                  </Tooltip>
+                  <Tooltip content="This is a disabled tooltip" disabled>
+                    <Button variant="secondary" disabled>
+                      Disabled
+                    </Button>
+                  </Tooltip>
+                </div>
+              </div>
+            }
+            code={`<Tooltip content="Tooltip" variant="dark" placement="top">
+  <Button>Top</Button>
+</Tooltip>
+
+<Tooltip content="Tooltip" variant="light" placement="bottom">
+  <Button>Bottom</Button>
+</Tooltip>
+
+<Tooltip content="Hover over me for more info">
+  <span className="underline">Hover me</span>
+</Tooltip>
+
+<Tooltip content="Disabled tooltip" disabled>
+  <Button disabled>Disabled</Button>
+</Tooltip>`}
           />
 
           <ComponentDemo

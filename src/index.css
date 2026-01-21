@@ -112,6 +112,7 @@
   --color-green-light-6: #daf8e6;
 
   /* Z-Index Scale */
+  --z-tooltip: 5;
   --z-dropdown: 10;
   --z-sticky: 20;
   --z-modal: 30;
@@ -150,4 +151,101 @@
 
 .safe-left-4 {
   padding-left: calc(env(safe-area-inset-left, 0px) + 1rem);
+}
+
+/* Tooltip Popup - ensure arrow can be positioned outside */
+[data-tooltip-variant] {
+  position: relative;
+}
+
+/* Tooltip Arrow Styles */
+.tooltip-arrow {
+  position: absolute !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-style: solid !important;
+}
+
+/* Top arrow - same positioning for both variants */
+.tooltip-arrow[data-side="top"] {
+  border-top: 6px solid;
+  border-left: 6px solid transparent !important;
+  border-right: 6px solid transparent !important;
+  border-bottom: none !important;
+  top: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin-top: -1px !important;
+}
+
+/* Bottom arrow - same positioning for both variants */
+.tooltip-arrow[data-side="bottom"] {
+  border-bottom: 6px solid;
+  border-left: 6px solid transparent !important;
+  border-right: 6px solid transparent !important;
+  border-top: none !important;
+  bottom: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin-bottom: -1px !important;
+}
+
+/* Left arrow - same positioning for both variants */
+.tooltip-arrow[data-side="left"] {
+  border-left: 6px solid;
+  border-top: 6px solid transparent !important;
+  border-bottom: 6px solid transparent !important;
+  border-right: none !important;
+  left: 100% !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin-left: -1px !important;
+}
+
+/* Right arrow - same positioning for both variants */
+.tooltip-arrow[data-side="right"] {
+  border-right: 6px solid;
+  border-top: 6px solid transparent !important;
+  border-bottom: 6px solid transparent !important;
+  border-left: none !important;
+  right: 100% !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin-right: -1px !important;
+}
+
+/* Dark variant - gray arrow */
+.tooltip-arrow[data-tooltip-variant="dark"][data-side="top"] {
+  border-top-color: rgb(17 24 40) !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="dark"][data-side="bottom"] {
+  border-bottom-color: rgb(17 24 40) !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="dark"][data-side="left"] {
+  border-left-color: rgb(17 24 40) !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="dark"][data-side="right"] {
+  border-right-color: rgb(17 24 40) !important;
+}
+
+/* Light variant - white arrow */
+.tooltip-arrow[data-tooltip-variant="light"][data-side="top"] {
+  border-top-color: #ffffff !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="light"][data-side="bottom"] {
+  border-bottom-color: #ffffff !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="light"][data-side="left"] {
+  border-left-color: #ffffff !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="light"][data-side="right"] {
+  border-right-color: #ffffff !important;
 }

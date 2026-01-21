@@ -12,3 +12,4 @@ export { Alert } from "./alert";
 export { Badge } from "./badge";
 export { Card } from "./card";
 export { Avatar, AvatarGroup } from "./avatar";
+export { Tooltip } from "./tooltip";

@@ -99,7 +99,8 @@ src/
 │   │   ├── switch/      # Segmented control switch
 │   │   ├── table/       # Table components (Table, TableHeader, TableBody, etc.)
 │   │   ├── textarea/    # Multi-line text input
-│   │   └── toggle/      # Toggle button
+│   │   ├── toggle/      # Toggle button
+│   │   └── tooltip/     # Tooltip component with variants and placements
 │   ├── data-table/      # Server-side data table component
 │   ├── layouts/         # Layout components (MainLayout, Navbar, Sidebar)
 │   ├── __tests__/       # Component tests
@@ -158,10 +159,11 @@ The project includes a comprehensive set of **custom-built UI components** with 
 
 **Feedback Components:**
 - `Alert` - Dismissible alerts with floating positions and animations
+- `Tooltip` - Contextual tooltips with dark and light variants, multiple placements
 
 **Usage:**
 ```typescript
-import { Button, Input, Card, Alert, Switch, Toggle } from '@/components/ui'
+import { Button, Input, Card, Alert, Switch, Toggle, Tooltip } from '@/components/ui'
 
 function MyComponent() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
@@ -185,6 +187,11 @@ function MyComponent() {
       {/* Toggle switch */}
       <Toggle label="Enable notifications" />
       
+      {/* Tooltip */}
+      <Tooltip content="This is a helpful tooltip" variant="dark" placement="top">
+        <Button variant="secondary">Hover me</Button>
+      </Tooltip>
+      
       <Alert variant="info" dismissible>
         Information message
       </Alert>
@@ -203,6 +210,39 @@ The `Switch` component is a segmented control for choosing between two options. 
 
 **Toggle Component:**
 The `Toggle` component is a traditional toggle switch for boolean values.
+
+**Tooltip Component:**
+The `Tooltip` component provides contextual information on hover or focus. It supports:
+- Two variants: `dark` (dark background with white text) and `light` (white background with dark text)
+- Four placements: `top`, `bottom`, `left`, `right`
+- Customizable offset and styling
+- Disabled state
+- Accessible with Base UI primitives
+
+**Usage:**
+```typescript
+import { Tooltip } from '@/components/ui'
+
+// Basic usage
+<Tooltip content="This is a tooltip">
+  <Button>Hover me</Button>
+</Tooltip>
+
+// With variant and placement
+<Tooltip 
+  content="Helpful information" 
+  variant="light" 
+  placement="bottom"
+  sideOffset={12}
+>
+  <span className="text-blue-600 underline">Learn more</span>
+</Tooltip>
+
+// Disabled tooltip
+<Tooltip content="This won't show" disabled>
+  <Button disabled>Disabled</Button>
+</Tooltip>
+```
 
 All components include:
 - ✅ Full TypeScript support

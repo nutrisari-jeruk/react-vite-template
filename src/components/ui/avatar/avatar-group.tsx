@@ -41,11 +41,7 @@ export function AvatarGroup({
   return (
     <div className={cn("flex items-center", spacingStyles[spacing], className)}>
       {visibleAvatars.map((child, index) => (
-        <div
-          key={index}
-          className="ring-2 ring-white"
-          style={{ zIndex: visibleAvatars.length - index }}
-        >
+        <div key={index} style={{ zIndex: visibleAvatars.length - index }}>
           {child}
         </div>
       ))}
@@ -53,7 +49,7 @@ export function AvatarGroup({
       {remainingCount > 0 && (
         <div
           className={cn(
-            "flex items-center justify-center rounded-full bg-gray-300 font-semibold text-gray-700 ring-2 ring-white",
+            "flex items-center justify-center rounded-full bg-gray-300 font-semibold text-gray-700",
             sizeStyles[size]
           )}
           style={{ zIndex: 0 }}

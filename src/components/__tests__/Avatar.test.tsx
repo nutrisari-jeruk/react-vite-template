@@ -17,7 +17,7 @@ describe("Avatar", () => {
 
   it("renders with default size", () => {
     const { container } = render(<Avatar initials="TG" />);
-    const avatar = container.querySelector(".w-10");
+    const avatar = container.querySelector(".size-10");
     expect(avatar).toBeInTheDocument();
   });
 
@@ -25,12 +25,12 @@ describe("Avatar", () => {
     const { container: xsContainer } = render(
       <Avatar initials="XS" size="xs" />
     );
-    expect(xsContainer.querySelector(".w-6")).toBeInTheDocument();
+    expect(xsContainer.querySelector(".size-6")).toBeInTheDocument();
 
     const { container: xlContainer } = render(
       <Avatar initials="XL" size="xl" />
     );
-    expect(xlContainer.querySelector(".w-16")).toBeInTheDocument();
+    expect(xlContainer.querySelector(".size-16")).toBeInTheDocument();
   });
 
   it("renders with circle shape by default", () => {

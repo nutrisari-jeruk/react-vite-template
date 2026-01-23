@@ -1,4 +1,5 @@
 import type { TextareaHTMLAttributes } from "react";
+import { cn } from "@/utils/cn";
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -33,7 +34,7 @@ export function Textarea({
     : "border-gray-300 focus:border-blue-500 focus:ring-blue-500 bg-white";
 
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
+    <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
         <label
           htmlFor={textareaId}
@@ -44,7 +45,7 @@ export function Textarea({
       )}
       <textarea
         id={textareaId}
-        className={`${baseStyles} ${sizeStyles[textareaSize]} ${borderStyle}`}
+        className={cn(baseStyles, sizeStyles[textareaSize], borderStyle)}
         disabled={disabled}
         aria-invalid={!!error}
         aria-describedby={

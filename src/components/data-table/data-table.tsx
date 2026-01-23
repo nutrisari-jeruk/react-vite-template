@@ -301,12 +301,15 @@ export function DataTable<T>({
                 {data.length > 0 && (
                   <>
                     Showing{" "}
-                    <span className="font-medium">{startIndex + 1}</span> to{" "}
-                    <span className="font-medium">
+                    <span className="font-medium tabular-nums">
+                      {startIndex + 1}
+                    </span>{" "}
+                    to{" "}
+                    <span className="font-medium tabular-nums">
                       {Math.min(endIndex, startIndex + data.length)}
                     </span>{" "}
                     of{" "}
-                    <span className="font-medium">
+                    <span className="font-medium tabular-nums">
                       {paginationState.pageSize * (pageCount || 1)}
                     </span>{" "}
                     results
@@ -347,7 +350,7 @@ export function DataTable<T>({
               >
                 <button
                   type="button"
-                  className="relative inline-flex items-center rounded-l-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="focus:z-sticky relative inline-flex items-center rounded-l-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                   onClick={() =>
                     onPaginationChange({
                       ...paginationState,
@@ -377,10 +380,10 @@ export function DataTable<T>({
                       key={pageNum}
                       type="button"
                       className={cn(
-                        "relative inline-flex items-center px-4 py-2 text-sm font-semibold transition-colors focus:z-20 focus:outline-offset-0",
+                        "focus:z-sticky relative inline-flex items-center px-4 py-2 text-sm font-semibold transition-colors focus:outline-offset-0",
                         isActive
-                          ? "z-10 bg-blue-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-                          : "text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                          ? "z-dropdown bg-blue-600 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                          : "focus:z-sticky text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:outline-offset-0"
                       )}
                       onClick={() =>
                         onPaginationChange({
@@ -389,13 +392,13 @@ export function DataTable<T>({
                         })
                       }
                     >
-                      {pageNum}
+                      <span className="tabular-nums">{pageNum}</span>
                     </button>
                   );
                 })}
                 <button
                   type="button"
-                  className="relative inline-flex items-center rounded-r-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="focus:z-sticky relative inline-flex items-center rounded-r-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                   onClick={() =>
                     onPaginationChange({
                       ...paginationState,

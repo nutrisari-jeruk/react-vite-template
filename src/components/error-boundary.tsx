@@ -116,11 +116,11 @@ function DefaultErrorFallback({
             </svg>
           </div>
 
-          <h1 className="mb-2 text-2xl font-bold text-gray-900">
+          <h1 className="mb-2 text-2xl font-bold text-balance text-gray-900">
             Something went wrong
           </h1>
 
-          <p className="mb-6 text-gray-600">
+          <p className="mb-6 text-pretty text-gray-600">
             {error.message || "An unexpected error occurred. Please try again."}
           </p>
 
@@ -166,7 +166,7 @@ function DefaultErrorFallback({
             </details>
           )}
 
-          <p className="mt-6 text-sm text-gray-500">
+          <p className="mt-6 text-sm text-pretty text-gray-500">
             If the problem persists, please contact{" "}
             <a
               href={`mailto:${import.meta.env.VITE_SUPPORT_EMAIL || "support@example.com"}`}

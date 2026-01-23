@@ -85,7 +85,11 @@ export function Button({
         className
       )}
       disabled={disabled || loading}
-      aria-label={iconOnly ? ariaLabel || props["aria-label"] : undefined}
+      aria-label={
+        iconOnly
+          ? ariaLabel || props["aria-label"] || "Button"
+          : props["aria-label"]
+      }
       {...props}
     >
       {loading && <LoadingSpinner />}

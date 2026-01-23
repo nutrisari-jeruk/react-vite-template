@@ -31,13 +31,17 @@ export function ComponentDemo({
       id={title.toLowerCase().replace(/\s+/g, "-")}
     >
       <div className="mb-4">
-        <h3 className="mb-2 text-2xl font-bold text-gray-900">{title}</h3>
-        {description && <p className="text-gray-600">{description}</p>}
+        <h3 className="mb-2 text-2xl font-bold text-balance text-gray-900">
+          {title}
+        </h3>
+        {description && (
+          <p className="text-pretty text-gray-600">{description}</p>
+        )}
       </div>
 
       <div className="space-y-6">
         <div>
-          <h4 className="mb-3 text-sm font-semibold text-gray-700 uppercase">
+          <h4 className="mb-3 text-sm font-semibold text-balance text-gray-700 uppercase">
             Preview
           </h4>
           <div className="flex flex-wrap items-center gap-4 rounded-lg border border-gray-200 bg-white p-8">
@@ -46,7 +50,7 @@ export function ComponentDemo({
         </div>
 
         <div>
-          <h4 className="mb-3 text-sm font-semibold text-gray-700 uppercase">
+          <h4 className="mb-3 text-sm font-semibold text-balance text-gray-700 uppercase">
             Code
           </h4>
           <CodeBlock code={code} language="tsx" />
@@ -54,7 +58,7 @@ export function ComponentDemo({
 
         {props && props.length > 0 && (
           <div>
-            <h4 className="mb-3 text-sm font-semibold text-gray-700 uppercase">
+            <h4 className="mb-3 text-sm font-semibold text-balance text-gray-700 uppercase">
               Props
             </h4>
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">

@@ -90,7 +90,7 @@ export function TableCell({
   return (
     <td
       className={cn(
-        "px-4 py-3.5 align-middle text-sm whitespace-nowrap text-gray-700 [&:has([role=checkbox])]:pr-0",
+        "px-4 py-3.5 align-middle text-sm whitespace-nowrap text-gray-700 tabular-nums [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}

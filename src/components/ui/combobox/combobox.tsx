@@ -185,7 +185,7 @@ export function Combobox({
             </div>
           </div>
           <BaseCombobox.Portal>
-            <BaseCombobox.Positioner side="bottom" align="start" sideOffset={4}>
+            <BaseCombobox.Positioner>
               <BaseCombobox.Popup
                 className="z-dropdown"
                 style={{ width: "var(--anchor-width)" }}

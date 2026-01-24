@@ -98,14 +98,21 @@ src/
 │   │   ├── button/      # Button with variants and sizes
 │   │   ├── card/        # Card container
 │   │   ├── checkbox/    # Checkbox input
+│   │   ├── combobox/    # Searchable dropdown with Base UI
+│   │   ├── dialog/      # Modal dialog with animations
+│   │   ├── dropdown-menu/ # Dropdown menu with Base UI
 │   │   ├── input/       # Text input with validation
-│   │   ├── select/      # Select dropdown
+│   │   ├── pagination/  # Pagination component
+│   │   ├── select/      # Select dropdown with Base UI
+│   │   ├── skeleton/    # Loading placeholders
 │   │   ├── switch/      # Segmented control switch
 │   │   ├── table/       # Table components (Table, TableHeader, TableBody, etc.)
 │   │   ├── textarea/    # Multi-line text input
+│   │   ├── toast/       # Global notification system
 │   │   ├── toggle/      # Toggle button
 │   │   └── tooltip/     # Tooltip component with variants and placements
-│   ├── data-table/      # Server-side data table component
+│   ├── form/            # React Hook Form integration components
+│   ├── data-table/      # Server-side data table with row selection
 │   ├── layouts/         # Layout components (MainLayout, Navbar, Sidebar)
 │   ├── __tests__/       # Component tests
 │   └── *.tsx            # Shared components (ErrorBoundary, etc.)
@@ -121,6 +128,10 @@ src/
 │       ├── types/       # Feature types
 │       └── index.ts     # Public API
 ├── hooks/               # Shared custom hooks
+│   ├── use-media-query.ts   # Media query hook (SSR-safe)
+│   ├── use-breakpoint.ts    # Tailwind breakpoint hook
+│   ├── __tests__/           # Hook tests
+│   └── index.ts             # Barrel export
 ├── lib/                 # Core utilities
 │   ├── api-client.ts    # Axios instance with interceptors
 │   ├── api-error.ts     # Custom error classes
@@ -148,10 +159,12 @@ The project includes a comprehensive set of **custom-built UI components** with 
 **Form Components:**
 - `Input` - Text input with icons, validation states, and error handling
 - `Textarea` - Multi-line text input with auto-resize support
-- `Select` - Dropdown select with custom styling
+- `Select` - Dropdown select with custom styling (Base UI powered)
+- `Combobox` - Searchable dropdown with type-ahead filtering
 - `Checkbox` - Accessible checkbox input
 - `Switch` - Segmented control switch for choosing between two options (e.g., Light/Dark mode)
 - `Toggle` - Toggle switch for boolean values
+- `Form` - React Hook Form integration components (Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription)
 
 **Display Components:**
 - `Button` - Multiple variants (primary, secondary, ghost, danger), sizes, and loading states
@@ -159,23 +172,69 @@ The project includes a comprehensive set of **custom-built UI components** with 
 - `Badge` - Status badges and labels with Tailwind UI styling
 - `Avatar` - User avatars with fallback and group support
 - `Table` - Table components (Table, TableHeader, TableBody, TableRow, TableCell, etc.)
-- `DataTable` - Full-featured data table with server-side capabilities
+- `DataTable` - Full-featured data table with server-side capabilities, row selection, and stable keys
+- `Skeleton` - Loading placeholders with pulse and wave animations
 
 **Feedback Components:**
 - `Alert` - Dismissible alerts with floating positions and animations
 - `Tooltip` - Contextual tooltips with dark and light variants, multiple placements
+- `Toast` - Global notification system with multiple variants and positions
+
+**Overlay Components:**
+- `Dialog` - Accessible modal dialogs with animations and multiple sizes
+- `DropdownMenu` - Accessible dropdown menus with items, checkbox items, and radio groups
+
+**Navigation Components:**
+- `Pagination` - Standalone pagination with intelligent page generation
 
 **Usage:**
 ```typescript
-import { Button, Input, Card, Alert, Switch, Toggle, Tooltip } from '@/components/ui'
+import { 
+  Button, Input, Card, Alert, Switch, Toggle, Tooltip,
+  Dialog, DialogTrigger, DialogContent, DialogFooter,
+  useToast, Skeleton, Pagination
+} from '@/components/ui'
 
 function MyComponent() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const [isOpen, setIsOpen] = useState(false)
+  const { toast } = useToast()
   
   return (
     <Card>
       <Input placeholder="Enter email" />
       <Button variant="primary" size="md">Submit</Button>
+      
+      {/* Dialog/Modal */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger><Button>Open Dialog</Button></DialogTrigger>
+        <DialogContent title="Confirmation" size="md">
+          <p>Are you sure you want to proceed?</p>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>
+            <Button variant="primary">Confirm</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Toast Notification */}
+      <Button onClick={() => toast({
+        title: 'Success!',
+        message: 'Your action was completed',
+        variant: 'success'
+      })}>
+        Show Toast
+      </Button>
+      
+      {/* Loading Skeleton */}
+      <Skeleton className="h-20 w-full" variant="rectangular" />
+      
+      {/* Pagination */}
+      <Pagination
+        currentPage={1}
+        totalPages={10}
+        onPageChange={(page) => console.log(page)}
+      />
       
       {/* Segmented control switch */}
       <Switch
@@ -249,20 +308,25 @@ import { Tooltip } from '@/components/ui'
 ```
 
 All components include:
-- ✅ Full TypeScript support
+- ✅ Full TypeScript support with JSDoc documentation
 - ✅ ARIA attributes for accessibility
-- ✅ Consistent design tokens
+- ✅ Consistent design tokens (Tailwind CSS v4)
 - ✅ Composable APIs
 - ✅ Validation state support
+- ✅ Built on Base UI primitives where applicable
+- ✅ Respects `prefers-reduced-motion`
+- ✅ Comprehensive test coverage
 
 ### DataTable Component
 
-The `DataTable` component provides a full-featured data table with server-side pagination, sorting, and filtering capabilities.
+The `DataTable` component provides a full-featured data table with server-side pagination, sorting, filtering, and row selection capabilities.
 
 **Features:**
 - Server-side pagination with customizable page sizes (10, 25, 50, 100)
 - Server-side sorting with visual indicators
 - Real-time filtering/search
+- Row selection (single or multi-select)
+- Stable row keys with `getRowId` prop
 - Loading, error, and empty states
 - TanStack Query integration
 - Tailwind UI styling
@@ -370,6 +434,10 @@ function MyTable() {
 - `filtering` - Enable filtering (default: true)
 - `filterValue` - Current filter value
 - `onFilterChange` - Filter change handler
+- `getRowId` - Function to extract stable row ID (recommended for row selection)
+- `enableRowSelection` - Enable row selection checkboxes
+- `selectedRows` - Set of selected row IDs
+- `onRowSelectionChange` - Row selection change handler
 - `isLoading` - Loading state
 - `error` - Error message
 - `emptyMessage` - Message when no data
@@ -695,6 +763,173 @@ function App() {
 }
 ```
 
+### Dialog Component
+
+The `Dialog` component provides accessible modal dialogs with animations:
+
+```typescript
+import { Dialog, DialogTrigger, DialogContent, DialogFooter } from '@/components/ui'
+
+function MyDialog() {
+  const [isOpen, setIsOpen] = useState(false)
+  
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger>
+        <Button>Open Dialog</Button>
+      </DialogTrigger>
+      <DialogContent 
+        title="Confirm Action" 
+        description="This action cannot be undone"
+        size="md"
+      >
+        <p>Are you sure you want to proceed?</p>
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => setIsOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger">Delete</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+**Features:**
+- Built on Base UI for accessibility
+- Multiple sizes (sm, md, lg, xl, full)
+- Animated entry/exit with Framer Motion
+- Respects `prefers-reduced-motion`
+- Optional close button and footer
+
+### Toast Notification System
+
+The `Toast` component provides a global notification system:
+
+```typescript
+import { ToastProvider, useToast } from '@/components/ui'
+
+// Wrap your app with ToastProvider
+function App() {
+  return (
+    <ToastProvider>
+      <MyComponent />
+    </ToastProvider>
+  )
+}
+
+// Use in components
+function MyComponent() {
+  const { toast } = useToast()
+  
+  const handleSuccess = () => {
+    toast({
+      title: 'Success!',
+      message: 'Your changes have been saved',
+      variant: 'success',
+      duration: 3000
+    })
+  }
+  
+  return <Button onClick={handleSuccess}>Save</Button>
+}
+```
+
+**Features:**
+- Four variants (info, success, warning, error)
+- Auto-dismiss with configurable duration
+- Multiple positions (top/bottom, left/center/right)
+- Stack management with max toast limit
+- Dismissible notifications
+
+### Form Integration Components
+
+React Hook Form integration components for seamless form handling:
+
+```typescript
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  FormDescription
+} from '@/components/form'
+import { Input } from '@/components/ui'
+
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Password must be 8+ characters')
+})
+
+function MyForm() {
+  const form = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: { email: '', password: '' }
+  })
+  
+  return (
+    <Form form={form} onSubmit={(data) => console.log(data)}>
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input {...field} type="email" />
+            </FormControl>
+            <FormDescription>We'll never share your email</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <Button type="submit">Submit</Button>
+    </Form>
+  )
+}
+```
+
+**Features:**
+- Proper label-input association
+- Automatic error display
+- Field-level descriptions
+- useFormField hook for context access
+
+### Responsive Hooks
+
+Custom hooks for responsive design:
+
+```typescript
+import { useMediaQuery, useBreakpoint } from '@/hooks'
+
+function MyComponent() {
+  // Media query hook
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  
+  // Tailwind breakpoint hook
+  const { isAboveMd, isAboveLg, currentBreakpoint } = useBreakpoint()
+  
+  return (
+    <div>
+      {isMobile ? <MobileView /> : <DesktopView />}
+      {currentBreakpoint} {/* 'sm', 'md', 'lg', 'xl', '2xl' */}
+    </div>
+  )
+}
+```
+
+**Features:**
+- SSR-safe implementations
+- Proper cleanup on unmount
+- Tailwind breakpoint detection
+- Custom media query support
+
 ### Example: Try It Out
 
 Navigate to `/examples/auth` to see authentication in action:
@@ -899,6 +1134,26 @@ function MyForm() {
 import { useLocalStorage } from '@/hooks'
 
 const [value, setValue] = useLocalStorage('key', defaultValue)
+```
+
+### useMediaQuery
+
+```typescript
+import { useMediaQuery } from '@/hooks'
+
+const isMobile = useMediaQuery('(max-width: 768px)')
+const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+```
+
+### useBreakpoint
+
+```typescript
+import { useBreakpoint } from '@/hooks'
+
+const { 
+  isAboveSm, isAboveMd, isAboveLg, isAboveXl, isAbove2xl,
+  currentBreakpoint 
+} = useBreakpoint()
 ```
 
 ## Environment Variables

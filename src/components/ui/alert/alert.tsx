@@ -278,9 +278,9 @@ export function Alert({
           {timeout && timeout > 0 && (
             <div className="absolute inset-x-0 bottom-0 h-1 overflow-hidden rounded-b-lg bg-black/10">
               <div
-                className={`h-full ${progressBarColors[variant]} transition-all ease-linear`}
+                className={`h-full w-full origin-left ${progressBarColors[variant]} transition-transform ease-linear`}
                 style={{
-                  width: `${progress}%`,
+                  transform: `scaleX(${progress / 100})`,
                   transitionDuration: "50ms",
                 }}
                 role="progressbar"

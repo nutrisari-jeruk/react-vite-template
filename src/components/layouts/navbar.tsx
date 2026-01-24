@@ -79,7 +79,7 @@ export function Navbar() {
         className={cn(
           "bg-primary z-sidebar fixed inset-y-0 left-0 w-64 transform text-white shadow-lg md:static dark:bg-gray-800",
           isOpen ? "translate-x-0" : "-translate-x-full",
-          "safe-top-0 flex flex-col transition-transform duration-300 ease-in-out motion-reduce:transition-none md:translate-x-0"
+          "safe-top-0 flex flex-col transition-transform duration-200 ease-out motion-reduce:transition-none md:translate-x-0"
         )}
       >
         <div className="flex items-center justify-between border-b border-white/20 p-6 dark:border-gray-700">

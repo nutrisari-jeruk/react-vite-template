@@ -4,7 +4,7 @@ import { ROUTES } from "@/config/constants";
 
 function AboutPage() {
   return (
-    <div className="min-h-[calc(100vh-12rem)] bg-linear-to-br from-gray-50 to-gray-100 px-4 py-12">
+    <div className="min-h-[calc(100dvh-12rem)] bg-gray-50 px-4 py-12">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 text-center">
           <Link to={ROUTES.HOME}>
@@ -12,17 +12,17 @@ function AboutPage() {
               ← Back to Home
             </Button>
           </Link>
-          <h1 className="mb-4 text-4xl font-bold text-gray-900">
+          <h1 className="mb-4 text-4xl font-bold text-balance text-gray-900">
             About This Template
           </h1>
-          <p className="mx-auto max-w-2xl text-lg text-gray-600">
+          <p className="mx-auto max-w-2xl text-lg text-pretty text-gray-600">
             This is a comprehensive React frontend template built with modern
             tools and best practices.
           </p>
         </div>
 
         <Card className="mb-8 p-6">
-          <h2 className="mb-4 flex items-center gap-2 text-2xl font-semibold">
+          <h2 className="mb-4 flex items-center gap-2 text-2xl font-semibold text-balance">
             <span>🚀</span> Tech Stack
           </h2>
           <div className="space-y-3">
@@ -66,13 +66,15 @@ function AboutPage() {
         </Card>
 
         <Card className="mb-8 p-6">
-          <h2 className="mb-4 flex items-center gap-2 text-2xl font-semibold">
+          <h2 className="mb-4 flex items-center gap-2 text-2xl font-semibold text-balance">
             <span>✨</span> Key Features
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-lg bg-gray-50 p-4">
-              <h3 className="mb-2 font-semibold">Component Library</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="mb-2 font-semibold text-balance">
+                Component Library
+              </h3>
+              <p className="text-sm text-pretty text-gray-600">
                 Pre-built, accessible components ready to use
               </p>
               <Badge variant="primary" size="sm" className="mt-2">
@@ -80,8 +82,8 @@ function AboutPage() {
               </Badge>
             </div>
             <div className="rounded-lg bg-gray-50 p-4">
-              <h3 className="mb-2 font-semibold">Type Safety</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="mb-2 font-semibold text-balance">Type Safety</h3>
+              <p className="text-sm text-pretty text-gray-600">
                 Full TypeScript support for better DX
               </p>
               <Badge variant="success" size="sm" className="mt-2">
@@ -89,8 +91,10 @@ function AboutPage() {
               </Badge>
             </div>
             <div className="rounded-lg bg-gray-50 p-4">
-              <h3 className="mb-2 font-semibold">Optimized Build</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="mb-2 font-semibold text-balance">
+                Optimized Build
+              </h3>
+              <p className="text-sm text-pretty text-gray-600">
                 Vite for lightning-fast hot module replacement
               </p>
               <Badge variant="warning" size="sm" className="mt-2">
@@ -98,8 +102,8 @@ function AboutPage() {
               </Badge>
             </div>
             <div className="rounded-lg bg-gray-50 p-4">
-              <h3 className="mb-2 font-semibold">Testing Ready</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="mb-2 font-semibold text-balance">Testing Ready</h3>
+              <p className="text-sm text-pretty text-gray-600">
                 Vitest configured with testing utilities
               </p>
               <Badge variant="danger" size="sm" className="mt-2">
@@ -110,8 +114,10 @@ function AboutPage() {
         </Card>
 
         <Card className="p-6 text-center">
-          <h2 className="mb-4 text-2xl font-semibold">Ready to Build?</h2>
-          <p className="mb-4 text-gray-600">
+          <h2 className="mb-4 text-2xl font-semibold text-balance">
+            Ready to Build?
+          </h2>
+          <p className="mb-4 text-pretty text-gray-600">
             Explore the component library and start building your next amazing
             project!
           </p>

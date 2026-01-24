@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { CodeBlock } from "./code-block";
+import { cn } from "@/utils/cn";
 
 interface PropRow {
   name: string;
@@ -27,7 +28,7 @@ export function ComponentDemo({
 }: ComponentDemoProps) {
   return (
     <div
-      className={`mb-12 ${className}`}
+      className={cn("mb-12", className)}
       id={title.toLowerCase().replace(/\s+/g, "-")}
     >
       <div className="mb-4">

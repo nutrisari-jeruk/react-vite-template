@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { cn } from "@/utils/cn";
 
 interface CodeBlockProps {
   code: string;
@@ -28,7 +29,7 @@ export function CodeBlock({
   const lines = code.split("\n");
 
   return (
-    <div className={`group relative ${className}`}>
+    <div className={cn("group relative", className)}>
       <div className="flex items-center justify-between rounded-t-lg border-b border-gray-700 bg-gray-800 px-4 py-2 text-gray-200">
         <span className="font-mono text-sm">{language}</span>
         <button

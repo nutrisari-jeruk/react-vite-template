@@ -4,7 +4,7 @@ import { ROUTES } from "@/config/constants";
 
 function HomePage() {
   return (
-    <div className="min-h-[calc(100vh-12rem)] bg-gray-50 px-4 py-12">
+    <div className="min-h-[calc(100dvh-12rem)] bg-gray-50 px-4 py-12">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 text-center">
           <div className="mb-4 flex items-center justify-center gap-2">
@@ -56,7 +56,7 @@ function HomePage() {
               <span className="text-2xl">⚛️</span>
               <h3 className="text-lg font-semibold">Modern Stack</h3>
             </div>
-            <p className="mb-3 text-sm text-gray-600">
+            <p className="mb-3 text-sm text-pretty text-gray-600">
               Built with React 18, TypeScript, and Vite for the best developer
               experience.
             </p>
@@ -73,7 +73,7 @@ function HomePage() {
               <span className="text-2xl">🎨</span>
               <h3 className="text-lg font-semibold">UI Components</h3>
             </div>
-            <p className="mb-3 text-sm text-gray-600">
+            <p className="mb-3 text-sm text-pretty text-gray-600">
               Pre-built accessible components with Tailwind CSS styling.
             </p>
             <div className="flex flex-wrap gap-1">
@@ -87,7 +87,7 @@ function HomePage() {
               <span className="text-2xl">🛠️</span>
               <h3 className="text-lg font-semibold">Developer Tools</h3>
             </div>
-            <p className="mb-3 text-sm text-gray-600">
+            <p className="mb-3 text-sm text-pretty text-gray-600">
               ESLint, Prettier, Vitest, and Docker ready for production.
             </p>
             <div className="flex flex-wrap gap-1">

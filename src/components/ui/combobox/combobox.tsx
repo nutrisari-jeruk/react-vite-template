@@ -3,11 +3,28 @@ import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { Field } from "@base-ui/react/field";
 import { cn } from "@/utils/cn";
 
+/**
+ * Combobox option type
+ */
 export interface ComboboxOption {
   value: string;
   label: string;
 }
 
+/**
+ * Combobox component props
+ *
+ * @property options - Array of selectable options
+ * @property value - Controlled value
+ * @property onChange - Value change handler
+ * @property placeholder - Placeholder text
+ * @property label - Label text
+ * @property error - Error message (automatically applies error styling)
+ * @property helperText - Helper text shown below combobox
+ * @property disabled - Whether combobox is disabled
+ * @property iconLeft - Icon to display on the left
+ * @property comboboxSize - Size of the combobox
+ */
 interface ComboboxProps {
   options: ComboboxOption[];
   value?: string;
@@ -53,27 +70,28 @@ export function Combobox({
 
   const isControlled = controlledValue !== undefined;
 
-  const itemToStringLabel = (x: ComboboxOption | string | null) => {
+  const itemToStringLabel = (x: ComboboxOption | string | null): string => {
     if (x == null) return "";
     if (typeof x === "string") {
       return options.find((o) => o.value === x)?.label ?? x;
     }
-    return (x as ComboboxOption).label ?? "";
+    if (typeof x === "object" && "label" in x) {
+      return x.label ?? "";
+    }
+    return "";
   };
 
   const isItemEqualToValue = (
     a: ComboboxOption | string,
     b: string | ComboboxOption | null
-  ) => {
+  ): boolean => {
     if (b == null) return false;
+
     const aVal =
-      typeof a === "object" && a != null && "value" in a
-        ? (a as ComboboxOption).value
-        : a;
+      typeof a === "object" && a != null && "value" in a ? a.value : String(a);
     const bVal =
-      typeof b === "object" && b != null && "value" in b
-        ? (b as ComboboxOption).value
-        : b;
+      typeof b === "object" && b != null && "value" in b ? b.value : String(b);
+
     return aVal === bVal;
   };
 

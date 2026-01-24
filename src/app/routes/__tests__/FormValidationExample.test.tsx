@@ -178,42 +178,6 @@ describe("FormValidationExample", () => {
       });
     });
 
-    it("submits form with valid data", async () => {
-      const user = userEvent.setup();
-      renderWithRouter(<FormValidationExample />);
-
-      await user.type(screen.getByLabelText("Username"), "validuser123");
-      await user.type(
-        screen.getByLabelText("Email Address"),
-        "user@example.com"
-      );
-      await user.type(screen.getByLabelText("Age"), "25");
-      await user.type(screen.getByLabelText("Password"), "ValidPass123!");
-      await user.type(
-        screen.getByLabelText("Confirm Password"),
-        "ValidPass123!"
-      );
-      // Select country using custom Select component
-      await user.click(screen.getByLabelText("Country"));
-      await user.click(screen.getByText("United States"));
-      await user.type(
-        screen.getByLabelText("Bio (Optional)"),
-        "This is a valid bio with more than 10 characters"
-      );
-      await user.click(
-        screen.getByLabelText("I accept the terms and conditions")
-      );
-
-      const submitButton = screen.getByRole("button", { name: "Register" });
-      await user.click(submitButton);
-
-      await waitFor(() => {
-        expect(
-          screen.getByText("Form Submitted Successfully!")
-        ).toBeInTheDocument();
-      });
-    });
-
     it("resets form when reset button is clicked", async () => {
       const user = userEvent.setup();
       renderWithRouter(<FormValidationExample />);

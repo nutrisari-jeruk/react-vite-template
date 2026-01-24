@@ -1,6 +1,36 @@
+/**
+ * Card Component
+ *
+ * A flexible container component with multiple style variants.
+ *
+ * @example
+ * ```tsx
+ * // Basic card
+ * <Card>
+ *   <p>Card content</p>
+ * </Card>
+ *
+ * // Card with title and description
+ * <Card title="Card Title" description="Card description">
+ *   <p>Card content</p>
+ * </Card>
+ *
+ * // Different variants
+ * <Card variant="outlined">Outlined card</Card>
+ * <Card variant="elevated">Elevated card</Card>
+ * ```
+ */
+
 import type { HTMLAttributes } from "react";
 import { cn } from "@/utils/cn";
 
+/**
+ * Card component props
+ *
+ * @property variant - Visual style variant
+ * @property title - Optional title displayed at the top
+ * @property description - Optional description below the title
+ */
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   variant?: "default" | "outlined" | "elevated" | "flat";

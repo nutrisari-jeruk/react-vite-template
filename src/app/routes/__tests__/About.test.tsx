@@ -143,12 +143,10 @@ describe("About Page", () => {
   });
 
   describe("Layout and Styling", () => {
-    it("renders with gradient background", () => {
+    it("renders with solid background", () => {
       const { container } = renderAbout();
-      const gradientDiv = container.querySelector(
-        ".bg-linear-to-br.from-gray-50.to-gray-100"
-      );
-      expect(gradientDiv).toBeInTheDocument();
+      const pageDiv = container.querySelector(".bg-gray-50");
+      expect(pageDiv).toBeInTheDocument();
     });
 
     it("renders multiple card components", () => {

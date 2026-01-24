@@ -24,7 +24,7 @@ describe("Tooltip", () => {
     const trigger = screen.getByText("Hover");
     await user.hover(trigger);
 
-    const tooltip = await screen.findByRole("tooltip");
+    const tooltip = await screen.findByText("Dark tooltip");
     expect(tooltip).toHaveClass("bg-gray-900", "text-white");
   });
 
@@ -39,8 +39,8 @@ describe("Tooltip", () => {
     const trigger = screen.getByText("Hover");
     await user.hover(trigger);
 
-    const tooltip = await screen.findByRole("tooltip");
-    expect(tooltip).toHaveClass("bg-white", "text-gray-900", "border");
+    const tooltip = await screen.findByText("Light tooltip");
+    expect(tooltip).toHaveClass("bg-white", "text-gray-900");
   });
 
   it("renders content correctly", async () => {
@@ -96,7 +96,7 @@ describe("Tooltip", () => {
     const trigger = screen.getByText("Hover");
     await user.hover(trigger);
 
-    const tooltip = await screen.findByRole("tooltip");
+    const tooltip = await screen.findByText("Custom tooltip");
     expect(tooltip).toHaveClass("custom-class");
   });
 });

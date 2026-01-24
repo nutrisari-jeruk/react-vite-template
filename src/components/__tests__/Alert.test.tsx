@@ -176,7 +176,7 @@ describe("Alert", () => {
         </Alert>
       );
       const alert = container.firstChild as HTMLElement;
-      expect(alert).toHaveClass("top-4", "left-1/2", "-translate-x-1/2");
+      expect(alert).toHaveClass("top-2", "left-1/2", "-translate-x-1/2");
     });
 
     it("applies top-right position classes", () => {
@@ -186,7 +186,7 @@ describe("Alert", () => {
         </Alert>
       );
       const alert = container.firstChild as HTMLElement;
-      expect(alert).toHaveClass("top-4", "right-4");
+      expect(alert).toHaveClass("top-2", "right-2");
     });
 
     it("applies bottom-right position classes", () => {
@@ -196,7 +196,7 @@ describe("Alert", () => {
         </Alert>
       );
       const alert = container.firstChild as HTMLElement;
-      expect(alert).toHaveClass("bottom-4", "right-4");
+      expect(alert).toHaveClass("bottom-2", "right-2");
     });
 
     it("applies bottom-left position classes", () => {
@@ -206,7 +206,7 @@ describe("Alert", () => {
         </Alert>
       );
       const alert = container.firstChild as HTMLElement;
-      expect(alert).toHaveClass("bottom-4", "left-4");
+      expect(alert).toHaveClass("bottom-2", "left-2");
     });
 
     it("does not apply floating classes when floating is false", () => {
@@ -412,8 +412,8 @@ describe("Alert", () => {
       const alert = container.firstChild as HTMLElement;
       expect(alert).toHaveClass(
         "fixed",
-        "top-4",
-        "right-4",
+        "top-2",
+        "right-2",
         "bg-green-50",
         "border-green-200"
       );

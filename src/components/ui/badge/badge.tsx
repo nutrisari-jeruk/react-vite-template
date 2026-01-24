@@ -1,6 +1,36 @@
+/**
+ * Badge Component
+ *
+ * Small count and labeling component with multiple variants.
+ *
+ * @example
+ * ```tsx
+ * // Basic badge
+ * <Badge>New</Badge>
+ *
+ * // Different variants
+ * <Badge variant="primary">Primary</Badge>
+ * <Badge variant="success">Success</Badge>
+ * <Badge variant="danger">Error</Badge>
+ *
+ * // With dot indicator
+ * <Badge dot>Online</Badge>
+ *
+ * // Pill shape
+ * <Badge pill>Rounded</Badge>
+ * ```
+ */
+
 import type { HTMLAttributes } from "react";
 import { cn } from "@/utils/cn";
 
+/**
+ * Badge component props
+ *
+ * @property variant - Visual style variant
+ * @property dot - Shows a dot indicator
+ * @property pill - Uses pill/rounded shape
+ */
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: "default" | "primary" | "success" | "warning" | "danger" | "info";
   size?: "sm" | "md" | "lg";

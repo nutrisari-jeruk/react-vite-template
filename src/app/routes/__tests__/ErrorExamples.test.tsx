@@ -81,30 +81,6 @@ describe("ErrorExamples Page", () => {
     });
   });
 
-  describe("Form with Validation Section", () => {
-    it("renders form card", () => {
-      renderErrorExamples();
-      expect(screen.getByText("Form with Validation")).toBeInTheDocument();
-    });
-
-    it("renders email input", () => {
-      renderErrorExamples();
-      expect(screen.getByLabelText("Email")).toBeInTheDocument();
-    });
-
-    it("renders password input", () => {
-      renderErrorExamples();
-      expect(screen.getByLabelText("Password")).toBeInTheDocument();
-    });
-
-    it("renders submit button", () => {
-      renderErrorExamples();
-      expect(
-        screen.getByRole("button", { name: "Submit" })
-      ).toBeInTheDocument();
-    });
-  });
-
   describe("Error Alert Display", () => {
     it("displays error alert when error occurs", async () => {
       renderErrorExamples();
@@ -222,52 +198,6 @@ describe("ErrorExamples Page", () => {
     });
   });
 
-  describe("Form Submission", () => {
-    it("allows typing in form fields", async () => {
-      renderErrorExamples();
-      const user = userEvent.setup();
-
-      const emailInput = screen.getByLabelText("Email");
-      await user.type(emailInput, "test@example.com");
-
-      expect(emailInput).toHaveValue("test@example.com");
-    });
-
-    it("clears previous error on new submission", async () => {
-      renderErrorExamples();
-      const user = userEvent.setup();
-
-      // Trigger first error
-      await user.click(screen.getByRole("button", { name: "Network Error" }));
-
-      await waitFor(() => {
-        expect(screen.getByRole("alert")).toBeInTheDocument();
-      });
-
-      // Submit form
-      const emailInput = screen.getByLabelText("Email");
-      const passwordInput = screen.getByLabelText("Password");
-      const submitButton = screen.getByRole("button", { name: "Submit" });
-
-      await user.type(emailInput, "test@example.com");
-      await user.type(passwordInput, "password");
-      await user.click(submitButton);
-
-      // Wait for API call to complete (it will fail, but should clear the previous error first)
-      await waitFor(
-        () => {
-          // Either the alert is gone or a new error is shown
-          const alerts = screen.queryAllByRole("alert");
-          if (alerts.length > 0) {
-            // If there's an alert, it should be a different error (not the network error)
-            expect(screen.queryByText(/Network error/)).not.toBeInTheDocument();
-          }
-        },
-        { timeout: 5000 }
-      );
-    });
-  });
-
   describe("Informational Sections", () => {
     it("renders Error Boundary explanation", () => {
       renderErrorExamples();
@@ -341,10 +271,12 @@ describe("ErrorExamples Page", () => {
       expect(h2s.length).toBeGreaterThan(0);
     });
 
-    it("all form inputs have associated labels", () => {
+    it("all buttons have accessible names", () => {
       renderErrorExamples();
-      expect(screen.getByLabelText("Email")).toBeInTheDocument();
-      expect(screen.getByLabelText("Password")).toBeInTheDocument();
+      const buttons = screen.getAllByRole("button");
+      buttons.forEach((button) => {
+        expect(button).toHaveAccessibleName();
+      });
     });
 
     it("error alert has proper role", async () => {

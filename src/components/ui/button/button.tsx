@@ -1,6 +1,39 @@
+/**
+ * Button Component
+ *
+ * A versatile button component with multiple variants, sizes, and states.
+ *
+ * @example
+ * ```tsx
+ * // Basic usage
+ * <Button>Click me</Button>
+ *
+ * // With variant and size
+ * <Button variant="primary" size="lg">Large Primary</Button>
+ *
+ * // Loading state
+ * <Button loading>Saving...</Button>
+ *
+ * // With icons
+ * <Button iconLeft={<SaveIcon />}>Save</Button>
+ * <Button iconOnly={<EditIcon />} ariaLabel="Edit" />
+ * ```
+ */
+
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/utils/cn";
 
+/**
+ * Button component props
+ *
+ * @property variant - Visual style variant
+ * @property size - Button size
+ * @property loading - Shows loading spinner and disables button
+ * @property iconLeft - Icon to display on the left
+ * @property iconRight - Icon to display on the right
+ * @property iconOnly - Icon-only button (no text)
+ * @property ariaLabel - Accessible label (required for iconOnly buttons)
+ */
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
     | "primary"

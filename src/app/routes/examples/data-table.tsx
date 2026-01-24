@@ -187,10 +187,10 @@ export default function DataTableExample() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        <h1 className="text-3xl font-bold text-balance text-gray-900 sm:text-4xl">
           Users
         </h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm text-pretty text-gray-600">
           A fully-featured data table with server-side pagination, sorting, and
           filtering capabilities.
         </p>
@@ -221,13 +221,13 @@ export default function DataTableExample() {
       {/* Features Grid */}
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
         <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-900/5">
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">
+          <h3 className="mb-4 text-lg font-semibold text-balance text-gray-900">
             Server-Side Features
           </h3>
-          <ul className="space-y-3 text-sm text-gray-600">
+          <ul className="space-y-3 text-sm text-pretty text-gray-600">
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500"
+                className="mt-0.5 h-5 w-5 shrink-0 text-blue-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -244,7 +244,7 @@ export default function DataTableExample() {
             </li>
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500"
+                className="mt-0.5 h-5 w-5 shrink-0 text-blue-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -261,7 +261,7 @@ export default function DataTableExample() {
             </li>
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500"
+                className="mt-0.5 h-5 w-5 shrink-0 text-blue-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -278,7 +278,7 @@ export default function DataTableExample() {
             </li>
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500"
+                className="mt-0.5 h-5 w-5 shrink-0 text-blue-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -295,7 +295,7 @@ export default function DataTableExample() {
             </li>
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500"
+                className="mt-0.5 h-5 w-5 shrink-0 text-blue-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -312,7 +312,7 @@ export default function DataTableExample() {
             </li>
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500"
+                className="mt-0.5 h-5 w-5 shrink-0 text-blue-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -331,10 +331,10 @@ export default function DataTableExample() {
         </div>
 
         <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-900/5">
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">
+          <h3 className="mb-4 text-lg font-semibold text-balance text-gray-900">
             Is TanStack Table Required?
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-pretty text-gray-600">
             <strong className="text-gray-900">No!</strong> This example
             demonstrates server-side capabilities{" "}
             <strong className="text-gray-900">without</strong> TanStack Table.
@@ -343,7 +343,7 @@ export default function DataTableExample() {
           <ul className="mt-4 space-y-2 text-sm text-gray-600">
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                className="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -357,7 +357,7 @@ export default function DataTableExample() {
             </li>
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                className="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -371,7 +371,7 @@ export default function DataTableExample() {
             </li>
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                className="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -385,7 +385,7 @@ export default function DataTableExample() {
             </li>
             <li className="flex items-start gap-2">
               <svg
-                className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                className="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >

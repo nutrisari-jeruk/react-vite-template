@@ -9,6 +9,19 @@ interface SelectOption {
   label: string;
 }
 
+/**
+ * Select component props
+ *
+ * @property label - Label text
+ * @property error - Error message (automatically applies error styling)
+ * @property helperText - Helper text shown below select
+ * @property selectSize - Size of the select
+ * @property children - Option elements to render
+ * @property value - Controlled value
+ * @property defaultValue - Default uncontrolled value
+ * @property onChange - Value change handler
+ * @property disabled - Whether the select is disabled
+ */
 interface SelectProps {
   label?: string;
   error?: string;

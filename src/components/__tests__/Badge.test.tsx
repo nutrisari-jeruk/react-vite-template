@@ -10,31 +10,31 @@ describe("Badge", () => {
   it("applies default variant styles", () => {
     const { container } = render(<Badge>Default</Badge>);
     const badge = container.firstChild as HTMLElement;
-    expect(badge).toHaveClass("bg-gray-200", "text-gray-800");
+    expect(badge).toHaveClass("bg-gray-100", "text-gray-800");
   });
 
   it("applies primary variant", () => {
     const { container } = render(<Badge variant="primary">Primary</Badge>);
     const badge = container.firstChild as HTMLElement;
-    expect(badge).toHaveClass("bg-blue-100", "text-blue-800");
+    expect(badge).toHaveClass("bg-blue-50", "text-blue-700");
   });
 
   it("applies success variant", () => {
     const { container } = render(<Badge variant="success">Success</Badge>);
     const badge = container.firstChild as HTMLElement;
-    expect(badge).toHaveClass("bg-green-100", "text-green-800");
+    expect(badge).toHaveClass("bg-green-50", "text-green-700");
   });
 
   it("applies warning variant", () => {
     const { container } = render(<Badge variant="warning">Warning</Badge>);
     const badge = container.firstChild as HTMLElement;
-    expect(badge).toHaveClass("bg-yellow-100", "text-yellow-800");
+    expect(badge).toHaveClass("bg-yellow-50", "text-yellow-800");
   });
 
   it("applies danger variant", () => {
     const { container } = render(<Badge variant="danger">Danger</Badge>);
     const badge = container.firstChild as HTMLElement;
-    expect(badge).toHaveClass("bg-red-100", "text-red-800");
+    expect(badge).toHaveClass("bg-red-50", "text-red-700");
   });
 
   it("applies small size", () => {

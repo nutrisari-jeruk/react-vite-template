@@ -277,15 +277,9 @@ describe("ErrorBoundary Component", () => {
 
   describe("Go Home Button", () => {
     it("navigates to home when Go home button is clicked", () => {
-      const originalLocation = window.location;
-
-      // Mock window.location
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (window as any).location;
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: { href: "" },
-      });
+      // Mock window.location using vi.stubGlobal
+      const mockLocation = { href: "" };
+      vi.stubGlobal("location", mockLocation);
 
       render(
         <ErrorBoundary>
@@ -298,22 +292,16 @@ describe("ErrorBoundary Component", () => {
 
       expect(window.location.href).toBe("/");
 
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: originalLocation,
-      });
+      vi.unstubAllGlobals();
     });
   });
 
   describe("Reload Page Button", () => {
     it("reloads page when Reload button is clicked", () => {
       const reloadMock = vi.fn();
-      const originalLocation = window.location;
 
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: { reload: reloadMock },
-      });
+      // Mock window.location using vi.stubGlobal
+      vi.stubGlobal("location", { reload: reloadMock });
 
       render(
         <ErrorBoundary>
@@ -326,10 +314,7 @@ describe("ErrorBoundary Component", () => {
 
       expect(reloadMock).toHaveBeenCalledTimes(1);
 
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: originalLocation,
-      });
+      vi.unstubAllGlobals();
     });
   });
 

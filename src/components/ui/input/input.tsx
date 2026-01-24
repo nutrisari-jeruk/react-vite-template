@@ -1,8 +1,19 @@
-import type { InputHTMLAttributes, ReactNode } from "react";
+import { forwardRef, type InputHTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/utils/cn";
 
+/**
+ * Input component props
+ *
+ * @property variant - Visual variant (success state). Error state is controlled by the `error` prop.
+ * @property inputSize - Size of the input
+ * @property label - Label text
+ * @property error - Error message (automatically applies error styling)
+ * @property helperText - Helper text shown below input
+ * @property iconLeft - Icon to display on the left
+ * @property iconRight - Icon to display on the right
+ */
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  variant?: "default" | "error" | "success";
+  variant?: "default" | "success";
   inputSize?: "sm" | "md" | "lg";
   label?: string;
   error?: string;
@@ -11,19 +22,22 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   iconRight?: ReactNode;
 }
 
-export function Input({
-  variant = "default",
-  inputSize = "md",
-  label,
-  error,
-  helperText,
-  iconLeft,
-  iconRight,
-  className = "",
-  id,
-  disabled,
-  ...props
-}: InputProps) {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  {
+    variant = "default",
+    inputSize = "md",
+    label,
+    error,
+    helperText,
+    iconLeft,
+    iconRight,
+    className = "",
+    id,
+    disabled,
+    ...props
+  },
+  ref
+) {
   const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
   const effectiveVariant = error ? "error" : variant;
 
@@ -71,6 +85,7 @@ export function Input({
           </div>
         )}
         <input
+          ref={ref}
           id={inputId}
           className={cn(
             baseStyles,
@@ -112,6 +127,6 @@ export function Input({
       )}
     </div>
   );
-}
+});
 
 export default Input;

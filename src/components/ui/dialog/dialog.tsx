@@ -123,7 +123,7 @@ export function DialogContent({
       <AnimatePresence>
         <BaseDialog.Backdrop
           render={(props) => {
-            const { onClick, onPointerDown, 'aria-hidden': ariaHidden } = props;
+            const { onClick, onPointerDown, "aria-hidden": ariaHidden } = props;
             return (
               <motion.div
                 onClick={onClick}

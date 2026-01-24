@@ -112,12 +112,23 @@
   --color-green-light-6: #daf8e6;
 
   /* Z-Index Scale */
+  --z-inline: 1;
   --z-tooltip: 5;
   --z-dropdown: 10;
   --z-sticky: 20;
   --z-modal: 30;
   --z-sidebar: 40;
   --z-overlay: 50;
+}
+
+/* Skeleton shimmer animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* Safe Area Utilities */
@@ -162,7 +173,7 @@
 .tooltip-arrow {
   position: absolute !important;
   pointer-events: none !important;
-  z-index: 1 !important;
+  z-index: var(--z-inline) !important;
   width: 0 !important;
   height: 0 !important;
   border-style: solid !important;

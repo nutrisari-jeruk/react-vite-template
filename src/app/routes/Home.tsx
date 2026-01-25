@@ -32,6 +32,11 @@ function HomePage() {
             Explore the features and examples available in this template:
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
+            <Link to={ROUTES.DASHBOARD}>
+              <Button variant="primary" className="w-full">
+                Go to Dashboard
+              </Button>
+            </Link>
             <Link to={ROUTES.ABOUT}>
               <Button variant="outline-primary" className="w-full">
                 About
@@ -53,7 +58,9 @@ function HomePage() {
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="p-6">
             <div className="mb-3 flex items-center gap-2">
-              <span className="text-2xl">⚛️</span>
+              <span aria-hidden="true" className="text-2xl">
+                ⚛️
+              </span>
               <h3 className="text-lg font-semibold">Modern Stack</h3>
             </div>
             <p className="mb-3 text-sm text-pretty text-gray-600">
@@ -70,7 +77,9 @@ function HomePage() {
 
           <Card className="p-6">
             <div className="mb-3 flex items-center gap-2">
-              <span className="text-2xl">🎨</span>
+              <span aria-hidden="true" className="text-2xl">
+                🎨
+              </span>
               <h3 className="text-lg font-semibold">UI Components</h3>
             </div>
             <p className="mb-3 text-sm text-pretty text-gray-600">
@@ -84,7 +93,9 @@ function HomePage() {
 
           <Card className="p-6">
             <div className="mb-3 flex items-center gap-2">
-              <span className="text-2xl">🛠️</span>
+              <span aria-hidden="true" className="text-2xl">
+                🛠️
+              </span>
               <h3 className="text-lg font-semibold">Developer Tools</h3>
             </div>
             <p className="mb-3 text-sm text-pretty text-gray-600">

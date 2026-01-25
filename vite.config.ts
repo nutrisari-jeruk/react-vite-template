@@ -108,15 +108,18 @@ export default defineConfig(({ mode }) => {
       strictPort: false,
       open: false,
       // Proxy configuration for API
-      proxy: env.VITE_API_URL
-        ? {
-            "/api": {
-              target: env.VITE_API_URL.replace("/api", ""),
-              changeOrigin: true,
-              rewrite: (path) => path.replace(/^\/api/, "/api"),
-            },
-          }
-        : undefined,
+      // Note: When using MSW for mocking, keep VITE_API_URL as relative path (/api)
+      // Only use proxy when pointing to an external backend server
+      proxy:
+        env.VITE_API_URL && env.VITE_API_URL.startsWith("http")
+          ? {
+              "/api": {
+                target: env.VITE_API_URL.replace("/api", ""),
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, "/api"),
+              },
+            }
+          : undefined,
     },
 
     // Preview server configuration

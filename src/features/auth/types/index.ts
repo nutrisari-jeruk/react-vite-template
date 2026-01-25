@@ -2,6 +2,8 @@
  * Authentication Types
  */
 
+export type { User } from "./user";
+
 export interface JWTPayload {
   sub: string;
   email?: string;

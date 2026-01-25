@@ -96,8 +96,14 @@ function toNumber(
 
 /**
  * Validates URL format
+ * Accepts both absolute URLs and relative paths (starting with /)
  */
 function validateUrl(url: string): string {
+  // Allow relative paths for API URLs (e.g., /api)
+  if (url.startsWith("/")) {
+    return url;
+  }
+
   try {
     new URL(url);
     return url;

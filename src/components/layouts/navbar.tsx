@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/utils/cn";
+import { useUser, useLogout } from "@/features/auth/lib/auth-provider";
 
 interface MenuItem {
   path: string;
@@ -28,6 +29,8 @@ export function Navbar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const user = useUser();
+  const logout = useLogout();
 
   const isActive = (path: string) => location.pathname === path;
   const isParentActive = (item: MenuItem) => {
@@ -119,9 +122,13 @@ export function Navbar() {
               const isDropdownOpen = openDropdown === item.path;
               const isParentActiveState = isParentActive(item);
 
+              const dropdownId = `dropdown-${item.path.replace(/\//g, "-")}`;
+              const triggerId = `dropdown-trigger-${item.path.replace(/\//g, "-")}`;
+
               return (
                 <div key={item.path} className="space-y-1">
                   <button
+                    id={triggerId}
                     onClick={() => toggleDropdown(item.path)}
                     className={cn(
                       "flex w-full items-center justify-between rounded-md px-4 py-3 transition-colors hover:bg-white/10 dark:hover:bg-gray-700",
@@ -130,6 +137,7 @@ export function Navbar() {
                     )}
                     aria-expanded={isDropdownOpen}
                     aria-haspopup="true"
+                    aria-controls={dropdownId}
                   >
                     <span>{item.label}</span>
                     <svg
@@ -140,6 +148,7 @@ export function Navbar() {
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
@@ -150,7 +159,12 @@ export function Navbar() {
                     </svg>
                   </button>
                   {isDropdownOpen && (
-                    <div className="ml-4 space-y-1 border-l-2 border-white/20 pl-4 dark:border-gray-600">
+                    <div
+                      id={dropdownId}
+                      className="ml-4 space-y-1 border-l-2 border-white/20 pl-4 dark:border-gray-600"
+                      role="menu"
+                      aria-labelledby={triggerId}
+                    >
                       {item.children?.map((child) => (
                         <Link
                           key={child.path}
@@ -189,6 +203,46 @@ export function Navbar() {
               </Link>
             );
           })}
+
+          {/* Auth Section */}
+          <div className="border-t border-white/20 pt-4 dark:border-gray-700">
+            {user.data ? (
+              <div className="space-y-2">
+                <div className="px-4 py-2">
+                  <p className="text-sm text-white/60 dark:text-gray-400">
+                    Signed in as
+                  </p>
+                  <p className="text-sm font-medium text-white dark:text-gray-200">
+                    {user.data.email}
+                  </p>
+                </div>
+                <button
+                  onClick={() => logout.mutate(undefined)}
+                  disabled={logout.isPending}
+                  className="block w-full rounded-md px-4 py-2 text-left text-sm transition-colors hover:bg-white/10 disabled:opacity-50 dark:hover:bg-gray-700"
+                >
+                  {logout.isPending ? "Signing out..." : "Sign out"}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-1">
+                <Link
+                  to="/login"
+                  onClick={closeMenu}
+                  className="block rounded-md px-4 py-2 text-sm transition-colors hover:bg-white/10 dark:hover:bg-gray-700"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={closeMenu}
+                  className="block rounded-md px-4 py-2 text-sm transition-colors hover:bg-white/10 dark:hover:bg-gray-700"
+                >
+                  Create account
+                </Link>
+              </div>
+            )}
+          </div>
         </nav>
       </aside>
     </>

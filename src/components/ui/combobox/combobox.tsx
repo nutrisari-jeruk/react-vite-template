@@ -117,11 +117,7 @@ export function Combobox({
     <div className={cn("flex flex-col gap-1.5", className)}>
       <Field.Root>
         {label && (
-          <Field.Label
-            nativeLabel={false}
-            render={<div />}
-            className={cn("text-sm font-medium", labelStyle)}
-          >
+          <Field.Label className={cn("block text-sm font-medium", labelStyle)}>
             {label}
           </Field.Label>
         )}

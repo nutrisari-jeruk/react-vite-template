@@ -5,6 +5,7 @@
 export const ROUTES = {
   HOME: "/",
   ABOUT: "/about",
+  DASHBOARD: "/dashboard",
   COMPONENTS: "/components",
   EXAMPLES: {
     ERROR_HANDLING: "/examples/error-handling",
@@ -12,6 +13,7 @@ export const ROUTES = {
     FORM_VALIDATION: "/examples/form-validation",
   },
   LOGIN: "/login",
+  REGISTER: "/register",
   NOT_FOUND: "*",
 } as const;
 

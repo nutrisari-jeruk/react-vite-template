@@ -65,11 +65,7 @@ export function Switch({
     <div className={cn("flex flex-col gap-1", className)}>
       <Field.Root>
         {label && (
-          <Field.Label
-            nativeLabel={false}
-            render={<div />}
-            className="text-sm font-medium text-gray-700 select-none"
-          >
+          <Field.Label className="block text-sm font-medium text-gray-700 select-none">
             {label}
           </Field.Label>
         )}
@@ -94,18 +90,24 @@ export function Switch({
           >
             {hasLabels && (
               <>
-                <div
+                <button
+                  type="button"
                   onClick={() => handleToggle(false)}
+                  disabled={disabled}
+                  aria-pressed={!isChecked}
+                  aria-label={leftLabel}
                   className={cn(
                     "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all",
                     disabled ? "cursor-not-allowed" : "cursor-pointer",
                     !isChecked
                       ? "bg-white text-blue-600 shadow-sm"
-                      : "bg-transparent text-gray-500"
+                      : "bg-transparent text-gray-500",
+                    "focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                   )}
                 >
                   {leftIcon && (
                     <span
+                      aria-hidden="true"
                       className={cn(
                         "size-4",
                         !isChecked ? "text-blue-600" : "text-gray-500"
@@ -115,19 +117,25 @@ export function Switch({
                     </span>
                   )}
                   {leftLabel}
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
                   onClick={() => handleToggle(true)}
+                  disabled={disabled}
+                  aria-pressed={isChecked}
+                  aria-label={rightLabel}
                   className={cn(
                     "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all",
                     disabled ? "cursor-not-allowed" : "cursor-pointer",
                     isChecked
                       ? "bg-white text-blue-600 shadow-sm"
-                      : "bg-transparent text-gray-500"
+                      : "bg-transparent text-gray-500",
+                    "focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                   )}
                 >
                   {rightIcon && (
                     <span
+                      aria-hidden="true"
                       className={cn(
                         "size-4",
                         isChecked ? "text-blue-600" : "text-gray-500"
@@ -137,35 +145,49 @@ export function Switch({
                     </span>
                   )}
                   {rightLabel}
-                </div>
+                </button>
               </>
             )}
             {hasIcons && !hasLabels && (
               <>
-                <div
+                <button
+                  type="button"
                   onClick={() => handleToggle(false)}
+                  disabled={disabled}
+                  aria-pressed={!isChecked}
+                  aria-label="Previous option"
                   className={cn(
                     "relative flex size-8 items-center justify-center rounded-md transition-all",
                     disabled ? "cursor-not-allowed" : "cursor-pointer",
                     !isChecked
                       ? "bg-white text-blue-600 shadow-sm"
-                      : "bg-transparent text-gray-500"
+                      : "bg-transparent text-gray-500",
+                    "focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                   )}
                 >
-                  <span className="size-5">{leftIcon}</span>
-                </div>
-                <div
+                  <span aria-hidden="true" className="size-5">
+                    {leftIcon}
+                  </span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => handleToggle(true)}
+                  disabled={disabled}
+                  aria-pressed={isChecked}
+                  aria-label="Next option"
                   className={cn(
                     "relative flex size-8 items-center justify-center rounded-md transition-all",
                     disabled ? "cursor-not-allowed" : "cursor-pointer",
                     isChecked
                       ? "bg-white text-blue-600 shadow-sm"
-                      : "bg-transparent text-gray-500"
+                      : "bg-transparent text-gray-500",
+                    "focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                   )}
                 >
-                  <span className="size-5">{rightIcon}</span>
-                </div>
+                  <span aria-hidden="true" className="size-5">
+                    {rightIcon}
+                  </span>
+                </button>
               </>
             )}
           </div>

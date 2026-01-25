@@ -1,5 +1,6 @@
 import axios from "axios";
 import { env } from "@/config/env";
+import { API_ENDPOINTS } from "@/config/constants";
 import {
   isAxiosError,
   NetworkError,
@@ -13,7 +14,12 @@ import {
   ServerError,
   ServiceUnavailableError,
 } from "./api-error";
-import { getAccessToken, clearAuthTokens } from "@/features/auth";
+import {
+  getAccessToken,
+  getRefreshToken,
+  setAccessToken,
+  clearAuthTokens,
+} from "@/features/auth";
 
 export interface ApiResponse<T = unknown> {
   success: boolean;
@@ -38,6 +44,19 @@ export const api = axios.create({
   baseURL: env.apiUrl,
   timeout: env.apiTimeout,
 });
+
+// Track ongoing token refresh to prevent multiple concurrent refresh attempts
+let refreshPromise: Promise<{
+  accessToken: string;
+  refreshToken: string;
+}> | null = null;
+
+// Type extension to track retry attempts on requests
+declare module "axios" {
+  interface InternalAxiosRequestConfig {
+    _retry?: boolean;
+  }
+}
 
 api.interceptors.request.use(
   (config) => {
@@ -86,7 +105,61 @@ api.interceptors.response.use(
           )
         );
 
-      case 401:
+      case 401: {
+        // Attempt token refresh before clearing session
+        const originalRequest = error.config as typeof error.config & {
+          _retry?: boolean;
+        };
+
+        if (!originalRequest._retry) {
+          originalRequest._retry = true;
+
+          const refreshTokenValue = getRefreshToken();
+          if (refreshTokenValue) {
+            // Use existing refresh promise if refresh is already in progress
+            if (!refreshPromise) {
+              refreshPromise = api
+                .post<
+                  ApiResponse<{ accessToken: string; refreshToken: string }>
+                >(API_ENDPOINTS.AUTH.REFRESH, {
+                  refreshToken: refreshTokenValue,
+                })
+                .then((response) => {
+                  refreshPromise = null;
+                  if (!response.data.data) {
+                    throw new Error("Token refresh failed");
+                  }
+                  return response.data.data;
+                })
+                .catch((err) => {
+                  refreshPromise = null;
+                  throw err;
+                });
+            }
+
+            // Return the refresh promise chain
+            return refreshPromise
+              .then((refreshedTokens) => {
+                setAccessToken(refreshedTokens.accessToken);
+                // Retry original request with new token
+                originalRequest.headers.Authorization = `Bearer ${refreshedTokens.accessToken}`;
+                return api(originalRequest);
+              })
+              .catch(() => {
+                // Refresh failed - clear tokens and redirect
+                clearAuthTokens();
+                if (window.location.pathname !== "/login") {
+                  window.location.href = "/login";
+                }
+                throw new UnauthorizedError(
+                  responseData?.message ||
+                    "Session expired. Please log in again."
+                );
+              });
+          }
+        }
+
+        // Clear tokens and redirect to login if refresh not available or failed
         clearAuthTokens();
 
         if (window.location.pathname !== "/login") {
@@ -98,6 +171,7 @@ api.interceptors.response.use(
             responseData?.message || "Session expired. Please log in again."
           )
         );
+      }
 
       case 403:
         return Promise.reject(

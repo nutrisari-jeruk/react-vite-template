@@ -3,7 +3,9 @@
  */
 
 import { api, type ApiResponse } from "@/lib/api-client";
+import { isAxiosError } from "@/lib/api-error";
 import { API_ENDPOINTS } from "@/config/constants";
+import { getAccessToken, clearAuthTokens } from "../lib/token-storage";
 import type { User } from "../types/user";
 
 /**
@@ -21,6 +23,13 @@ export interface AuthResponse {
  * Returns null if not authenticated (401) instead of throwing
  */
 export const getUser = async (): Promise<User | null> => {
+  // If there's no access token, return null immediately
+  // This prevents unnecessary API calls and token refresh attempts
+  const token = getAccessToken();
+  if (!token) {
+    return null;
+  }
+
   try {
     const response = await api.get<ApiResponse<User>>(API_ENDPOINTS.AUTH.ME);
     if (!response.data.data) {
@@ -30,9 +39,21 @@ export const getUser = async (): Promise<User | null> => {
   } catch (error) {
     // Return null for 401 Unauthorized (not logged in)
     // Re-throw other errors
-    if (error && typeof error === "object" && "status" in error) {
-      if (error.status === 401 || error.status === 403) {
+    if (error && typeof error === "object") {
+      // Check for ApiError instances (UnauthorizedError, ForbiddenError, etc.)
+      if ("status" in error && (error.status === 401 || error.status === 403)) {
+        // Clear invalid tokens so next check returns null immediately
+        clearAuthTokens();
         return null;
+      }
+      // Check for AxiosError with 401/403 status
+      if (isAxiosError(error)) {
+        const status = error.response?.status;
+        if (status === 401 || status === 403) {
+          // Clear invalid tokens so next check returns null immediately
+          clearAuthTokens();
+          return null;
+        }
       }
     }
     throw error;

@@ -111,6 +111,11 @@ api.interceptors.response.use(
           _retry?: boolean;
         };
 
+        // Check if this is an auth endpoint that should handle redirects itself
+        const isAuthEndpoint =
+          originalRequest.url?.includes(API_ENDPOINTS.AUTH.ME) ||
+          originalRequest.url?.includes("/auth/me");
+
         if (!originalRequest._retry) {
           originalRequest._retry = true;
 
@@ -146,9 +151,10 @@ api.interceptors.response.use(
                 return api(originalRequest);
               })
               .catch(() => {
-                // Refresh failed - clear tokens and redirect
+                // Refresh failed - clear tokens
                 clearAuthTokens();
-                if (window.location.pathname !== "/login") {
+                // Only redirect if not an auth endpoint (let auth flow handle it)
+                if (!isAuthEndpoint && window.location.pathname !== "/login") {
                   window.location.href = "/login";
                 }
                 throw new UnauthorizedError(
@@ -159,10 +165,11 @@ api.interceptors.response.use(
           }
         }
 
-        // Clear tokens and redirect to login if refresh not available or failed
+        // Clear tokens
         clearAuthTokens();
 
-        if (window.location.pathname !== "/login") {
+        // Only redirect if not an auth endpoint (let auth flow handle redirects)
+        if (!isAuthEndpoint && window.location.pathname !== "/login") {
           window.location.href = "/login";
         }
 

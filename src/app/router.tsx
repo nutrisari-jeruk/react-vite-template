@@ -5,6 +5,7 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
+import type { ReactNode } from "react";
 import {
   MainLayout,
   LandingLayout,
@@ -14,6 +15,7 @@ import {
 import { setPageMetadata, setCanonicalUrl } from "@/utils";
 import { getRouteMetadata } from "@/config/routes-metadata";
 import { AuthLoader } from "@/features/auth/lib/auth-provider";
+import { getAccessToken } from "@/features/auth";
 
 const Home = lazy(() => import("@/app/routes/Home"));
 const Login = lazy(() => import("@/app/routes/Login"));
@@ -41,6 +43,26 @@ function PageLoader() {
 
 function LazyPage({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<PageLoader />}>{children}</Suspense>;
+}
+
+/**
+ * ProtectedRoute - Checks token before rendering AuthLoader
+ * This ensures redirect happens immediately if no token exists
+ */
+function ProtectedRoute({ children }: { children: ReactNode }) {
+  const hasToken = !!getAccessToken();
+
+  useEffect(() => {
+    if (!hasToken) {
+      window.location.href = "/login";
+    }
+  }, [hasToken]);
+
+  if (!hasToken) {
+    return null;
+  }
+
+  return <>{children}</>;
 }
 
 /**
@@ -208,15 +230,17 @@ const router = createBrowserRouter([
     element: (
       <>
         <MetadataUpdater />
-        <AuthLoader
-          renderLoading={() => (
-            <div className="flex min-h-dvh items-center justify-center">
-              <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
-            </div>
-          )}
-        >
-          <AuthenticatedLayout />
-        </AuthLoader>
+        <ProtectedRoute>
+          <AuthLoader
+            renderLoading={() => (
+              <div className="flex min-h-dvh items-center justify-center">
+                <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
+              </div>
+            )}
+          >
+            <AuthenticatedLayout />
+          </AuthLoader>
+        </ProtectedRoute>
       </>
     ),
     children: [

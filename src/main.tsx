@@ -5,19 +5,35 @@ import { App } from "@/app";
 import { startMockWorker } from "@/mocks/browser";
 import "./index.css";
 
-// Start MSW mock worker in development
-startMockWorker().catch((err) =>
-  console.error("Failed to start MSW worker:", err)
-);
+async function initApp() {
+  // Wait for MSW to be ready in development
+  if (import.meta.env.DEV) {
+    try {
+      await startMockWorker();
+      console.log("[MSW] Mock API worker ready");
+    } catch (err) {
+      console.error("Failed to start MSW worker:", err);
+    }
+  }
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ErrorBoundary
-      onError={(error, errorInfo) => {
-        console.error("Global error caught:", error, errorInfo);
-      }}
-    >
-      <App />
-    </ErrorBoundary>
-  </StrictMode>
-);
+  // Render app after MSW is ready
+  const rootElement = document.getElementById("root");
+  if (!rootElement) {
+    throw new Error("Root element not found");
+  }
+
+  createRoot(rootElement).render(
+    <StrictMode>
+      <ErrorBoundary
+        onError={(error, errorInfo) => {
+          console.error("Global error caught:", error, errorInfo);
+        }}
+      >
+        <App />
+      </ErrorBoundary>
+    </StrictMode>
+  );
+}
+
+// Initialize the app
+initApp();

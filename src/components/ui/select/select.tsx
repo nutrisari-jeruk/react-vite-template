@@ -160,7 +160,7 @@ export function Select({
           <BaseSelect.Portal>
             <BaseSelect.Positioner alignItemWithTrigger>
               <BaseSelect.Popup
-                className="z-50"
+                className="z-[var(--z-dropdown)]"
                 style={{ width: "var(--anchor-width)" }}
               >
                 <BaseSelect.List className="max-h-60 overflow-auto rounded-md border border-gray-300 bg-white shadow-lg">

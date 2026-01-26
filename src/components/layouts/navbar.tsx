@@ -52,7 +52,7 @@ export function Navbar() {
       {!isOpen && (
         <button
           onClick={toggleMenu}
-          className="bg-primary safe-top-0 safe-left-0 fixed top-2 left-2 z-50 flex size-12 items-center justify-center rounded-md text-white shadow-lg transition-colors hover:bg-blue-700 md:hidden dark:bg-gray-800 dark:hover:bg-gray-700"
+          className="bg-primary safe-top-0 safe-left-0 fixed top-2 left-2 z-[var(--z-nav)] flex size-12 items-center justify-center rounded-md text-white shadow-lg transition-colors hover:bg-blue-700 md:hidden dark:bg-gray-800 dark:hover:bg-gray-700"
           aria-label="Open menu"
         >
           <svg
@@ -73,16 +73,16 @@ export function Navbar() {
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/50 md:hidden dark:bg-black/70"
+          className="fixed inset-0 z-[var(--z-nav)] bg-black/50 md:hidden dark:bg-black/70"
           onClick={closeMenu}
         />
       )}
 
       <aside
         className={cn(
-          "bg-primary fixed inset-y-0 left-0 z-40 w-64 transform text-white shadow-lg md:static dark:bg-gray-800",
+          "bg-primary fixed inset-y-0 left-0 z-[var(--z-nav)] w-64 transform text-white shadow-lg md:static dark:bg-gray-800",
           isOpen ? "translate-x-0" : "-translate-x-full",
-          "safe-top-0 flex flex-col transition-transform duration-200 ease-out motion-reduce:transition-none md:translate-x-0"
+          "safe-top-0 flex flex-col transition-transform duration-150 ease-out motion-reduce:transition-none md:translate-x-0"
         )}
       >
         <div className="flex items-center justify-between border-b border-white/20 p-6 dark:border-gray-700">

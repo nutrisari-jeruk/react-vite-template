@@ -78,6 +78,7 @@ export interface SortingState {
  * @property isLoading - Loading state
  * @property error - Error message
  * @property emptyMessage - Message shown when no data
+ * @property emptyAction - Optional action button for empty state { label: string; onClick: () => void }
  */
 export interface ServerTableProps<T> {
   data: T[];
@@ -100,6 +101,7 @@ export interface ServerTableProps<T> {
   isLoading?: boolean;
   error?: string | null;
   emptyMessage?: string;
+  emptyAction?: { label: string; onClick: () => void };
   className?: string;
 }
 
@@ -124,6 +126,7 @@ export function DataTable<T>({
   isLoading = false,
   error = null,
   emptyMessage = "No data available",
+  emptyAction,
   className,
 }: ServerTableProps<T>) {
   const [localFilter, setLocalFilter] = useState(filterValue);
@@ -300,7 +303,7 @@ export function DataTable<T>({
                 colSpan={columns.length + (enableRowSelection ? 1 : 0)}
                 className="h-32 text-center"
               >
-                <div className="flex flex-col items-center justify-center gap-2">
+                <div className="flex flex-col items-center justify-center gap-3">
                   <svg
                     className="h-12 w-12 text-gray-400"
                     fill="none"
@@ -315,6 +318,15 @@ export function DataTable<T>({
                     />
                   </svg>
                   <p className="text-sm text-gray-500">{emptyMessage}</p>
+                  {emptyAction && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={emptyAction.onClick}
+                    >
+                      {emptyAction.label}
+                    </Button>
+                  )}
                 </div>
               </TableCell>
             </TableRow>
@@ -500,7 +512,7 @@ export function DataTable<T>({
                       className={cn(
                         "relative inline-flex items-center px-4 py-2 text-sm font-semibold transition-colors focus:z-10 focus:outline-offset-0",
                         isActive
-                          ? "z-10 bg-blue-600 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                          ? "z-[var(--z-sticky)] bg-blue-600 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                           : "text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10 focus:outline-offset-0"
                       )}
                       onClick={() =>

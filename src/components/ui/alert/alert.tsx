@@ -159,13 +159,13 @@ export function Alert({
 
   const positionClasses = {
     "top-center":
-      "fixed top-2 left-1/2 -translate-x-1/2 z-50 w-full max-w-md shadow-lg safe-top-0",
+      "fixed top-2 left-1/2 -translate-x-1/2 z-[var(--z-toast)] w-full max-w-md shadow-lg safe-top-0",
     "top-right":
-      "fixed top-2 right-2 z-50 w-full max-w-md shadow-lg safe-top-0 safe-right-0",
+      "fixed top-2 right-2 z-[var(--z-toast)] w-full max-w-md shadow-lg safe-top-0 safe-right-0",
     "bottom-right":
-      "fixed bottom-2 right-2 z-50 w-full max-w-md shadow-lg safe-bottom-0 safe-right-0",
+      "fixed bottom-2 right-2 z-[var(--z-toast)] w-full max-w-md shadow-lg safe-bottom-0 safe-right-0",
     "bottom-left":
-      "fixed bottom-2 left-2 z-50 w-full max-w-md shadow-lg safe-bottom-0 safe-left-0",
+      "fixed bottom-2 left-2 z-[var(--z-toast)] w-full max-w-md shadow-lg safe-bottom-0 safe-left-0",
   };
 
   const floatingClasses = floating ? positionClasses[position] : "";
@@ -190,7 +190,7 @@ export function Alert({
         animate: { opacity: 1, y: 0 },
         exit: { opacity: 0, y: -20 },
         transition: {
-          duration: 0.2,
+          duration: 0.15,
           ease: "easeOut" as const,
         },
       };

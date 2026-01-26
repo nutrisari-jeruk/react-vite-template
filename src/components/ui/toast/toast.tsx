@@ -168,7 +168,7 @@ function ToastContainer({ toasts, position, onDismiss }: ToastContainerProps) {
   return (
     <div
       className={cn(
-        "pointer-events-none fixed z-50 flex flex-col gap-2",
+        "pointer-events-none fixed z-[var(--z-toast)] flex flex-col gap-2",
         positionClasses[position]
       )}
       aria-live="polite"
@@ -275,7 +275,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
         initial: { opacity: 0, x: 100 },
         animate: { opacity: 1, x: 0 },
         exit: { opacity: 0, x: 100 },
-        transition: { duration: 0.2 },
+        transition: { duration: 0.15 },
       };
 
   return (

@@ -201,7 +201,7 @@ export function Combobox({
           <BaseCombobox.Portal>
             <BaseCombobox.Positioner>
               <BaseCombobox.Popup
-                className="z-50"
+                className="z-[var(--z-dropdown)]"
                 style={{ width: "var(--anchor-width)" }}
               >
                 <BaseCombobox.Empty className="px-4 py-2 text-sm text-gray-500">

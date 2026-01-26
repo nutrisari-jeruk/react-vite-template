@@ -40,7 +40,7 @@ export function Tooltip({
   };
 
   const baseStyles =
-    "rounded-md px-3 py-1.5 text-sm font-medium leading-none z-50 max-w-xs";
+    "rounded-md px-3 py-1.5 text-sm font-medium leading-none z-[var(--z-tooltip)] max-w-xs";
 
   if (disabled) {
     return <>{children}</>;

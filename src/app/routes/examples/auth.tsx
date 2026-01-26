@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth";
 import type { LoginCredentials } from "@/features/auth";
 import { Input, Button, Checkbox, Alert } from "@/components/ui";
+import { cn } from "@/utils/cn";
 
 export default function AuthExample() {
   const navigate = useNavigate();
@@ -159,13 +160,14 @@ export default function AuthExample() {
                 <div className="flex justify-between">
                   <span>Expires in:</span>
                   <span
-                    className={`font-medium ${
+                    className={cn(
+                      "font-medium",
                       isTokenExpired
                         ? "text-red-600"
                         : tokenExpiresIn && tokenExpiresIn < 5 * 60000
                           ? "text-yellow-600"
                           : "text-green-600"
-                    }`}
+                    )}
                   >
                     {isTokenExpired ? "Expired" : formatTime(tokenExpiresIn)}
                   </span>

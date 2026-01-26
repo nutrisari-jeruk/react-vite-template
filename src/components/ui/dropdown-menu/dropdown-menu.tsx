@@ -88,7 +88,7 @@ export function DropdownMenuContent({
       <Menu.Positioner side={side} sideOffset={sideOffset} align={align}>
         <Menu.Popup
           className={cn(
-            "z-50 min-w-48 overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-lg",
+            "z-[var(--z-dropdown)] min-w-48 overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-lg",
             "data-starting-style:animate-in data-starting-style:fade-in data-starting-style:zoom-in-95",
             "data-ending-style:animate-out data-ending-style:fade-out data-ending-style:zoom-out-95",
             className

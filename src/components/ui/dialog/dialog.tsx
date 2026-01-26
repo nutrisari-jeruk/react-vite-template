@@ -101,7 +101,7 @@ export function DialogContent({
         initial: { opacity: 0 },
         animate: { opacity: 1 },
         exit: { opacity: 0 },
-        transition: { duration: 0.2 },
+        transition: { duration: 0.15 },
       };
 
   const contentAnimation = shouldReduceMotion
@@ -115,7 +115,7 @@ export function DialogContent({
         initial: { opacity: 0, scale: 0.95 },
         animate: { opacity: 1, scale: 1 },
         exit: { opacity: 0, scale: 0.95 },
-        transition: { duration: 0.2 },
+        transition: { duration: 0.15 },
       };
 
   return (
@@ -130,7 +130,7 @@ export function DialogContent({
                 onPointerDown={onPointerDown}
                 aria-hidden={ariaHidden}
                 {...backdropAnimation}
-                className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+                className="fixed inset-0 z-[var(--z-modal)] bg-black/50"
               />
             );
           }}
@@ -141,7 +141,7 @@ export function DialogContent({
             return (
               <div
                 {...props}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center p-4"
               >
                 <motion.div
                   {...contentAnimation}

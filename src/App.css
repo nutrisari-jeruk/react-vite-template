@@ -8,13 +8,13 @@
 .logo {
   height: 6em;
   padding: 1.5em;
-  transition: filter 300ms;
+  transition: opacity 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  opacity: 0.8;
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  opacity: 0.8;
 }
 
 @keyframes logo-spin {

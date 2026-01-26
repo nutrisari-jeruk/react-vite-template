@@ -629,7 +629,7 @@ function ComponentsPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{
-                duration: shouldReduceMotion ? 0 : 0.2,
+                duration: shouldReduceMotion ? 0 : 0.15,
                 ease: "easeOut",
               }}
               className="rounded-lg border border-gray-200 bg-white p-4"

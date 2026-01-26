@@ -11,9 +11,15 @@ import { ROUTES } from "@/config/constants";
 
 interface LoginFormProps {
   onSuccess?: (requiresOtp: boolean, expiresIn?: number) => void;
+  defaultUsername?: string;
+  defaultPassword?: string;
 }
 
-export function LoginForm({ onSuccess }: LoginFormProps) {
+export function LoginForm({
+  onSuccess,
+  defaultUsername = "",
+  defaultPassword = "",
+}: LoginFormProps) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,8 +32,8 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   } = useForm<LoginInput>({
     resolver: zodResolver(loginInputSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: defaultUsername,
+      password: defaultPassword,
     },
   });
 

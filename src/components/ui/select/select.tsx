@@ -76,7 +76,7 @@ export function Select({
   };
 
   const baseStyles =
-    "w-full rounded border transition-all focus:outline-none bg-white cursor-pointer";
+    "w-full rounded border transition-colors focus:outline-none bg-white cursor-pointer";
 
   const labelStyle = disabled ? "text-gray-500" : "text-gray-900";
 
@@ -160,7 +160,7 @@ export function Select({
           <BaseSelect.Portal>
             <BaseSelect.Positioner alignItemWithTrigger>
               <BaseSelect.Popup
-                className="z-dropdown"
+                className="z-50"
                 style={{ width: "var(--anchor-width)" }}
               >
                 <BaseSelect.List className="max-h-60 overflow-auto rounded-md border border-gray-300 bg-white shadow-lg">

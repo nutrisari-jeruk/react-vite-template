@@ -79,14 +79,14 @@ describe("Switch", () => {
   it("highlights left segment when unchecked", () => {
     render(<Switch leftLabel="Light" rightLabel="Dark" checked={false} />);
     const leftLabel = screen.getByText("Light");
-    const leftSegment = leftLabel.closest("div.relative.flex");
+    const leftSegment = leftLabel.closest("button.relative.flex");
     expect(leftSegment).toHaveClass("bg-white", "text-blue-600");
   });
 
   it("highlights right segment when checked", () => {
     render(<Switch leftLabel="Light" rightLabel="Dark" checked={true} />);
     const rightLabel = screen.getByText("Dark");
-    const rightSegment = rightLabel.closest("div.relative.flex");
+    const rightSegment = rightLabel.closest("button.relative.flex");
     expect(rightSegment).toHaveClass("bg-white", "text-blue-600");
   });
 

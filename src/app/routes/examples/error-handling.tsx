@@ -62,7 +62,9 @@ export default function ErrorExamples() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold">Error Handling Examples</h1>
+      <h1 className="mb-6 text-3xl font-bold text-balance">
+        Error Handling Examples
+      </h1>
 
       {isError && (
         <Alert
@@ -81,7 +83,7 @@ export default function ErrorExamples() {
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-lg bg-white p-6 shadow">
           <h2 className="mb-4 text-xl font-semibold">ErrorBoundary Demo</h2>
-          <p className="mb-4 text-gray-600">
+          <p className="mb-4 text-pretty text-gray-600">
             Click the button to trigger a render error.
           </p>
           <div className="space-y-3">

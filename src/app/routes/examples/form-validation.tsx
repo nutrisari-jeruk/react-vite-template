@@ -84,7 +84,9 @@ export default function FormValidationExample() {
 
   return (
     <div className="mx-auto max-w-4xl p-8">
-      <h1 className="mb-2 text-4xl font-bold">Zod Form Validation</h1>
+      <h1 className="mb-2 text-4xl font-bold text-balance">
+        Zod Form Validation
+      </h1>
       <p className="mb-8 text-gray-600">
         Form validation using Zod + React Hook Form
       </p>

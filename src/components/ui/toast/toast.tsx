@@ -168,7 +168,7 @@ function ToastContainer({ toasts, position, onDismiss }: ToastContainerProps) {
   return (
     <div
       className={cn(
-        "z-overlay pointer-events-none fixed flex flex-col gap-2",
+        "pointer-events-none fixed z-50 flex flex-col gap-2",
         positionClasses[position]
       )}
       aria-live="polite"

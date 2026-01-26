@@ -81,7 +81,7 @@ export function Toggle({
             />
             <div
               className={cn(
-                "peer h-6 w-11 rounded-full peer-focus:ring-2 peer-focus:ring-blue-500 peer-focus:ring-offset-2 after:absolute after:top-0.5 after:left-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-5",
+                "peer h-6 w-11 rounded-full peer-focus:ring-2 peer-focus:ring-blue-500 peer-focus:ring-offset-2 after:absolute after:top-0.5 after:left-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-transform after:content-[''] peer-checked:after:translate-x-5",
                 disabled
                   ? "cursor-not-allowed bg-gray-300"
                   : isChecked
@@ -136,7 +136,7 @@ export function Toggle({
           />
           <div
             className={cn(
-              "peer h-6 w-11 rounded-full peer-focus:ring-2 peer-focus:ring-blue-500 peer-focus:ring-offset-2 after:absolute after:top-0.5 after:left-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-5",
+              "peer h-6 w-11 rounded-full peer-focus:ring-2 peer-focus:ring-blue-500 peer-focus:ring-offset-2 after:absolute after:top-0.5 after:left-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-transform after:content-[''] peer-checked:after:translate-x-5",
               disabled
                 ? "cursor-not-allowed bg-gray-300"
                 : isChecked

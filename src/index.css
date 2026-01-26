@@ -113,12 +113,6 @@
 
   /* Z-Index Scale */
   --z-inline: 1;
-  --z-tooltip: 5;
-  --z-dropdown: 10;
-  --z-sticky: 20;
-  --z-modal: 30;
-  --z-sidebar: 40;
-  --z-overlay: 50;
 }
 
 /* Skeleton shimmer animation */

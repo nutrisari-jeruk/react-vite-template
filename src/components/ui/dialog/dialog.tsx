@@ -130,7 +130,7 @@ export function DialogContent({
                 onPointerDown={onPointerDown}
                 aria-hidden={ariaHidden}
                 {...backdropAnimation}
-                className="z-modal fixed inset-0 bg-black/50 backdrop-blur-sm"
+                className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
               />
             );
           }}
@@ -141,7 +141,7 @@ export function DialogContent({
             return (
               <div
                 {...props}
-                className="z-modal fixed inset-0 flex items-center justify-center p-4"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4"
               >
                 <motion.div
                   {...contentAnimation}

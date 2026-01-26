@@ -166,7 +166,7 @@ describe("Alert", () => {
     it("applies floating classes when floating prop is true", () => {
       const { container } = render(<Alert floating>Floating alert</Alert>);
       const alert = container.firstChild as HTMLElement;
-      expect(alert).toHaveClass("fixed", "z-overlay", "shadow-lg");
+      expect(alert).toHaveClass("fixed", "z-50", "shadow-lg");
     });
 
     it("applies top-center position classes by default", () => {

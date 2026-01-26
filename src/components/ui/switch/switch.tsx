@@ -97,7 +97,7 @@ export function Switch({
                   aria-pressed={!isChecked}
                   aria-label={leftLabel}
                   className={cn(
-                    "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all",
+                    "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                     disabled ? "cursor-not-allowed" : "cursor-pointer",
                     !isChecked
                       ? "bg-white text-blue-600 shadow-sm"
@@ -125,7 +125,7 @@ export function Switch({
                   aria-pressed={isChecked}
                   aria-label={rightLabel}
                   className={cn(
-                    "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all",
+                    "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                     disabled ? "cursor-not-allowed" : "cursor-pointer",
                     isChecked
                       ? "bg-white text-blue-600 shadow-sm"
@@ -157,7 +157,7 @@ export function Switch({
                   aria-pressed={!isChecked}
                   aria-label="Previous option"
                   className={cn(
-                    "relative flex size-8 items-center justify-center rounded-md transition-all",
+                    "relative flex size-8 items-center justify-center rounded-md transition-colors",
                     disabled ? "cursor-not-allowed" : "cursor-pointer",
                     !isChecked
                       ? "bg-white text-blue-600 shadow-sm"
@@ -176,7 +176,7 @@ export function Switch({
                   aria-pressed={isChecked}
                   aria-label="Next option"
                   className={cn(
-                    "relative flex size-8 items-center justify-center rounded-md transition-all",
+                    "relative flex size-8 items-center justify-center rounded-md transition-colors",
                     disabled ? "cursor-not-allowed" : "cursor-pointer",
                     isChecked
                       ? "bg-white text-blue-600 shadow-sm"

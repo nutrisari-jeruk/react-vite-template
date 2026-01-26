@@ -98,6 +98,68 @@ src/features/[feature-name]/
 - Only export public API through `index.ts`
 - Import from `@/components`, `@/lib`, `@/hooks` is allowed
 
+## Component Props Reference
+
+**IMPORTANT:** Always check this section before using component props. Using unknown variants, sizes, or other props will cause errors.
+
+### Button (`src/components/ui/button/button.tsx`)
+
+| Prop | Values |
+|------|--------|
+| `variant` | `primary`, `secondary`, `danger`, `outline-primary`, `outline-secondary`, `outline-danger`, `white`, `outline-white` |
+| `size` | `sm`, `md`, `lg` |
+
+### Badge (`src/components/ui/badge/badge.tsx`)
+
+| Prop | Values |
+|------|--------|
+| `variant` | `default`, `primary`, `success`, `warning`, `danger`, `info` |
+| `size` | `sm`, `md`, `lg` |
+| `pill` | boolean |
+| `dot` | boolean |
+
+### Alert (`src/components/ui/alert/alert.tsx`)
+
+| Prop | Values |
+|------|--------|
+| `variant` | `info`, `success`, `warning`, `danger` |
+
+### Input (`src/components/ui/input/input.tsx`)
+
+| Prop | Values |
+|------|--------|
+| `size` | `sm`, `md`, `lg` |
+| `variant` | `default`, `filled`, `outlined` |
+
+### Select (`src/components/ui/select/select.tsx`)
+
+| Prop | Values |
+|------|--------|
+| `size` | `sm`, `md`, `lg` |
+| `variant` | `default`, `filled`, `outlined` |
+
+### Dialog (`src/components/ui/dialog/dialog.tsx`)
+
+| Prop | Values |
+|------|--------|
+| `size` | `sm`, `md`, `lg`, `xl`, `full` |
+
+### Toast (`src/components/ui/toast/toast.tsx`)
+
+| Prop | Values |
+|------|--------|
+| `variant` | `info`, `success`, `warning`, `error` |
+| `position` | `top-left`, `top-center`, `top-right`, `bottom-left`, `bottom-center`, `bottom-right` |
+
+### Tooltip (`src/components/ui/tooltip/tooltip.tsx`)
+
+| Prop | Values |
+|------|--------|
+| `variant` | `dark`, `light` |
+| `placement` | `top`, `bottom`, `left`, `right` |
+
+**For detailed usage examples, see [README.md](./README.md#ui-components).**
+
 ## Styling
 
 ```typescript
@@ -190,6 +252,8 @@ test("renders component", () => {
 - Export default for page components (lazy loading)
 - Use `cn()` for conditional classNames
 - Use `type` keyword for type-only imports
+- **Check Component Props Reference section before using component variants/sizes**
+- **Read the component source file if unsure about available props**
 
 ### Don't
 - Import from internal feature paths
@@ -198,6 +262,8 @@ test("renders component", () => {
 - Use relative imports for cross-directory imports
 - Skip barrel exports when adding components
 - Use template literals for className merging
+- **Use component variants, sizes, or props not listed in Component Props Reference**
+- **Guess component props - always verify first**
 
 ## Important Notes
 

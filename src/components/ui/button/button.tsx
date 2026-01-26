@@ -11,6 +11,10 @@
  * // With variant and size
  * <Button variant="primary" size="lg">Large Primary</Button>
  *
+ * // White variant (for dark/colored backgrounds)
+ * <Button variant="white">White Button</Button>
+ * <Button variant="outline-white">Outline White</Button>
+ *
  * // Loading state
  * <Button loading>Saving...</Button>
  *
@@ -41,7 +45,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "danger"
     | "outline-primary"
     | "outline-secondary"
-    | "outline-danger";
+    | "outline-danger"
+    | "white"
+    | "outline-white";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
   iconLeft?: React.ReactNode;
@@ -82,6 +88,8 @@ export function Button({
     "outline-secondary":
       "border-2 border-gray-400 text-gray-700 hover:bg-gray-50",
     "outline-danger": "border-2 border-red-500 text-red-500 hover:bg-red-50",
+    white: "bg-white text-indigo-600 hover:bg-gray-50",
+    "outline-white": "border-2 border-white text-white hover:bg-white/10",
   };
 
   const iconOnlyStyles = iconOnly ? "p-2" : "";

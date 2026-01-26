@@ -149,7 +149,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <MetadataUpdater />
-        <MainLayout />
+        <LandingLayout />
       </>
     ),
     children: [

@@ -7,9 +7,15 @@ import { useLogin, loginInputSchema } from "../lib/auth-provider";
 
 interface LoginFormProps {
   onSuccess?: () => void;
+  defaultEmail?: string;
+  defaultPassword?: string;
 }
 
-export function LoginForm({ onSuccess }: LoginFormProps) {
+export function LoginForm({
+  onSuccess,
+  defaultEmail = "",
+  defaultPassword = "",
+}: LoginFormProps) {
   const login = useLogin();
 
   const {
@@ -19,8 +25,8 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   } = useForm<LoginInput>({
     resolver: zodResolver(loginInputSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: defaultEmail,
+      password: defaultPassword,
     },
   });
 

@@ -12,6 +12,7 @@ const API_BASE_URL = "/api";
 // Mock user database (in-memory, resets on refresh)
 const mockUsers: Array<{
   id: string;
+  username: string;
   email: string;
   password: string;
   firstName: string;
@@ -19,6 +20,7 @@ const mockUsers: Array<{
 }> = [
   {
     id: "1",
+    username: "12345678910",
     email: "user@example.com",
     password: "password123",
     firstName: "Demo",
@@ -33,11 +35,13 @@ const mockTokens: Record<
 
 // Helper to generate JWT-like tokens
 function generateToken(userId: string, expiresIn: number = 3600000): string {
+  const user = mockUsers.find((u) => u.id === userId);
   const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
   const payload = btoa(
     JSON.stringify({
       sub: userId,
-      email: mockUsers.find((u) => u.id === userId)?.email,
+      username: user?.username,
+      email: user?.email,
       iat: Date.now(),
       exp: Date.now() + expiresIn,
     })
@@ -94,14 +98,24 @@ export const handlers = [
   // POST /auth/login - Login
   http.post(`${API_BASE_URL}/auth/login`, async ({ request }) => {
     const body = await request.json();
-    const { email, password } = body as { email: string; password: string };
+    const { username, password } = body as {
+      username: string;
+      password: string;
+    };
 
-    const user = mockUsers.find((u) => u.email === email);
+    const user = mockUsers.find((u) => u.username === username);
 
     if (!user || user.password !== password) {
       return HttpResponse.json(
-        { success: false, message: "Invalid email or password" },
-        { status: 401 }
+        {
+          success: false,
+          message: "Wrong credential",
+          errors: {
+            username: ["NIP / NIK yang Anda masukkan salah."],
+            password: ["Kata sandi yang Anda masukkan salah."],
+          },
+        },
+        { status: 422 }
       );
     }
 
@@ -150,9 +164,10 @@ export const handlers = [
       );
     }
 
-    // Create new user
+    // Create new user (generate username from email prefix)
     const newUser = {
       id: String(mockUsers.length + 1),
+      username: email.split("@")[0],
       email,
       password,
       firstName,

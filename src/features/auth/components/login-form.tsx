@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Alert } from "@/components";
-import { cn } from "@/utils/cn";
+import { Input } from "@/components/ui";
+import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
 import { useLogin, loginInputSchema } from "../lib/auth-provider";
 
 interface LoginFormProps {
@@ -16,6 +16,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginInputSchema),
@@ -29,77 +30,55 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     try {
       await login.mutateAsync(data);
       onSuccess?.();
-    } catch {
-      // Error is handled by the mutation
+    } catch (error) {
+      // Try to get field-level errors from API response
+      const fieldErrors = getFieldErrors(error);
+
+      if (fieldErrors) {
+        // Map API field errors to form fields
+        Object.entries(fieldErrors).forEach(([field, message]) => {
+          if (field === "username" || field === "password") {
+            setError(field, { type: "server", message });
+          }
+        });
+      } else {
+        // Fallback: show API error on username field
+        const message = getErrorMessage(error);
+        setError("username", {
+          type: "server",
+          message,
+        });
+      }
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full max-w-md">
-      {login.error ? (
-        <div className="mb-6">
-          <Alert variant="danger">
-            <span>
-              {login.error instanceof Error
-                ? login.error.message
-                : "Login gagal. Silakan periksa kredensial Anda."}
-            </span>
-          </Alert>
-        </div>
-      ) : null}
-
       {/* NIP / NIK Input */}
-      <div className="mb-5">
-        <label
-          htmlFor="username"
-          className="mb-2 block text-sm font-medium text-[#111928] sm:text-base"
-        >
-          NIP / NIK Pegawai
-        </label>
-        <input
-          id="username"
-          type="text"
-          placeholder="Contoh: 14029808221"
-          autoComplete="username"
-          className={cn(
-            "h-12 w-full rounded-md border border-[#DFE4EA] bg-white px-4 text-base text-[#111928] transition-colors placeholder:text-[#9CA3AF] focus:border-[#3758F9] focus:ring-1 focus:ring-[#3758F9] focus:outline-none",
-            errors.username &&
-              "border-red-500 focus:border-red-500 focus:ring-red-500"
-          )}
-          {...register("username")}
-        />
-        {errors.username && (
-          <p className="mt-1.5 text-sm text-red-600">
-            {errors.username.message}
-          </p>
-        )}
-      </div>
+      <Input
+        id="username"
+        label="NIP / NIK Pegawai"
+        placeholder="Contoh: 14029808221"
+        autoComplete="username"
+        error={errors.username?.message}
+        className="mb-5"
+        {...register("username")}
+      />
 
       {/* Password Input */}
-      <div className="mb-8">
-        <label
-          htmlFor="password"
-          className="mb-2 block text-sm font-medium text-[#111928] sm:text-base"
-        >
-          Kata Sandi
-        </label>
-        <div className="relative">
-          <input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            placeholder="********"
-            autoComplete="current-password"
-            className={cn(
-              "h-12 w-full rounded-md border border-[#DFE4EA] bg-white px-4 pr-12 text-base text-[#111928] transition-colors placeholder:text-[#9CA3AF] focus:border-[#3758F9] focus:ring-1 focus:ring-[#3758F9] focus:outline-none",
-              errors.password &&
-                "border-red-500 focus:border-red-500 focus:ring-red-500"
-            )}
-            {...register("password")}
-          />
+      <Input
+        id="password"
+        label="Kata Sandi"
+        type={showPassword ? "text" : "password"}
+        placeholder="********"
+        autoComplete="current-password"
+        error={errors.password?.message}
+        className="mb-8"
+        iconRight={
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-1/2 right-4 -translate-y-1/2 text-[#9CA3AF] transition-colors hover:text-[#6B7280]"
+            className="text-gray-400 transition-colors hover:text-gray-600"
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? (
@@ -138,13 +117,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               </svg>
             )}
           </button>
-        </div>
-        {errors.password && (
-          <p className="mt-1.5 text-sm text-red-600">
-            {errors.password.message}
-          </p>
-        )}
-      </div>
+        }
+        {...register("password")}
+      />
 
       {/* Login Button */}
       <button

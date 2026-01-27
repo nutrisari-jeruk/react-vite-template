@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Input } from "@/components/ui";
+import { Button, Input } from "@/components/ui";
 import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
 import { useLogin, loginInputSchema } from "../lib/auth-provider";
 
@@ -122,25 +122,26 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       />
 
       {/* Login Button */}
-      <button
+      <Button
         type="submit"
         disabled={login.isPending}
-        className="h-12 w-full rounded-full bg-[#3758F9] text-base font-medium text-white transition-colors hover:bg-[#2d47d9] focus:ring-2 focus:ring-[#3758F9] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+        loading={login.isPending}
+        className="w-full"
       >
         {login.isPending ? "Memproses..." : "Login"}
-      </button>
+      </Button>
 
       {/* Divider */}
       <div className="my-6 flex items-center gap-4">
-        <div className="h-px flex-1 bg-[#DFE4EA]" />
-        <span className="text-sm text-[#9CA3AF]">atau</span>
-        <div className="h-px flex-1 bg-[#DFE4EA]" />
+        <div className="h-px flex-1 bg-gray-200" />
+        <span className="text-sm text-gray-400">atau</span>
+        <div className="h-px flex-1 bg-gray-200" />
       </div>
 
       {/* Forgot Password Link */}
-      <p className="text-center text-sm text-[#111827] sm:text-base">
+      <p className="text-center text-sm text-pretty text-gray-900 sm:text-base">
         Lupa Kata Sandi ?{" "}
-        <a href="#" className="font-medium text-[#3758F9] hover:underline">
+        <a href="#" className="font-medium text-blue-600 hover:underline">
           Klik Disini
         </a>
       </p>

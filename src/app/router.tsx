@@ -111,19 +111,11 @@ const router = createBrowserRouter([
     element: (
       <>
         <MetadataUpdater />
-        <AuthLayout />
+        <LazyPage>
+          <Login />
+        </LazyPage>
       </>
     ),
-    children: [
-      {
-        index: true,
-        element: (
-          <LazyPage>
-            <Login />
-          </LazyPage>
-        ),
-      },
-    ],
   },
   {
     path: "/register",

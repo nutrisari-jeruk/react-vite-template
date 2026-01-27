@@ -118,7 +118,7 @@ export const refreshToken = async (
  * Login input schema types
  */
 export interface LoginInput {
-  email: string;
+  username: string;
   password: string;
 }
 

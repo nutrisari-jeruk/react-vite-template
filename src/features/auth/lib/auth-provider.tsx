@@ -22,8 +22,8 @@ import {
 
 // Validation schemas
 export const loginInputSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email"),
-  password: z.string().min(1, "Password is required"),
+  username: z.string().min(1, "NIP / NIK wajib diisi"),
+  password: z.string().min(1, "Kata sandi wajib diisi"),
 });
 
 export const registerInputSchema = z.object({

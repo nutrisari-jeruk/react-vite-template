@@ -260,3 +260,9 @@
 .tooltip-arrow[data-tooltip-variant="light"][data-side="right"] {
   border-right-color: #ffffff !important;
 }
+
+/* Hide native password reveal when Input uses iconRight (custom toggle).
+   Prevents double eye on login / reset-password. */
+input[data-hide-native-reveal][type="password"]::-ms-reveal {
+  display: none !important;
+}

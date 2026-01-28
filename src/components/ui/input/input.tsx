@@ -103,6 +103,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
                 : undefined
           }
           {...props}
+          {...(iconRight && { "data-hide-native-reveal": "true" })}
         />
         {iconRight && (
           <div

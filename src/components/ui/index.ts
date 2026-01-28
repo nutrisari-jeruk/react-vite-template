@@ -14,8 +14,6 @@ export { Textarea } from "./textarea";
 // Feedback
 export { Alert } from "./alert";
 export { Skeleton, SkeletonText, SkeletonCard } from "./skeleton";
-export { ToastProvider, useToast } from "./toast";
-export type { Toast } from "./toast";
 
 // Data Display
 export { Badge } from "./badge";

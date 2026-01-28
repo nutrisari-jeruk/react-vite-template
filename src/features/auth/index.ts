@@ -14,7 +14,7 @@ export type { LoginInput, RegisterInput } from "./lib/auth-provider";
 
 // Auth components
 export { AuthGuard } from "./components/auth-guard";
-export { LoginForm, RegisterForm } from "./components";
+export { LoginForm, RegisterForm, ResetPasswordForm } from "./components";
 
 // Auth API
 export {
@@ -23,11 +23,17 @@ export {
   registerWithEmailAndPassword,
   logout,
   refreshToken,
+  resetPassword,
+  setNewPassword,
 } from "./api/auth-api";
 export type {
   AuthResponse,
   LoginInput as ApiLoginInput,
   RegisterInput as ApiRegisterInput,
+  ResetPasswordInput,
+  ResetPasswordResponse,
+  SetNewPasswordInput,
+  SetNewPasswordResponse,
 } from "./api/auth-api";
 
 // Token storage utilities (kept for backward compatibility)

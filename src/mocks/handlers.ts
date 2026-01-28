@@ -255,4 +255,123 @@ export const handlers = [
       },
     });
   }),
+
+  // POST /v1/reset-password - Reset password
+  http.post(`${API_BASE_URL}/v1/reset-password`, async ({ request }) => {
+    const body = await request.json();
+    const { username } = body as { username: string };
+
+    // Check if user exists
+    const user = mockUsers.find((u) => u.username === username);
+
+    if (!user) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "User not found",
+          errors: {
+            username: ["NIP / NIK yang Anda masukkan tidak ditemukan."],
+          },
+        },
+        { status: 404 }
+      );
+    }
+
+    return HttpResponse.json({
+      success: true,
+      message: "Reset password",
+      data: {
+        otp: {
+          isRequired: true,
+          expiresIn: 3600,
+        },
+        resetToken: "abc123",
+      },
+    });
+  }),
+
+  // POST /v1/set-new-password - Set new password
+  http.post(`${API_BASE_URL}/v1/set-new-password`, async ({ request }) => {
+    const body = await request.json();
+    const { resetToken, password, passwordConfirmation } = body as {
+      resetToken: string;
+      password: string;
+      passwordConfirmation: string;
+    };
+
+    if (!resetToken) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Failed reset password",
+          errors: {
+            password: ["Token reset tidak valid."],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    if (password !== passwordConfirmation) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Failed reset password",
+          errors: {
+            passwordConfirmation: ["Konfirmasi kata sandi tidak cocok."],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    const passwordErrors: string[] = [];
+
+    if (password.length < 8) {
+      passwordErrors.push("Minimal 8 karakter");
+    }
+    if (!/[A-Z]/.test(password)) {
+      passwordErrors.push("Harus mengandung huruf besar");
+    }
+    if (!/[a-z]/.test(password)) {
+      passwordErrors.push("Harus mengandung huruf kecil");
+    }
+    if (!/[0-9]/.test(password)) {
+      passwordErrors.push("Harus mengandung angka");
+    }
+    if (!/[^A-Za-z0-9]/.test(password)) {
+      passwordErrors.push("Harus mengandung simbol");
+    }
+
+    if (passwordErrors.length > 0) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Failed reset password",
+          errors: { password: passwordErrors },
+        },
+        { status: 422 }
+      );
+    }
+
+    const user = mockUsers.find((u) => u.id === "1");
+    if (!user) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Failed reset password",
+          errors: { password: ["Token reset tidak valid."] },
+        },
+        { status: 422 }
+      );
+    }
+
+    user.password = password;
+
+    return HttpResponse.json({
+      success: true,
+      message: "Reset password berhasil",
+      data: null,
+    });
+  }),
 ];

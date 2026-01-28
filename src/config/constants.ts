@@ -14,6 +14,8 @@ export const ROUTES = {
   },
   LOGIN: "/login",
   REGISTER: "/register",
+  FORGET_PASSWORD: "/forget-password",
+  RESET_PASSWORD: "/reset-password",
   NOT_FOUND: "*",
 } as const;
 
@@ -30,6 +32,8 @@ export const API_ENDPOINTS = {
     REGISTER: "/auth/register",
     REFRESH: "/auth/refresh",
     ME: "/auth/me",
+    RESET_PASSWORD: "/v1/reset-password",
+    SET_NEW_PASSWORD: "/v1/set-new-password",
   },
   USERS: {
     LIST: "/users",

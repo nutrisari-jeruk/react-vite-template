@@ -20,6 +20,8 @@ import { getAccessToken } from "@/features/auth";
 const Home = lazy(() => import("@/app/routes/Home"));
 const Login = lazy(() => import("@/app/routes/Login"));
 const Register = lazy(() => import("@/app/routes/Register"));
+const ForgetPassword = lazy(() => import("@/app/routes/ForgetPassword"));
+const ResetPassword = lazy(() => import("@/app/routes/ResetPassword"));
 const Dashboard = lazy(() => import("@/app/routes/Dashboard"));
 const About = lazy(() => import("@/app/routes/About"));
 const Components = lazy(() => import("@/app/routes/Components"));
@@ -135,6 +137,28 @@ const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: "/forget-password",
+    element: (
+      <>
+        <MetadataUpdater />
+        <LazyPage>
+          <ForgetPassword />
+        </LazyPage>
+      </>
+    ),
+  },
+  {
+    path: "/reset-password",
+    element: (
+      <>
+        <MetadataUpdater />
+        <LazyPage>
+          <ResetPassword />
+        </LazyPage>
+      </>
+    ),
   },
   {
     path: "/about",

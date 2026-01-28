@@ -13,7 +13,7 @@ import type { User } from "../types/user";
  */
 export interface OtpConfig {
   isRequired: boolean;
-  expiredAt: string;
+  expiresIn: number; // Time in seconds until OTP expires
 }
 
 /**
@@ -140,3 +140,57 @@ export interface RegisterInput {
   name: string;
   username?: string;
 }
+
+/**
+ * OTP verification input
+ */
+export interface VerifyOtpInput {
+  otp: string;
+}
+
+/**
+ * OTP verification response
+ */
+export interface VerifyOtpResponse {
+  success: boolean;
+  message: string;
+  token?: string;
+}
+
+/**
+ * Resend OTP response
+ */
+export interface ResendOtpResponse {
+  success: boolean;
+  message: string;
+  expiresIn: number; // Time in seconds until OTP expires
+}
+
+/**
+ * Verify OTP code
+ */
+export const verifyOtp = async (
+  data: VerifyOtpInput
+): Promise<VerifyOtpResponse> => {
+  const response = await api.post<ApiResponse<VerifyOtpResponse>>(
+    API_ENDPOINTS.AUTH.VERIFY_OTP,
+    data
+  );
+  if (!response.data.data) {
+    throw new Error("No verification data received");
+  }
+  return response.data.data;
+};
+
+/**
+ * Resend OTP code
+ */
+export const resendOtp = async (): Promise<ResendOtpResponse> => {
+  const response = await api.post<ApiResponse<ResendOtpResponse>>(
+    API_ENDPOINTS.AUTH.RESEND_OTP
+  );
+  if (!response.data.data) {
+    throw new Error("No resend data received");
+  }
+  return response.data.data;
+};

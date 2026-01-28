@@ -20,6 +20,7 @@ import { getAccessToken } from "@/features/auth";
 const Home = lazy(() => import("@/app/routes/Home"));
 const Login = lazy(() => import("@/app/routes/Login"));
 const Register = lazy(() => import("@/app/routes/Register"));
+const Otp = lazy(() => import("@/app/routes/Otp"));
 const Dashboard = lazy(() => import("@/app/routes/Dashboard"));
 const About = lazy(() => import("@/app/routes/About"));
 const Components = lazy(() => import("@/app/routes/Components"));
@@ -113,6 +114,17 @@ const router = createBrowserRouter([
         <MetadataUpdater />
         <LazyPage>
           <Login />
+        </LazyPage>
+      </>
+    ),
+  },
+  {
+    path: "/otp",
+    element: (
+      <>
+        <MetadataUpdater />
+        <LazyPage>
+          <Otp />
         </LazyPage>
       </>
     ),

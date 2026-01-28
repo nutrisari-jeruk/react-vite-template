@@ -19,10 +19,17 @@ const mockUsers: Array<{
 }> = [
   {
     id: "1",
-    username: "150596.0822.1",
+    username: "12345678910",
     email: "john.doe@example.com",
     password: "password123",
     name: "John Doe",
+  },
+  {
+    id: "2",
+    username: "99999999999",
+    email: "no.otp@example.com",
+    password: "password123",
+    name: "No OTP User",
   },
 ];
 
@@ -115,7 +122,6 @@ export const handlers = [
     }
 
     const token = generateToken(user.id);
-    const expiredAt = new Date(Date.now() + 3600000).toISOString();
 
     // Store token for /auth/me endpoint
     mockTokens[token] = {
@@ -133,8 +139,8 @@ export const handlers = [
         username: user.username,
         token,
         otp: {
-          isRequired: true,
-          expiredAt,
+          isRequired: user.username !== "99999999999",
+          expiresIn: 75,
         },
       },
     });
@@ -170,7 +176,6 @@ export const handlers = [
     mockUsers.push(newUser);
 
     const token = generateToken(newUser.id);
-    const expiredAt = new Date(Date.now() + 3600000).toISOString();
 
     mockTokens[token] = {
       token,
@@ -188,7 +193,7 @@ export const handlers = [
         token,
         otp: {
           isRequired: true,
-          expiredAt,
+          expiresIn: 3600,
         },
       },
     });
@@ -246,6 +251,115 @@ export const handlers = [
         token: newToken,
         expiredAt,
       },
+    });
+  }),
+
+  // POST /auth/verify-otp - Verify OTP code
+  http.post(`${API_BASE_URL}/auth/verify-otp`, async ({ request }) => {
+    const body = await request.json();
+    const { otp } = body as { otp: string };
+
+    // Simple validation: accept any 6-digit code for mock
+    if (!otp || !/^\d{6}$/.test(otp)) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Kode OTP tidak valid",
+          errors: {
+            otp: ["Kode OTP harus 6 digit angka"],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    // Mock: accept "123456" as valid OTP, reject others
+    if (otp !== "123456") {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Kode OTP salah",
+          errors: {
+            otp: ["Kode OTP yang Anda masukkan salah."],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    // Generate new token after successful OTP verification
+    const user = mockUsers[0];
+    const token = generateToken(user.id);
+
+    mockTokens[token] = {
+      token,
+      userId: user.id,
+      expiredAt: Date.now() + 3600000,
+    };
+
+    return HttpResponse.json({
+      success: true,
+      message: "OTP verified successfully",
+      data: {
+        success: true,
+        message: "OTP verified successfully",
+        token,
+      },
+    });
+  }),
+
+  // POST /auth/resend-otp - Resend OTP code
+  http.post(`${API_BASE_URL}/auth/resend-otp`, () => {
+    // Mock: return new expiresIn value (75 seconds = 1 minute 15 seconds)
+    return HttpResponse.json({
+      success: true,
+      message: "OTP code resent successfully",
+      data: {
+        success: true,
+        message: "OTP code resent successfully",
+        expiresIn: 75, // 1 minute 15 seconds
+      },
+    });
+  }),
+
+  // POST /otp - Validate OTP code
+  http.post(`${API_BASE_URL}/otp`, async ({ request }) => {
+    const body = await request.json();
+    const { otp } = body as { otp?: string };
+
+    // Validate OTP is provided
+    if (!otp) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "OTP is required",
+          errors: {
+            otp: ["OTP wajib diisi"],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    // Validate OTP format (must be exactly 6 digits)
+    if (!/^\d{6}$/.test(otp)) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Kode OTP tidak valid",
+          errors: {
+            otp: ["Kode OTP harus 6 digit angka"],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    // Return success response with null data
+    return HttpResponse.json({
+      success: true,
+      message: "OTP validated successfully",
+      data: null,
     });
   }),
 ];

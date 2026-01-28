@@ -9,13 +9,22 @@ import { getAccessToken, clearAuthTokens } from "../lib/token-storage";
 import type { User } from "../types/user";
 
 /**
+ * OTP configuration from API
+ */
+export interface OtpConfig {
+  isRequired: boolean;
+  expiredAt: string;
+}
+
+/**
  * Login response from API
  */
 export interface AuthResponse {
-  accessToken: string;
-  refreshToken?: string;
-  expiresIn: number;
-  user: User;
+  name: string;
+  email: string;
+  username: string;
+  token: string;
+  otp: OtpConfig;
 }
 
 /**
@@ -128,6 +137,6 @@ export interface LoginInput {
 export interface RegisterInput {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  name: string;
+  username?: string;
 }

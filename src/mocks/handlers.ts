@@ -15,22 +15,21 @@ const mockUsers: Array<{
   username: string;
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  name: string;
 }> = [
   {
     id: "1",
-    username: "12345678910",
-    email: "user@example.com",
+    username: "150596.0822.1",
+    email: "john.doe@example.com",
     password: "password123",
-    firstName: "Demo",
-    lastName: "User",
+    name: "John Doe",
   },
 ];
 
+// Store active tokens
 const mockTokens: Record<
   string,
-  { accessToken: string; refreshToken: string; userId: string }
+  { token: string; userId: string; expiredAt: number }
 > = {};
 
 // Helper to generate JWT-like tokens
@@ -40,6 +39,7 @@ function generateToken(userId: string, expiresIn: number = 3600000): string {
   const payload = btoa(
     JSON.stringify({
       sub: userId,
+      name: user?.name,
       username: user?.username,
       email: user?.email,
       iat: Date.now(),
@@ -47,11 +47,6 @@ function generateToken(userId: string, expiresIn: number = 3600000): string {
     })
   );
   return `${header}.${payload}.signature`;
-}
-
-// Helper to generate refresh token
-function generateRefreshToken(): string {
-  return `rt_${Math.random().toString(36).substring(2, 15)}`;
 }
 
 export const handlers = [
@@ -88,9 +83,9 @@ export const handlers = [
       message: "User retrieved successfully",
       data: {
         id: user.id,
+        name: user.name,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        username: user.username,
       },
     });
   }),
@@ -119,27 +114,27 @@ export const handlers = [
       );
     }
 
-    const accessToken = generateToken(user.id);
-    const refreshToken = generateRefreshToken();
+    const token = generateToken(user.id);
+    const expiredAt = new Date(Date.now() + 3600000).toISOString();
 
-    mockTokens[accessToken] = {
-      accessToken,
-      refreshToken,
+    // Store token for /auth/me endpoint
+    mockTokens[token] = {
+      token,
       userId: user.id,
+      expiredAt: Date.now() + 3600000,
     };
 
     return HttpResponse.json({
       success: true,
-      message: "Login successful",
+      message: "Login success",
       data: {
-        accessToken,
-        refreshToken,
-        expiresIn: 3600,
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        token,
+        otp: {
+          isRequired: true,
+          expiredAt,
         },
       },
     });
@@ -148,11 +143,11 @@ export const handlers = [
   // POST /auth/register - Register
   http.post(`${API_BASE_URL}/auth/register`, async ({ request }) => {
     const body = await request.json();
-    const { email, password, firstName, lastName } = body as {
+    const { email, password, name, username } = body as {
       email: string;
       password: string;
-      firstName: string;
-      lastName: string;
+      name: string;
+      username?: string;
     };
 
     // Check if user already exists
@@ -164,38 +159,36 @@ export const handlers = [
       );
     }
 
-    // Create new user (generate username from email prefix)
+    // Create new user
     const newUser = {
       id: String(mockUsers.length + 1),
-      username: email.split("@")[0],
+      username: username || email.split("@")[0],
       email,
       password,
-      firstName,
-      lastName,
+      name,
     };
     mockUsers.push(newUser);
 
-    const accessToken = generateToken(newUser.id);
-    const refreshToken = generateRefreshToken();
+    const token = generateToken(newUser.id);
+    const expiredAt = new Date(Date.now() + 3600000).toISOString();
 
-    mockTokens[accessToken] = {
-      accessToken,
-      refreshToken,
+    mockTokens[token] = {
+      token,
       userId: newUser.id,
+      expiredAt: Date.now() + 3600000,
     };
 
     return HttpResponse.json({
       success: true,
       message: "Registration successful",
       data: {
-        accessToken,
-        refreshToken,
-        expiresIn: 3600,
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
+        name: newUser.name,
+        email: newUser.email,
+        username: newUser.username,
+        token,
+        otp: {
+          isRequired: true,
+          expiredAt,
         },
       },
     });
@@ -212,16 +205,16 @@ export const handlers = [
   // POST /auth/refresh - Refresh token
   http.post(`${API_BASE_URL}/auth/refresh`, async ({ request }) => {
     const body = await request.json();
-    const { refreshToken } = body as { refreshToken: string };
+    const { token: currentToken } = body as { token: string };
 
-    // Find the access token associated with this refresh token
+    // Find the token entry
     const tokenEntry = Object.values(mockTokens).find(
-      (t) => t.refreshToken === refreshToken
+      (t) => t.token === currentToken
     );
 
     if (!tokenEntry) {
       return HttpResponse.json(
-        { success: false, message: "Invalid refresh token" },
+        { success: false, message: "Invalid token" },
         { status: 401 }
       );
     }
@@ -234,24 +227,24 @@ export const handlers = [
       );
     }
 
-    // Generate new tokens
-    const newAccessToken = generateToken(user.id);
-    const newRefreshToken = generateRefreshToken();
+    // Generate new token
+    const newToken = generateToken(user.id);
+    const expiredAt = new Date(Date.now() + 3600000).toISOString();
 
     // Remove old token entry and add new one
-    delete mockTokens[tokenEntry.accessToken];
-    mockTokens[newAccessToken] = {
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
+    delete mockTokens[tokenEntry.token];
+    mockTokens[newToken] = {
+      token: newToken,
       userId: user.id,
+      expiredAt: Date.now() + 3600000,
     };
 
     return HttpResponse.json({
       success: true,
       message: "Token refreshed successfully",
       data: {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
+        token: newToken,
+        expiredAt,
       },
     });
   }),

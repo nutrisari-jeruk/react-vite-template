@@ -39,49 +39,51 @@ export default defineConfig(({ mode }) => {
       // Chunk splitting strategy
       rollupOptions: {
         output: {
-          // Manual chunks for better caching
+          // Manual chunks for better caching and smaller chunk sizes
           manualChunks: (id) => {
-            // Vendor chunks
-            if (id.includes("node_modules")) {
-              // React ecosystem
-              if (
-                id.includes("react") ||
-                id.includes("react-dom") ||
-                id.includes("react-router-dom")
-              ) {
-                return "react-vendor";
-              }
+            if (!id.includes("node_modules")) return;
 
-              // Query and state management
-              if (
-                id.includes("@tanstack") ||
-                id.includes("axios") ||
-                id.includes("immer")
-              ) {
-                return "query-vendor";
-              }
-
-              // Validation
-              if (
-                id.includes("zod") ||
-                id.includes("react-hook-form") ||
-                id.includes("@hookform")
-              ) {
-                return "validation-vendor";
-              }
-
-              // UI libraries (tailwind, classnames, etc.)
-              if (
-                id.includes("clsx") ||
-                id.includes("tailwind-merge") ||
-                id.includes("class-variance-authority")
-              ) {
-                return "ui-vendor";
-              }
-
-              // Other node modules
-              return "vendor";
+            // Match more specific patterns first (order matters)
+            if (id.includes("react-dom")) return "react-dom";
+            if (
+              (id.includes("/react/") || id.includes("\\react\\")) &&
+              !id.includes("react-dom") &&
+              !id.includes("react-hook-form") &&
+              !id.includes("react-query") &&
+              !id.includes("react-router")
+            ) {
+              return "react";
             }
+
+            if (
+              id.includes("@tanstack") ||
+              id.includes("axios") ||
+              id.includes("react-query-auth")
+            ) {
+              return "query-vendor";
+            }
+
+            if (
+              id.includes("zod") ||
+              id.includes("react-hook-form") ||
+              id.includes("@hookform")
+            ) {
+              return "validation-vendor";
+            }
+
+            if (id.includes("motion") || id.includes("@base-ui")) {
+              return "ui-vendor";
+            }
+
+            if (
+              id.includes("clsx") ||
+              id.includes("tailwind-merge") ||
+              id.includes("lucide-react")
+            ) {
+              return "utils-vendor";
+            }
+
+            return "vendor";
           },
 
           // Chunk file naming
@@ -91,8 +93,7 @@ export default defineConfig(({ mode }) => {
         },
       },
 
-      // Optimize chunk size warnings
-      chunkSizeWarningLimit: 1000, // 1000 KB warning limit
+      chunkSizeWarningLimit: 1500,
 
       // CSS code splitting
       cssCodeSplit: true,

@@ -12,6 +12,8 @@ import {
 } from "@/lib/api-error";
 import { Button, Alert } from "@/components/ui";
 
+const ALERT_TIMEOUT_MS = 3000;
+
 export default function ErrorExamples() {
   const navigate = useNavigate();
   const { error, isError, clearError, handleApiError } = useApiError();
@@ -74,7 +76,7 @@ export default function ErrorExamples() {
           onDismiss={clearError}
           floating
           position="top-right"
-          timeout={3000}
+          timeout={ALERT_TIMEOUT_MS}
         >
           {error?.message}
         </Alert>

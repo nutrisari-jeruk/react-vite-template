@@ -33,11 +33,32 @@ const mockUsers: Array<{
   },
 ];
 
-// Store active tokens
+// Store active tokens (persisted to localStorage to survive refresh)
+const getStoredTokens = () => {
+  if (typeof window === "undefined") return {};
+  try {
+    const stored = localStorage.getItem("mockTokens");
+    return stored ? JSON.parse(stored) : {};
+  } catch {
+    return {};
+  }
+};
+
+const saveTokens = (
+  tokens: Record<string, { token: string; userId: string; expiredAt: number }>
+) => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem("mockTokens", JSON.stringify(tokens));
+  } catch {
+    // Ignore storage errors
+  }
+};
+
 const mockTokens: Record<
   string,
   { token: string; userId: string; expiredAt: number }
-> = {};
+> = getStoredTokens();
 
 // Helper to generate JWT-like tokens
 function generateToken(userId: string, expiresIn: number = 3600000): string {
@@ -129,6 +150,7 @@ export const handlers = [
       userId: user.id,
       expiredAt: Date.now() + 3600000,
     };
+    saveTokens(mockTokens);
 
     return HttpResponse.json({
       success: true,
@@ -182,6 +204,7 @@ export const handlers = [
       userId: newUser.id,
       expiredAt: Date.now() + 3600000,
     };
+    saveTokens(mockTokens);
 
     return HttpResponse.json({
       success: true,
@@ -200,7 +223,13 @@ export const handlers = [
   }),
 
   // POST /auth/logout - Logout
-  http.post(`${API_BASE_URL}/auth/logout`, () => {
+  http.post(`${API_BASE_URL}/auth/logout`, ({ request }) => {
+    const authHeader = request.headers.get("Authorization");
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      delete mockTokens[token];
+      saveTokens(mockTokens);
+    }
     return HttpResponse.json({
       success: true,
       message: "Logout successful",
@@ -243,6 +272,7 @@ export const handlers = [
       userId: user.id,
       expiredAt: Date.now() + 3600000,
     };
+    saveTokens(mockTokens);
 
     return HttpResponse.json({
       success: true,
@@ -296,6 +326,7 @@ export const handlers = [
       userId: user.id,
       expiredAt: Date.now() + 3600000,
     };
+    saveTokens(mockTokens);
 
     return HttpResponse.json({
       success: true,

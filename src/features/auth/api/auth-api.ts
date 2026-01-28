@@ -41,10 +41,23 @@ export const getUser = async (): Promise<User | null> => {
 
   try {
     const response = await api.get<ApiResponse<User>>(API_ENDPOINTS.AUTH.ME);
-    if (!response.data.data) {
+    const userData = response.data.data;
+
+    // Check for null, undefined, or empty object
+    if (
+      !userData ||
+      typeof userData !== "object" ||
+      Object.keys(userData).length === 0
+    ) {
       return null;
     }
-    return response.data.data;
+
+    // Validate required User fields
+    if (!userData.id || !userData.email || !userData.username) {
+      return null;
+    }
+
+    return userData;
   } catch (error) {
     // Return null for 401 Unauthorized (not logged in)
     // Re-throw other errors

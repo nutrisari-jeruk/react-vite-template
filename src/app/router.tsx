@@ -241,6 +241,11 @@ const router = createBrowserRouter([
                 <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
               </div>
             )}
+            renderError={() => {
+              // Redirect to login on auth error
+              window.location.href = "/login";
+              return null;
+            }}
           >
             <AuthenticatedLayout />
           </AuthLoader>

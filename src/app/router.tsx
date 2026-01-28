@@ -20,6 +20,7 @@ import { getAccessToken } from "@/features/auth";
 const Home = lazy(() => import("@/app/routes/Home"));
 const Login = lazy(() => import("@/app/routes/Login"));
 const Register = lazy(() => import("@/app/routes/Register"));
+const Otp = lazy(() => import("@/app/routes/Otp"));
 const Dashboard = lazy(() => import("@/app/routes/Dashboard"));
 const About = lazy(() => import("@/app/routes/About"));
 const Components = lazy(() => import("@/app/routes/Components"));
@@ -111,19 +112,22 @@ const router = createBrowserRouter([
     element: (
       <>
         <MetadataUpdater />
-        <AuthLayout />
+        <LazyPage>
+          <Login />
+        </LazyPage>
       </>
     ),
-    children: [
-      {
-        index: true,
-        element: (
-          <LazyPage>
-            <Login />
-          </LazyPage>
-        ),
-      },
-    ],
+  },
+  {
+    path: "/otp",
+    element: (
+      <>
+        <MetadataUpdater />
+        <LazyPage>
+          <Otp />
+        </LazyPage>
+      </>
+    ),
   },
   {
     path: "/register",
@@ -237,6 +241,11 @@ const router = createBrowserRouter([
                 <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
               </div>
             )}
+            renderError={() => {
+              // Redirect to login on auth error
+              window.location.href = "/login";
+              return null;
+            }}
           >
             <AuthenticatedLayout />
           </AuthLoader>

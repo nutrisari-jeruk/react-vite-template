@@ -14,27 +14,37 @@ import {
   logout,
 } from "../api/auth-api";
 import type { User } from "../types/user";
-import {
-  setAccessToken,
-  setRefreshToken,
-  clearAuthTokens,
-} from "../lib/token-storage";
+import { setAccessToken, clearAuthTokens } from "../lib/token-storage";
 
 // Validation schemas
 export const loginInputSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email"),
-  password: z.string().min(1, "Password is required"),
+  username: z.string().min(1, "NIP / NIK wajib diisi"),
+  password: z.string().min(1, "Kata sandi wajib diisi"),
 });
 
 export const registerInputSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  name: z.string().min(1, "Name is required"),
+  username: z.string().min(11, "Employee Number is required"),
 });
 
 export type LoginInput = z.infer<typeof loginInputSchema>;
 export type RegisterInput = z.infer<typeof registerInputSchema>;
+
+// Helper to construct User from auth response
+function userFromAuthResponse(response: {
+  name: string;
+  email: string;
+  username: string;
+}): User {
+  return {
+    id: "1", // ID would come from response in real API
+    name: response.name,
+    email: response.email,
+    username: response.username,
+  };
+}
 
 // Auth configuration for react-query-auth
 const authConfig = {
@@ -52,26 +62,20 @@ const authConfig = {
   loginFn: async (data: LoginInput): Promise<User> => {
     const response = await loginWithEmailAndPassword(data);
 
-    // Store tokens
-    setAccessToken(response.accessToken);
-    if (response.refreshToken) {
-      setRefreshToken(response.refreshToken);
-    }
+    // Store token
+    setAccessToken(response.token);
 
-    return response.user;
+    return userFromAuthResponse(response);
   },
 
   // Register function - stores tokens and returns user
   registerFn: async (data: RegisterInput): Promise<User> => {
     const response = await registerWithEmailAndPassword(data);
 
-    // Store tokens
-    setAccessToken(response.accessToken);
-    if (response.refreshToken) {
-      setRefreshToken(response.refreshToken);
-    }
+    // Store token
+    setAccessToken(response.token);
 
-    return response.user;
+    return userFromAuthResponse(response);
   },
 
   // Logout function - clears tokens

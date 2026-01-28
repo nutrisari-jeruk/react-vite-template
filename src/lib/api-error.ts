@@ -200,6 +200,21 @@ export function getErrorMessage(error: unknown): string {
  * Extract field errors from validation error
  */
 export function getFieldErrors(error: unknown): Record<string, string> | null {
+  // Handle ValidationError (transformed by api-client)
+  if (error instanceof ValidationError && error.details) {
+    const errors = error.details as Record<string, string[]> | undefined;
+    if (errors && typeof errors === "object") {
+      return Object.entries(errors).reduce(
+        (acc, [field, messages]) => ({
+          ...acc,
+          [field]: Array.isArray(messages) ? messages[0] : messages,
+        }),
+        {} as Record<string, string>
+      );
+    }
+  }
+
+  // Handle raw AxiosError (before transformation)
   if (isAxiosError(error)) {
     const responseData = error.response?.data as ErrorDetails | undefined;
 

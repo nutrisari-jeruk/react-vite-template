@@ -9,13 +9,22 @@ import { getAccessToken, clearAuthTokens } from "../lib/token-storage";
 import type { User } from "../types/user";
 
 /**
+ * OTP configuration from API
+ */
+export interface OtpConfig {
+  isRequired: boolean;
+  expiresIn: number; // Time in seconds until OTP expires
+}
+
+/**
  * Login response from API
  */
 export interface AuthResponse {
-  accessToken: string;
-  refreshToken?: string;
-  expiresIn: number;
-  user: User;
+  name: string;
+  email: string;
+  username: string;
+  token: string;
+  otp: OtpConfig;
 }
 
 /**
@@ -32,10 +41,23 @@ export const getUser = async (): Promise<User | null> => {
 
   try {
     const response = await api.get<ApiResponse<User>>(API_ENDPOINTS.AUTH.ME);
-    if (!response.data.data) {
+    const userData = response.data.data;
+
+    // Check for null, undefined, or empty object
+    if (
+      !userData ||
+      typeof userData !== "object" ||
+      Object.keys(userData).length === 0
+    ) {
       return null;
     }
-    return response.data.data;
+
+    // Validate required User fields
+    if (!userData.id || !userData.email || !userData.username) {
+      return null;
+    }
+
+    return userData;
   } catch (error) {
     // Return null for 401 Unauthorized (not logged in)
     // Re-throw other errors
@@ -118,7 +140,7 @@ export const refreshToken = async (
  * Login input schema types
  */
 export interface LoginInput {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -128,6 +150,60 @@ export interface LoginInput {
 export interface RegisterInput {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  name: string;
+  username?: string;
 }
+
+/**
+ * OTP verification input
+ */
+export interface VerifyOtpInput {
+  otp: string;
+}
+
+/**
+ * OTP verification response
+ */
+export interface VerifyOtpResponse {
+  success: boolean;
+  message: string;
+  token?: string;
+}
+
+/**
+ * Resend OTP response
+ */
+export interface ResendOtpResponse {
+  success: boolean;
+  message: string;
+  expiresIn: number; // Time in seconds until OTP expires
+}
+
+/**
+ * Verify OTP code
+ */
+export const verifyOtp = async (
+  data: VerifyOtpInput
+): Promise<VerifyOtpResponse> => {
+  const response = await api.post<ApiResponse<VerifyOtpResponse>>(
+    API_ENDPOINTS.AUTH.VERIFY_OTP,
+    data
+  );
+  if (!response.data.data) {
+    throw new Error("No verification data received");
+  }
+  return response.data.data;
+};
+
+/**
+ * Resend OTP code
+ */
+export const resendOtp = async (): Promise<ResendOtpResponse> => {
+  const response = await api.post<ApiResponse<ResendOtpResponse>>(
+    API_ENDPOINTS.AUTH.RESEND_OTP
+  );
+  if (!response.data.data) {
+    throw new Error("No resend data received");
+  }
+  return response.data.data;
+};

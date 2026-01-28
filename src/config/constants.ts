@@ -14,6 +14,7 @@ export const ROUTES = {
   },
   LOGIN: "/login",
   REGISTER: "/register",
+  OTP: "/otp",
   NOT_FOUND: "*",
 } as const;
 
@@ -30,6 +31,8 @@ export const API_ENDPOINTS = {
     REGISTER: "/auth/register",
     REFRESH: "/auth/refresh",
     ME: "/auth/me",
+    VERIFY_OTP: "/auth/verify-otp",
+    RESEND_OTP: "/auth/resend-otp",
   },
   USERS: {
     LIST: "/users",

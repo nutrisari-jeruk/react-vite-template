@@ -123,12 +123,12 @@ export function OtpForm({ expiresIn, onSuccess }: OtpFormProps) {
       />
 
       {/* Resend Timer / Resend Link */}
-      <div className="mb-8 text-center">
-        <span className="text-sm text-pretty text-gray-600 sm:text-base">
+      <div className="mb-4 text-center">
+        <span className="text-sm text-pretty text-gray-600 lg:text-sm">
           Belum mendapatkan kode OTP?{" "}
         </span>
         {isActive ? (
-          <span className="text-sm font-bold text-pretty text-gray-600 sm:text-base">
+          <span className="text-sm font-bold text-pretty text-gray-600 lg:text-sm">
             Tunggu {formatTime(minutes, seconds)}
           </span>
         ) : (

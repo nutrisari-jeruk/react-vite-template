@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Input } from "@/components/ui";
 import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
 import { useLogin, loginInputSchema } from "../lib/auth-provider";
@@ -11,6 +12,7 @@ interface LoginFormProps {
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
   const login = useLogin();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -141,9 +143,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       {/* Forgot Password Link */}
       <p className="text-center text-sm text-pretty text-gray-900 sm:text-base">
         Lupa Kata Sandi ?{" "}
-        <a href="#" className="font-medium text-blue-600 hover:underline">
+        <button
+          type="button"
+          onClick={() => navigate("/forget-password")}
+          className="font-medium text-blue-600 hover:underline"
+        >
           Klik Disini
-        </a>
+        </button>
       </p>
     </form>
   );

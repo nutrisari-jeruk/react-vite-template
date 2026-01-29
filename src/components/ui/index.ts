@@ -54,4 +54,5 @@ export {
 } from "./dropdown-menu";
 
 // Navigation
+export { Link } from "./link";
 export { Pagination } from "./pagination";

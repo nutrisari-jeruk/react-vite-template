@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, Link } from "@/components/ui";
 import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
 import { loginInputSchema } from "../lib/auth-provider";
 import { loginWithEmailAndPassword } from "../api/auth-api";
@@ -187,13 +187,13 @@ export function LoginForm({
       {/* Forgot Password Link */}
       <p className="text-center text-sm text-pretty text-gray-900 sm:text-base">
         Lupa Kata Sandi ?{" "}
-        <button
-          type="button"
-          onClick={() => navigate(ROUTES.FORGET_PASSWORD)}
-          className="font-medium text-blue-600 hover:underline"
+        <Link
+          to={ROUTES.FORGET_PASSWORD}
+          variant="primary"
+          className="font-medium hover:underline"
         >
           Klik Disini
-        </button>
+        </Link>
       </p>
     </form>
   );

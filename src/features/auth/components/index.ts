@@ -3,6 +3,7 @@
  */
 
 export { LoginForm } from "./login-form";
+export { OtpForm } from "./otp-form";
 export { RegisterForm } from "./register-form";
 export { ForgetPasswordForm } from "./forget-password-form";
 export { ResetPasswordForm } from "./reset-password-form";

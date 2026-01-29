@@ -24,6 +24,16 @@ export const ROUTE_METADATA: Record<string, RouteMetadata> = {
     description:
       "UI component library for RSUD DDA hospital information system. Reusable, accessible components.",
   },
+  "/login": {
+    title: "Login",
+    description:
+      "Login to RSUD DDA hospital information system. Secure authentication for authorized personnel.",
+  },
+  "/otp": {
+    title: "OTP Verification",
+    description:
+      "Verify your OTP code to complete authentication in RSUD DDA hospital information system.",
+  },
   "/examples/error-handling": {
     title: "Error Handling Examples",
     description:

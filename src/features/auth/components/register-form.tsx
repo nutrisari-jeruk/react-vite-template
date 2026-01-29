@@ -21,8 +21,8 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     defaultValues: {
       email: "",
       password: "",
-      firstName: "",
-      lastName: "",
+      name: "",
+      username: "",
     },
   });
 
@@ -47,50 +47,26 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         </Alert>
       ) : null}
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label
-            htmlFor="firstName"
-            className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            First Name
-          </label>
-          <Input
-            id="firstName"
-            type="text"
-            placeholder="John"
-            autoComplete="given-name"
-            className={cn(errors.firstName && "border-red-500")}
-            {...register("firstName")}
-          />
-          {errors.firstName && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-              {errors.firstName.message}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="lastName"
-            className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            Last Name
-          </label>
-          <Input
-            id="lastName"
-            type="text"
-            placeholder="Doe"
-            autoComplete="family-name"
-            className={cn(errors.lastName && "border-red-500")}
-            {...register("lastName")}
-          />
-          {errors.lastName && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-              {errors.lastName.message}
-            </p>
-          )}
-        </div>
+      <div>
+        <label
+          htmlFor="name"
+          className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+          Full Name
+        </label>
+        <Input
+          id="name"
+          type="text"
+          placeholder="John Doe"
+          autoComplete="name"
+          className={cn(errors.name && "border-red-500")}
+          {...register("name")}
+        />
+        {errors.name && (
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+            {errors.name.message}
+          </p>
+        )}
       </div>
 
       <div>
@@ -136,7 +112,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           </p>
         )}
         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Must be at least 8 characters with uppercase, lowercase, and number.
+          Must be at least 6 characters.
         </p>
       </div>
 

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ResetPasswordForm } from "@/features/auth/components";
+import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();

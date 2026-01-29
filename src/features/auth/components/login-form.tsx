@@ -4,16 +4,25 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input } from "@/components/ui";
 import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
-import { useLogin, loginInputSchema } from "../lib/auth-provider";
+import { loginInputSchema } from "../lib/auth-provider";
+import { loginWithEmailAndPassword } from "../api/auth-api";
+import { setAccessToken } from "../lib/token-storage";
+import { ROUTES } from "@/config/constants";
 
 interface LoginFormProps {
-  onSuccess?: () => void;
+  onSuccess?: (requiresOtp: boolean, expiresIn?: number) => void;
+  defaultUsername?: string;
+  defaultPassword?: string;
 }
 
-export function LoginForm({ onSuccess }: LoginFormProps) {
-  const login = useLogin();
+export function LoginForm({
+  onSuccess,
+  defaultUsername = "",
+  defaultPassword = "",
+}: LoginFormProps) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -23,15 +32,33 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   } = useForm<LoginInput>({
     resolver: zodResolver(loginInputSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: defaultUsername,
+      password: defaultPassword,
     },
   });
 
   const onSubmit = async (data: LoginInput) => {
     try {
-      await login.mutateAsync(data);
-      onSuccess?.();
+      setIsLoading(true);
+      const authResponse = await loginWithEmailAndPassword(data);
+
+      // Store token
+      setAccessToken(authResponse.token);
+
+      // Check if OTP is required
+      if (authResponse.otp.isRequired) {
+        // Set OTP pending flag in sessionStorage
+        sessionStorage.setItem("otp_pending", "true");
+        // Redirect to OTP page with expiresIn
+        navigate(ROUTES.OTP, {
+          state: { expiresIn: authResponse.otp.expiresIn },
+        });
+        onSuccess?.(true, authResponse.otp.expiresIn);
+      } else {
+        // Redirect to dashboard
+        navigate(ROUTES.DASHBOARD);
+        onSuccess?.(false);
+      }
     } catch (error) {
       // Try to get field-level errors from API response
       const fieldErrors = getFieldErrors(error);
@@ -51,6 +78,8 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           message,
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -126,11 +155,11 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       {/* Login Button */}
       <Button
         type="submit"
-        disabled={login.isPending}
-        loading={login.isPending}
+        disabled={isLoading}
+        loading={isLoading}
         className="w-full"
       >
-        {login.isPending ? "Memproses..." : "Login"}
+        {isLoading ? "Memproses..." : "Login"}
       </Button>
 
       {/* Divider */}

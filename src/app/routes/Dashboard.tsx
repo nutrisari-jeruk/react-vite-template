@@ -1,7 +1,15 @@
 import { useAuth } from "@/features/auth";
 
 export default function Dashboard() {
-  const { isAuthenticated, accessToken, tokenExpiresIn } = useAuth();
+  const { isAuthenticated, accessToken, tokenExpiresIn, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="text-gray-500 dark:text-gray-400">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

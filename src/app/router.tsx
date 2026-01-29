@@ -22,6 +22,7 @@ const Login = lazy(() => import("@/app/routes/Login"));
 const Register = lazy(() => import("@/app/routes/Register"));
 const ForgetPassword = lazy(() => import("@/app/routes/ForgetPassword"));
 const ResetPassword = lazy(() => import("@/app/routes/ResetPassword"));
+const Otp = lazy(() => import("@/app/routes/Otp"));
 const Dashboard = lazy(() => import("@/app/routes/Dashboard"));
 const About = lazy(() => import("@/app/routes/About"));
 const Components = lazy(() => import("@/app/routes/Components"));
@@ -115,6 +116,17 @@ const router = createBrowserRouter([
         <MetadataUpdater />
         <LazyPage>
           <Login />
+        </LazyPage>
+      </>
+    ),
+  },
+  {
+    path: "/otp",
+    element: (
+      <>
+        <MetadataUpdater />
+        <LazyPage>
+          <Otp />
         </LazyPage>
       </>
     ),
@@ -253,6 +265,11 @@ const router = createBrowserRouter([
                 <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
               </div>
             )}
+            renderError={() => {
+              // Redirect to login on auth error
+              window.location.href = "/login";
+              return null;
+            }}
           >
             <AuthenticatedLayout />
           </AuthLoader>

@@ -28,6 +28,8 @@ type ResetPasswordInput = z.infer<typeof resetPasswordInputSchema>;
 
 const ALERT_TIMEOUT_MS = 3000;
 const NAVIGATE_DELAY_MS = 2000;
+const RESET_PASSWORD_TOKEN_KEY = "reset_password_token";
+const RESET_PASSWORD_IDENTIFIER_KEY = "reset_password_identifier";
 
 interface ResetPasswordFormProps {
   onBackToLogin?: () => void;
@@ -103,6 +105,9 @@ export function ResetPasswordForm({ onBackToLogin }: ResetPasswordFormProps) {
       setSuccessMessage(
         "Kata sandi berhasil direset. Silakan login dengan kata sandi baru Anda."
       );
+      // Clean up reset password session storage
+      sessionStorage.removeItem(RESET_PASSWORD_TOKEN_KEY);
+      sessionStorage.removeItem(RESET_PASSWORD_IDENTIFIER_KEY);
       setTimeout(() => navigate("/login"), NAVIGATE_DELAY_MS);
     } catch (error) {
       const fieldErrors = getFieldErrors(error);

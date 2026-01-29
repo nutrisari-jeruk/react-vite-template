@@ -5,20 +5,53 @@ import { getAccessToken } from "@/features/auth";
 import { ROUTES } from "@/config/constants";
 
 const OTP_PENDING_KEY = "otp_pending";
+const RESET_OTP_PENDING_KEY = "reset_otp_pending";
+const RESET_PASSWORD_TOKEN_KEY = "reset_password_token";
+const RESET_PASSWORD_IDENTIFIER_KEY = "reset_password_identifier";
+
+type OtpFlow = "login" | "reset_password";
 
 export default function OtpPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get expiresIn from location state (passed from login redirect)
+  const flow: OtpFlow =
+    (location.state as { flow?: OtpFlow } | null)?.flow ?? "login";
+
+  // Get expiresIn from location state (passed from login/reset-password redirect)
   // Default to 75 seconds (1 minute 15 seconds) if not provided
-  const expiresIn = (location.state as { expiresIn?: number })?.expiresIn ?? 75;
+  const expiresIn =
+    (location.state as { expiresIn?: number } | null)?.expiresIn ?? 75;
+
+  // Get identifier for reset-password flow (username/NIP/NIK)
+  const identifier =
+    (location.state as { identifier?: string } | null)?.identifier ??
+    sessionStorage.getItem(RESET_PASSWORD_IDENTIFIER_KEY) ??
+    "";
 
   // Protect OTP page - only allow access if user came from login with pending OTP
   useEffect(() => {
+    const hasRouteStateExpiresIn = !!(
+      location.state as { expiresIn?: number } | null
+    )?.expiresIn;
+
+    if (flow === "reset_password") {
+      const hasPendingFlag =
+        sessionStorage.getItem(RESET_OTP_PENDING_KEY) === "true";
+
+      if (!hasRouteStateExpiresIn && !hasPendingFlag) {
+        navigate(ROUTES.FORGET_PASSWORD, { replace: true });
+        return;
+      }
+
+      if (hasRouteStateExpiresIn) {
+        sessionStorage.setItem(RESET_OTP_PENDING_KEY, "true");
+      }
+      return;
+    }
+
+    // Default: login OTP flow
     const token = getAccessToken();
-    const hasRouteState = !!(location.state as { expiresIn?: number })
-      ?.expiresIn;
     const hasPendingFlag = sessionStorage.getItem(OTP_PENDING_KEY) === "true";
 
     // No token at all - redirect to login
@@ -28,16 +61,16 @@ export default function OtpPage() {
     }
 
     // Has token but no pending OTP (already fully authenticated) - redirect to dashboard
-    if (!hasRouteState && !hasPendingFlag) {
+    if (!hasRouteStateExpiresIn && !hasPendingFlag) {
       navigate(ROUTES.DASHBOARD, { replace: true });
       return;
     }
 
     // Set pending flag if route state exists (for page refresh scenario)
-    if (hasRouteState) {
+    if (hasRouteStateExpiresIn) {
       sessionStorage.setItem(OTP_PENDING_KEY, "true");
     }
-  }, [navigate, location.state]);
+  }, [navigate, location.state, flow]);
 
   return (
     <div className="flex min-h-dvh items-center justify-center bg-blue-600 p-4 sm:p-6 lg:p-12">
@@ -95,7 +128,25 @@ export default function OtpPage() {
             {/* OTP Form */}
             <OtpForm
               expiresIn={expiresIn}
-              onSuccess={() => navigate("/dashboard")}
+              mode={flow}
+              identifier={flow === "reset_password" ? identifier : undefined}
+              onSuccess={() => {
+                if (flow === "reset_password") {
+                  const resetToken =
+                    sessionStorage.getItem(RESET_PASSWORD_TOKEN_KEY) ?? "";
+                  if (!resetToken) {
+                    navigate(ROUTES.FORGET_PASSWORD, { replace: true });
+                    return;
+                  }
+                  navigate(
+                    `${ROUTES.RESET_PASSWORD}?token=${encodeURIComponent(resetToken)}`,
+                    { replace: true }
+                  );
+                  return;
+                }
+
+                navigate(ROUTES.DASHBOARD);
+              }}
             />
           </div>
         </div>

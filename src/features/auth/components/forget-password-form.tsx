@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Input, Alert } from "@/components/ui";
 import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
 import { resetPassword } from "@/features/auth";
+import { ROUTES } from "@/config/constants";
 import { z } from "zod";
 
 const forgetPasswordInputSchema = z.object({
@@ -14,7 +15,10 @@ const forgetPasswordInputSchema = z.object({
 type ForgetPasswordInput = z.infer<typeof forgetPasswordInputSchema>;
 
 const ALERT_TIMEOUT_MS = 3000;
-const NAVIGATE_DELAY_MS = 1500;
+
+const RESET_OTP_PENDING_KEY = "reset_otp_pending";
+const RESET_PASSWORD_TOKEN_KEY = "reset_password_token";
+const RESET_PASSWORD_IDENTIFIER_KEY = "reset_password_identifier";
 
 interface ForgetPasswordFormProps {
   onBackToLogin?: () => void;
@@ -47,11 +51,30 @@ export function ForgetPasswordForm({ onBackToLogin }: ForgetPasswordFormProps) {
         : "Silakan masukkan kata sandi baru Anda.";
       setSuccessMessage(message);
 
-      const token = response.resetToken;
-      if (token) {
-        setTimeout(() => {
-          navigate(`/reset-password?token=${encodeURIComponent(token)}`);
-        }, NAVIGATE_DELAY_MS);
+      // Always force OTP step first (even before user can set a new password)
+      if (response.otp.isRequired) {
+        // Clear any previous reset-token so we don't accidentally reuse it
+        sessionStorage.removeItem(RESET_PASSWORD_TOKEN_KEY);
+        // Store identifier (username/NIP/NIK) for resend OTP functionality
+        sessionStorage.setItem(RESET_PASSWORD_IDENTIFIER_KEY, data.nipNik);
+        // Mark reset-password OTP as pending (for refresh scenario)
+        sessionStorage.setItem(RESET_OTP_PENDING_KEY, "true");
+
+        navigate(ROUTES.OTP, {
+          state: {
+            flow: "reset_password",
+            expiresIn: response.otp.expiresIn,
+            identifier: data.nipNik,
+          },
+        });
+        return;
+      }
+
+      // Fallback (if backend ever disables OTP): go directly to reset password page if token exists
+      if (response.resetToken) {
+        navigate(
+          `${ROUTES.RESET_PASSWORD}?token=${encodeURIComponent(response.resetToken)}`
+        );
       }
     } catch (error) {
       const fieldErrors = getFieldErrors(error);

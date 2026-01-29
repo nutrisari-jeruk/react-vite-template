@@ -335,6 +335,8 @@ export const handlers = [
         success: true,
         message: "OTP verified successfully",
         token,
+        // Also provide a resetToken so reset-password OTP flow can proceed in dev
+        resetToken: "abc123",
       },
     });
   }),
@@ -394,13 +396,79 @@ export const handlers = [
     });
   }),
 
-  // POST /v1/reset-password - Reset password
-  http.post(`${API_BASE_URL}/v1/reset-password`, async ({ request }) => {
+  // POST /v1/reset-password/request - Reset password request
+  http.post(
+    `${API_BASE_URL}/v1/reset-password/request`,
+    async ({ request }) => {
+      const body = await request.json();
+      const { username } = body as { username: string };
+
+      // Check if user exists
+      const user = mockUsers.find((u) => u.username === username);
+
+      if (!user) {
+        return HttpResponse.json(
+          {
+            success: false,
+            message: "User not found",
+            errors: {
+              username: ["NIP / NIK yang Anda masukkan tidak ditemukan."],
+            },
+          },
+          { status: 404 }
+        );
+      }
+
+      return HttpResponse.json({
+        success: true,
+        message: "Reset password",
+        data: {
+          otp: {
+            isRequired: true,
+            expiresIn: 5,
+          },
+          resetToken: "abc123",
+        },
+      });
+    }
+  ),
+
+  // POST /v1/otp/resend - Resend reset password OTP code
+  http.post(`${API_BASE_URL}/v1/otp/resend`, async ({ request }) => {
     const body = await request.json();
-    const { username } = body as { username: string };
+    const { purpose, identifier } = body as {
+      purpose?: string;
+      identifier?: string;
+    };
+
+    if (purpose !== "password_reset") {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Invalid purpose",
+          errors: {
+            purpose: ["Purpose must be 'password_reset'"],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    if (!identifier) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Identifier is required",
+          errors: {
+            identifier: ["Identifier wajib diisi"],
+          },
+        },
+        { status: 422 }
+      );
+    }
 
     // Check if user exists
-    const user = mockUsers.find((u) => u.username === username);
+    const user = mockUsers.find((u) => u.username === identifier);
 
     if (!user) {
       return HttpResponse.json(
@@ -408,7 +476,7 @@ export const handlers = [
           success: false,
           message: "User not found",
           errors: {
-            username: ["NIP / NIK yang Anda masukkan tidak ditemukan."],
+            identifier: ["NIP / NIK yang Anda masukkan tidak ditemukan."],
           },
         },
         { status: 404 }
@@ -417,19 +485,104 @@ export const handlers = [
 
     return HttpResponse.json({
       success: true,
-      message: "Reset password",
+      message: "Resend OTP request successful",
       data: {
         otp: {
           isRequired: true,
-          expiresIn: 3600,
+          expiresIn: 10,
         },
-        resetToken: "abc123",
       },
     });
   }),
 
-  // POST /v1/set-new-password - Set new password
-  http.post(`${API_BASE_URL}/v1/set-new-password`, async ({ request }) => {
+  // POST /v1/otp/validate - Validate reset password OTP code
+  http.post(`${API_BASE_URL}/v1/otp/validate`, async ({ request }) => {
+    const body = await request.json();
+    const { otp, purpose, identifier } = body as {
+      otp?: string | number;
+      purpose?: string;
+      identifier?: string;
+    };
+
+    if (purpose !== "password_reset") {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Invalid purpose",
+          errors: {
+            purpose: ["Purpose must be 'password_reset'"],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    if (!identifier) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Identifier is required",
+          errors: {
+            identifier: ["Identifier wajib diisi"],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    const otpStr = String(otp ?? "");
+    if (!/^\d{6}$/.test(otpStr)) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Kode OTP tidak valid",
+          errors: {
+            otp: ["Kode OTP harus 6 digit angka"],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    if (otpStr !== "123456") {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "Kode OTP salah",
+          errors: {
+            otp: ["Kode OTP yang Anda masukkan salah."],
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    // Check if user exists
+    const user = mockUsers.find((u) => u.username === identifier);
+    if (!user) {
+      return HttpResponse.json(
+        {
+          success: false,
+          message: "User not found",
+          errors: {
+            identifier: ["NIP / NIK yang Anda masukkan tidak ditemukan."],
+          },
+        },
+        { status: 404 }
+      );
+    }
+
+    return HttpResponse.json({
+      success: true,
+      message: "OTP validated successfully",
+      data: {
+        identifier: "abc123", // reset token
+      },
+    });
+  }),
+
+  // POST /v1/reset-password - Set new password
+  http.post(`${API_BASE_URL}/v1/reset-password`, async ({ request }) => {
     const body = await request.json();
     const { resetToken, password, passwordConfirmation } = body as {
       resetToken: string;

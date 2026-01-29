@@ -170,7 +170,7 @@ export const resetPassword = async (
   data: ResetPasswordInput
 ): Promise<ResetPasswordResponse> => {
   const response = await api.post<ApiResponse<ResetPasswordResponse>>(
-    API_ENDPOINTS.AUTH.RESET_PASSWORD,
+    API_ENDPOINTS.AUTH.RESET_PASSWORD_REQUEST,
     data
   );
   if (!response.data.data) {
@@ -194,6 +194,7 @@ export interface SetNewPasswordInput {
 export interface SetNewPasswordResponse {
   success: boolean;
   message: string;
+  data: null;
 }
 
 /**
@@ -203,11 +204,12 @@ export const setNewPassword = async (
   data: SetNewPasswordInput
 ): Promise<SetNewPasswordResponse> => {
   const response = await api.post<ApiResponse<SetNewPasswordResponse>>(
-    API_ENDPOINTS.AUTH.SET_NEW_PASSWORD,
+    API_ENDPOINTS.AUTH.RESET_PASSWORD,
     data
   );
-  if (!response.data.data) {
-    throw new Error("No set new password data received");
+  // Backend returns data: null on success
+  if (response.data.data === undefined) {
+    throw new Error("No set new password response received");
   }
   return response.data.data;
 };
@@ -236,6 +238,11 @@ export interface VerifyOtpResponse {
   success: boolean;
   message: string;
   token?: string;
+  /**
+   * For reset-password OTP flow, backend may return a resetToken
+   * used to call set-new-password.
+   */
+  resetToken?: string;
 }
 
 /**
@@ -245,6 +252,41 @@ export interface ResendOtpResponse {
   success: boolean;
   message: string;
   expiresIn: number; // Time in seconds until OTP expires
+}
+
+/**
+ * Resend reset password OTP input
+ */
+export interface ResendResetPasswordOtpInput {
+  purpose: "password_reset";
+  identifier: string; // Username/NIP/NIK
+}
+
+/**
+ * Resend reset password OTP response
+ */
+export interface ResendResetPasswordOtpResponse {
+  otp: {
+    isRequired: boolean;
+    expiresIn: number; // Time in seconds until OTP expires
+  };
+}
+
+/**
+ * Validate reset password OTP input
+ */
+export interface ValidateResetPasswordOtpInput {
+  otp: string;
+  purpose: "password_reset";
+  identifier: string;
+}
+
+/**
+ * Validate reset password OTP response
+ * Backend returns reset token in `identifier` field.
+ */
+export interface ValidateResetPasswordOtpResponse {
+  identifier: string;
 }
 
 /**
@@ -272,6 +314,37 @@ export const resendOtp = async (): Promise<ResendOtpResponse> => {
   );
   if (!response.data.data) {
     throw new Error("No resend data received");
+  }
+  return response.data.data;
+};
+
+/**
+ * Resend reset password OTP code
+ */
+export const resendResetPasswordOtp = async (
+  data: ResendResetPasswordOtpInput
+): Promise<ResendResetPasswordOtpResponse> => {
+  const response = await api.post<ApiResponse<ResendResetPasswordOtpResponse>>(
+    API_ENDPOINTS.AUTH.RESEND_RESET_PASSWORD_OTP,
+    data
+  );
+  if (!response.data.data) {
+    throw new Error("No resend reset password OTP data received");
+  }
+  return response.data.data;
+};
+
+/**
+ * Validate reset password OTP code
+ */
+export const validateResetPasswordOtp = async (
+  data: ValidateResetPasswordOtpInput
+): Promise<ValidateResetPasswordOtpResponse> => {
+  const response = await api.post<
+    ApiResponse<ValidateResetPasswordOtpResponse>
+  >(API_ENDPOINTS.AUTH.VALIDATE_RESET_PASSWORD_OTP, data);
+  if (!response.data.data) {
+    throw new Error("No validate reset password OTP data received");
   }
   return response.data.data;
 };

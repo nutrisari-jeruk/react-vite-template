@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Input } from "@/components/ui";
 import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
-import { verifyOtp, resendOtp } from "../api/auth-api";
+import {
+  verifyOtp,
+  resendOtp,
+  resendResetPasswordOtp,
+  validateResetPasswordOtp,
+} from "../api/auth-api";
 import { useCountdown } from "@/hooks";
 import { setAccessToken } from "../lib/token-storage";
 import { QUERY_KEYS } from "@/config/constants";
@@ -21,11 +26,25 @@ type OtpInput = z.infer<typeof otpInputSchema>;
 
 interface OtpFormProps {
   expiresIn: number; // Initial countdown time in seconds
+  mode?: "login" | "reset_password";
+  identifier?: string; // Username/NIP/NIK for reset-password resend OTP
   onSuccess?: () => void;
 }
 
-export function OtpForm({ expiresIn, onSuccess }: OtpFormProps) {
-  const countdownStorageKey = "otp_countdown_remaining";
+const OTP_PENDING_KEY = "otp_pending";
+const RESET_OTP_PENDING_KEY = "reset_otp_pending";
+const RESET_PASSWORD_TOKEN_KEY = "reset_password_token";
+
+export function OtpForm({
+  expiresIn,
+  mode = "login",
+  identifier,
+  onSuccess,
+}: OtpFormProps) {
+  const countdownStorageKey =
+    mode === "reset_password"
+      ? "reset_otp_countdown_remaining"
+      : "otp_countdown_remaining";
   const queryClient = useQueryClient();
   const [initialExpiresIn, setInitialExpiresIn] = useState(expiresIn);
   const { minutes, seconds, isActive, reset } = useCountdown(initialExpiresIn, {
@@ -44,13 +63,13 @@ export function OtpForm({ expiresIn, onSuccess }: OtpFormProps) {
     },
   });
 
-  const verifyOtpMutation = useMutation({
+  const verifyLoginOtpMutation = useMutation({
     mutationFn: verifyOtp,
     onSuccess: (response) => {
       if (response.token) {
         setAccessToken(response.token);
         // Remove OTP pending flag
-        sessionStorage.removeItem("otp_pending");
+        sessionStorage.removeItem(OTP_PENDING_KEY);
         sessionStorage.removeItem(countdownStorageKey);
         // Invalidate user query to refetch user data
         queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AUTH.USER });
@@ -68,8 +87,40 @@ export function OtpForm({ expiresIn, onSuccess }: OtpFormProps) {
     },
   });
 
+  const verifyResetPasswordOtpMutation = useMutation({
+    mutationFn: (payload: { otp: string }) => {
+      if (!identifier) {
+        throw new Error("Missing identifier for reset password OTP validation");
+      }
+      return validateResetPasswordOtp({
+        otp: payload.otp,
+        purpose: "password_reset",
+        identifier,
+      });
+    },
+    onSuccess: (response) => {
+      // reset token comes back as `data.identifier`
+      if (response.identifier) {
+        sessionStorage.setItem(RESET_PASSWORD_TOKEN_KEY, response.identifier);
+      }
+      sessionStorage.removeItem(RESET_OTP_PENDING_KEY);
+      sessionStorage.removeItem(countdownStorageKey);
+      // Keep identifier in sessionStorage for potential resend, will be cleared after successful password reset
+      onSuccess?.();
+    },
+    onError: (error) => {
+      const fieldErrors = getFieldErrors(error);
+      if (fieldErrors?.otp) {
+        setError("otp", { type: "server", message: fieldErrors.otp });
+      } else {
+        const message = getErrorMessage(error);
+        setError("otp", { type: "server", message });
+      }
+    },
+  });
+
   const resendOtpMutation = useMutation({
-    mutationFn: resendOtp,
+    mutationFn: () => resendOtp(),
     onSuccess: (response) => {
       setInitialExpiresIn(response.expiresIn);
       reset(response.expiresIn);
@@ -80,12 +131,36 @@ export function OtpForm({ expiresIn, onSuccess }: OtpFormProps) {
     },
   });
 
+  const resendResetPasswordOtpMutation = useMutation({
+    mutationFn: () =>
+      resendResetPasswordOtp({
+        purpose: "password_reset",
+        identifier: identifier!,
+      }),
+    onSuccess: (response) => {
+      setInitialExpiresIn(response.otp.expiresIn);
+      reset(response.otp.expiresIn);
+    },
+    onError: (error) => {
+      const message = getErrorMessage(error);
+      setError("otp", { type: "server", message });
+    },
+  });
+
   const onSubmit = async (data: OtpInput) => {
-    verifyOtpMutation.mutate({ otp: data.otp });
+    if (mode === "reset_password") {
+      verifyResetPasswordOtpMutation.mutate({ otp: data.otp });
+    } else {
+      verifyLoginOtpMutation.mutate({ otp: data.otp });
+    }
   };
 
   const handleResend = () => {
-    resendOtpMutation.mutate();
+    if (mode === "reset_password" && identifier) {
+      resendResetPasswordOtpMutation.mutate();
+    } else {
+      resendOtpMutation.mutate();
+    }
   };
 
   const formatTime = (mins: number, secs: number): string => {
@@ -137,10 +212,20 @@ export function OtpForm({ expiresIn, onSuccess }: OtpFormProps) {
             variant="secondary"
             size="sm"
             onClick={handleResend}
-            loading={resendOtpMutation.isPending}
+            loading={
+              mode === "reset_password" && identifier
+                ? resendResetPasswordOtpMutation.isPending
+                : resendOtpMutation.isPending
+            }
             className="bg-transparent px-0 py-0 text-blue-600 hover:bg-transparent hover:text-blue-700 hover:underline"
           >
-            {resendOtpMutation.isPending ? "Mengirim ulang..." : "Kirim ulang"}
+            {mode === "reset_password" && identifier
+              ? resendResetPasswordOtpMutation.isPending
+                ? "Mengirim ulang..."
+                : "Kirim ulang"
+              : resendOtpMutation.isPending
+                ? "Mengirim ulang..."
+                : "Kirim ulang"}
           </Button>
         )}
       </div>
@@ -148,11 +233,25 @@ export function OtpForm({ expiresIn, onSuccess }: OtpFormProps) {
       {/* Validate Button */}
       <Button
         type="submit"
-        disabled={verifyOtpMutation.isPending}
-        loading={verifyOtpMutation.isPending}
+        disabled={
+          mode === "reset_password"
+            ? verifyResetPasswordOtpMutation.isPending
+            : verifyLoginOtpMutation.isPending
+        }
+        loading={
+          mode === "reset_password"
+            ? verifyResetPasswordOtpMutation.isPending
+            : verifyLoginOtpMutation.isPending
+        }
         className="w-full"
       >
-        {verifyOtpMutation.isPending ? "Memproses..." : "Validasi Kode OTP"}
+        {mode === "reset_password"
+          ? verifyResetPasswordOtpMutation.isPending
+            ? "Memproses..."
+            : "Validasi Kode OTP"
+          : verifyLoginOtpMutation.isPending
+            ? "Memproses..."
+            : "Validasi Kode OTP"}
       </Button>
     </form>
   );

@@ -33,10 +33,12 @@ export const API_ENDPOINTS = {
     REGISTER: "/auth/register",
     REFRESH: "/auth/refresh",
     ME: "/auth/me",
+    RESET_PASSWORD_REQUEST: "/v1/reset-password/request",
     RESET_PASSWORD: "/v1/reset-password",
-    SET_NEW_PASSWORD: "/v1/set-new-password",
     VERIFY_OTP: "/auth/verify-otp",
     RESEND_OTP: "/auth/resend-otp",
+    RESEND_RESET_PASSWORD_OTP: "/v1/otp/resend",
+    VALIDATE_RESET_PASSWORD_OTP: "/v1/otp/validate",
   },
   USERS: {
     LIST: "/users",

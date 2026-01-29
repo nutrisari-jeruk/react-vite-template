@@ -441,21 +441,22 @@ describe("ErrorBoundary Component", () => {
       vi.useFakeTimers();
 
       // Wrap setTimeout to catch errors from callbacks
-      const originalSetTimeout = global.setTimeout;
+      const originalSetTimeout = globalThis.setTimeout;
       const caughtErrors: Error[] = [];
 
-      vi.spyOn(global, "setTimeout").mockImplementation((fn, delay) => {
-        return originalSetTimeout(() => {
-          try {
-            if (typeof fn === "function") {
-              fn();
+      vi.spyOn(globalThis, "setTimeout").mockImplementation(
+        (fn: TimerHandler, delay?: number) => {
+          return originalSetTimeout(() => {
+            try {
+              if (typeof fn === "function") {
+                fn();
+              }
+            } catch (error) {
+              caughtErrors.push(error as Error);
             }
-          } catch (error) {
-            // Catch the error to prevent test failure
-            caughtErrors.push(error as Error);
-          }
-        }, delay as number);
-      });
+          }, delay ?? 0);
+        }
+      );
 
       const AsyncComponent = () => {
         setTimeout(() => {

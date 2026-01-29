@@ -167,7 +167,7 @@ The project includes a comprehensive set of **custom-built UI components** with 
 - `Form` - React Hook Form integration components (Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription)
 
 **Display Components:**
-- `Button` - Multiple variants (primary, secondary, ghost, danger), sizes, and loading states
+- `Button` - Multiple variants (primary, secondary, danger, outline variants, link variants), sizes, and loading states
 - `Card` - Container component with header, body, and footer slots
 - `Badge` - Status badges and labels with Tailwind UI styling
 - `Avatar` - User avatars with fallback and group support
@@ -189,7 +189,7 @@ The project includes a comprehensive set of **custom-built UI components** with 
 
 **Usage:**
 ```typescript
-import { 
+import {
   Button, Input, Card, Alert, Switch, Toggle, Tooltip,
   Dialog, DialogTrigger, DialogContent, DialogFooter,
   useToast, Skeleton, Pagination
@@ -199,11 +199,16 @@ function MyComponent() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [isOpen, setIsOpen] = useState(false)
   const { toast } = useToast()
-  
+
   return (
     <Card>
       <Input placeholder="Enter email" />
       <Button variant="primary" size="md">Submit</Button>
+
+      {/* Link-style buttons (for actions, not navigation) */}
+      <Button variant="link" onClick={onCancel}>Cancel</Button>
+      <Button variant="link-primary" onClick={onDetails}>Learn more</Button>
+      <Button variant="link-muted" onClick={onDismiss}>Dismiss</Button>
       
       {/* Dialog/Modal */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -306,6 +311,28 @@ import { Tooltip } from '@/components/ui'
   <Button disabled>Disabled</Button>
 </Tooltip>
 ```
+
+**Button Link Variants vs Link Component:**
+
+The `Button` component with link variants (`link`, `link-primary`, `link-muted`) is for **actions** that look like links, while the `Link` component is for **navigation**:
+
+```typescript
+import { Button, Link } from '@/components/ui'
+
+// Navigation - use Link component (renders <a> tag)
+<Link to="/about">About page</Link>
+
+// Actions - use Button with link variant (renders <button>)
+<Button variant="link" onClick={handleCancel}>Cancel</Button>
+<Button variant="link-primary" onClick={handleDelete}>Delete</Button>
+<Button variant="link-muted" onClick={handleDismiss}>Dismiss</Button>
+```
+
+**Why use Button link variants:**
+- Proper semantic HTML (`<button>` for actions, `<a>` for navigation)
+- Native `disabled` state (links don't have disabled attribute)
+- Correct keyboard behavior (Enter/Space for buttons, Enter only for links)
+- Better accessibility with screen readers
 
 All components include:
 - ✅ Full TypeScript support with JSDoc documentation

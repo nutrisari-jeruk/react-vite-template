@@ -106,7 +106,7 @@ src/features/[feature-name]/
 
 | Prop | Values |
 |------|--------|
-| `variant` | `primary`, `secondary`, `danger`, `outline-primary`, `outline-secondary`, `outline-danger`, `white`, `outline-white` |
+| `variant` | `primary`, `secondary`, `danger`, `outline-primary`, `outline-secondary`, `outline-danger`, `white`, `outline-white`, `link`, `link-primary`, `link-muted` |
 | `size` | `sm`, `md`, `lg` |
 
 ### Badge (`src/components/ui/badge/badge.tsx`)

@@ -34,4 +34,44 @@ describe("Button", () => {
     await user.click(screen.getByRole("button"));
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
+
+  describe("Link variants", () => {
+    it("applies link variant when specified", () => {
+      render(<Button variant="link">Cancel</Button>);
+      const button = screen.getByRole("button");
+      expect(button).toHaveClass("text-gray-900");
+      expect(button).toHaveClass("hover:text-gray-700");
+      expect(button).toHaveClass("hover:underline");
+      expect(button).not.toHaveClass("rounded-full");
+    });
+
+    it("applies link-primary variant when specified", () => {
+      render(<Button variant="link-primary">Learn more</Button>);
+      const button = screen.getByRole("button");
+      expect(button).toHaveClass("text-blue-600");
+      expect(button).toHaveClass("hover:text-blue-700");
+      expect(button).toHaveClass("hover:underline");
+      expect(button).not.toHaveClass("rounded-full");
+    });
+
+    it("applies link-muted variant when specified", () => {
+      render(<Button variant="link-muted">Dismiss</Button>);
+      const button = screen.getByRole("button");
+      expect(button).toHaveClass("text-gray-500");
+      expect(button).toHaveClass("hover:text-gray-700");
+      expect(button).toHaveClass("hover:underline");
+      expect(button).not.toHaveClass("rounded-full");
+    });
+
+    it("link variant can be disabled", () => {
+      render(
+        <Button variant="link" disabled>
+          Disabled Link
+        </Button>
+      );
+      const button = screen.getByRole("button");
+      expect(button).toBeDisabled();
+      expect(button).toHaveClass("disabled:opacity-50");
+    });
+  });
 });

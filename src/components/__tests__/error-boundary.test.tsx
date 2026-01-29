@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import {
   ErrorBoundary,
@@ -436,8 +436,27 @@ describe("ErrorBoundary Component", () => {
   });
 
   describe("Async Errors", () => {
-    it("does not catch async errors outside render", async () => {
-      // Async errors not thrown in render/event handlers are not caught by ErrorBoundary
+    it("does not catch async errors outside render", () => {
+      // Use fake timers to control when the error is thrown
+      vi.useFakeTimers();
+
+      // Wrap setTimeout to catch errors from callbacks
+      const originalSetTimeout = global.setTimeout;
+      const caughtErrors: Error[] = [];
+
+      vi.spyOn(global, "setTimeout").mockImplementation((fn, delay) => {
+        return originalSetTimeout(() => {
+          try {
+            if (typeof fn === "function") {
+              fn();
+            }
+          } catch (error) {
+            // Catch the error to prevent test failure
+            caughtErrors.push(error as Error);
+          }
+        }, delay as number);
+      });
+
       const AsyncComponent = () => {
         setTimeout(() => {
           throw new Error("Async error");
@@ -455,8 +474,24 @@ describe("ErrorBoundary Component", () => {
       // Initially should render without error
       expect(screen.getByText("Async Component")).toBeInTheDocument();
 
-      // Note: The async error won't be caught by ErrorBoundary
-      // This is expected React behavior
+      // Advance timers to trigger the setTimeout
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+
+      // Verify ErrorBoundary did not catch it (component still renders)
+      expect(screen.getByText("Async Component")).toBeInTheDocument();
+      expect(
+        screen.queryByText("Something went wrong")
+      ).not.toBeInTheDocument();
+
+      // Verify the error was thrown but not caught by ErrorBoundary
+      expect(caughtErrors.length).toBeGreaterThan(0);
+      expect(caughtErrors[0].message).toBe("Async error");
+
+      // Clean up
+      vi.restoreAllMocks();
+      vi.useRealTimers();
     });
   });
 

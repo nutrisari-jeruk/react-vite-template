@@ -23,11 +23,13 @@ export function LoginForm({
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     setError,
+    clearErrors,
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginInputSchema),
@@ -40,6 +42,8 @@ export function LoginForm({
   const onSubmit = async (data: LoginInput) => {
     try {
       setIsLoading(true);
+      setFormError(null);
+      clearErrors();
       const authResponse = await loginWithEmailAndPassword(data);
 
       // Store token
@@ -71,12 +75,8 @@ export function LoginForm({
           }
         });
       } else {
-        // Fallback: show API error on username field
-        const message = getErrorMessage(error);
-        setError("username", {
-          type: "server",
-          message,
-        });
+        // Show form-level error for non-field-specific errors
+        setFormError(getErrorMessage(error));
       }
     } finally {
       setIsLoading(false);
@@ -85,6 +85,17 @@ export function LoginForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full max-w-md">
+      {/* Form-level error */}
+      {formError && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="mb-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        >
+          {formError}
+        </div>
+      )}
+
       {/* NIP / NIK Input */}
       <Input
         id="username"
@@ -118,6 +129,8 @@ export function LoginForm({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                focusable="false"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -132,6 +145,8 @@ export function LoginForm({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                focusable="false"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -174,7 +189,7 @@ export function LoginForm({
         Lupa Kata Sandi ?{" "}
         <button
           type="button"
-          onClick={() => navigate("/forget-password")}
+          onClick={() => navigate(ROUTES.FORGET_PASSWORD)}
           className="font-medium text-blue-600 hover:underline"
         >
           Klik Disini

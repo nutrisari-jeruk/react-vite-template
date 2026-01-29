@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { OtpForm } from "@/features/auth/components/otp-form";
+import { ImageWithFallback } from "@/components/ui";
 import { getAccessToken } from "@/features/auth";
 import { ROUTES } from "@/config/constants";
 
@@ -75,40 +76,34 @@ export default function OtpPage() {
   return (
     <div className="flex min-h-dvh items-center justify-center bg-blue-600 p-4 sm:p-6 lg:p-12">
       {/* Main Container */}
-      <div className="w-full max-w-5xl overflow-hidden rounded-lg bg-white shadow-2xl">
+      <div className="w-full max-w-5xl overflow-hidden rounded-lg bg-white shadow-2xl focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none">
         <div className="flex flex-col lg:flex-row">
           {/* Left side - Illustration */}
           <div className="relative hidden lg:block lg:w-1/2">
-            <img
+            <ImageWithFallback
               src="/login.svg"
-              alt="RSUD R.T. Notopuro Sidoarjo"
+              alt="Ilustrasi login medis"
               className="h-full w-full object-cover"
             />
             {/* Logos overlay */}
             <div className="absolute top-6 left-1/2 flex -translate-x-1/2 items-center gap-3">
-              <img
+              <ImageWithFallback
                 src="/logo-indonesia.png"
-                alt="Indonesia"
+                alt="Logo Pemerintah Indonesia"
                 className="h-8 w-auto"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
+                fallback={null}
               />
-              <img
+              <ImageWithFallback
                 src="/logo-rsud.png"
-                alt="RSUD"
+                alt="Logo RSUD R.T. Notopuro"
                 className="h-10 w-auto"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
+                fallback={null}
               />
-              <img
+              <ImageWithFallback
                 src="/logo-sidoarjo.png"
-                alt="Sidoarjo"
+                alt="Logo Kabupaten Sidoarjo"
                 className="h-8 w-auto"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
+                fallback={null}
               />
             </div>
           </div>

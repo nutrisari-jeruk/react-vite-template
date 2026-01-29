@@ -1,5 +1,8 @@
 // UI Component Library
 
+// Media
+export { ImageWithFallback } from "./image-with-fallback";
+
 // Form Controls
 export { Button } from "./button";
 export { Input } from "./input";

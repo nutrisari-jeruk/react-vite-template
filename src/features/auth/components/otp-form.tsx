@@ -163,6 +163,11 @@ export function OtpForm({
     }
   };
 
+  const isResendPending =
+    mode === "reset_password" && identifier
+      ? resendResetPasswordOtpMutation.isPending
+      : resendOtpMutation.isPending;
+
   const formatTime = (mins: number, secs: number): string => {
     if (mins === 0 && secs === 0) {
       return "";
@@ -199,34 +204,22 @@ export function OtpForm({
 
       {/* Resend Timer / Resend Link */}
       <div className="mb-4 text-center">
-        <span className="text-sm text-pretty text-gray-600 lg:text-sm">
+        <span className="text-sm text-pretty text-gray-600">
           Belum mendapatkan kode OTP?{" "}
         </span>
         {isActive ? (
-          <span className="text-sm font-bold text-pretty text-gray-600 lg:text-sm">
+          <span className="text-sm font-bold text-pretty text-gray-600">
             Tunggu {formatTime(minutes, seconds)}
           </span>
         ) : (
-          <Button
+          <button
             type="button"
-            variant="secondary"
-            size="sm"
             onClick={handleResend}
-            loading={
-              mode === "reset_password" && identifier
-                ? resendResetPasswordOtpMutation.isPending
-                : resendOtpMutation.isPending
-            }
-            className="bg-transparent px-0 py-0 text-blue-600 hover:bg-transparent hover:text-blue-700 hover:underline"
+            disabled={isResendPending}
+            className="text-sm font-medium text-blue-600 hover:underline disabled:no-underline disabled:opacity-60"
           >
-            {mode === "reset_password" && identifier
-              ? resendResetPasswordOtpMutation.isPending
-                ? "Mengirim ulang..."
-                : "Kirim ulang"
-              : resendOtpMutation.isPending
-                ? "Mengirim ulang..."
-                : "Kirim ulang"}
-          </Button>
+            {isResendPending ? "Mengirim ulang..." : "Kirim ulang"}
+          </button>
         )}
       </div>
 

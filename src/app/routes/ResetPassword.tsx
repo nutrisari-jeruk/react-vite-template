@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { ImageWithFallback } from "@/components/ui";
 import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
 
 export default function ResetPasswordPage() {
@@ -11,36 +12,27 @@ export default function ResetPasswordPage() {
         <div className="flex flex-col lg:flex-row">
           {/* Left side - Illustration */}
           <div className="relative hidden lg:block lg:w-1/2">
-            <img
+            <ImageWithFallback
               src="/login.svg"
               alt="RSUD R.T. Notopuro Sidoarjo"
               className="h-full w-full object-cover"
             />
             {/* Logos overlay */}
             <div className="absolute top-6 left-1/2 flex -translate-x-1/2 items-center gap-3">
-              <img
+              <ImageWithFallback
                 src="/logo-indonesia.png"
                 alt="Indonesia"
                 className="h-8 w-auto"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
               />
-              <img
+              <ImageWithFallback
                 src="/logo-rsud.png"
                 alt="RSUD"
                 className="h-10 w-auto"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
               />
-              <img
+              <ImageWithFallback
                 src="/logo-sidoarjo.png"
                 alt="Sidoarjo"
                 className="h-8 w-auto"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
               />
             </div>
           </div>

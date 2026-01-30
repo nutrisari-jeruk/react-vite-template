@@ -1,9 +1,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Button, Input, Alert } from "@/components/ui";
+import { Button, Input, Alert, Link } from "@/components/ui";
 import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
 import { setNewPassword } from "@/features/auth";
+import { ROUTES } from "@/config/constants";
 import { cn } from "@/utils/cn";
 import { z } from "zod";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -386,13 +387,13 @@ export function ResetPasswordForm({ onBackToLogin }: ResetPasswordFormProps) {
         {onBackToLogin && (
           <p className="text-center text-sm text-pretty text-gray-900 sm:text-base">
             Kembali ke Halaman Login ?{" "}
-            <button
-              type="button"
-              onClick={onBackToLogin}
-              className="font-medium text-blue-600 hover:underline"
+            <Link
+              to={ROUTES.LOGIN}
+              variant="primary"
+              className="font-medium hover:underline"
             >
               Klik Disini
-            </button>
+            </Link>
           </p>
         )}
       </form>

@@ -5,10 +5,9 @@ import { ForgetPasswordForm } from "../forget-password-form";
 import { ROUTES } from "@/config/constants";
 import { TEST_CREDENTIALS } from "./test-utils";
 
-// Mock navigate function - must be defined before vi.mock()
+// Mock react-router-dom
 const mockNavigate = vi.fn();
 
-// Mock react-router-dom
 vi.mock("react-router-dom", async () => {
   const actual =
     await vi.importActual<typeof import("react-router-dom")>(
@@ -17,6 +16,18 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    Link: ({
+      to,
+      children,
+      ...props
+    }: {
+      to: string;
+      children: React.ReactNode;
+    }) => (
+      <a href={to} {...props}>
+        {children}
+      </a>
+    ),
   };
 });
 
@@ -52,12 +63,12 @@ describe("ForgetPasswordForm", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render back-to-login button", () => {
+    it("should render back-to-login link", () => {
       render(<ForgetPasswordForm />);
 
-      expect(
-        screen.getByRole("button", { name: /klik disini/i })
-      ).toBeInTheDocument();
+      const link = screen.getByRole("link", { name: /klik disini/i });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", ROUTES.LOGIN);
     });
   });
 
@@ -129,16 +140,6 @@ describe("ForgetPasswordForm", () => {
           identifier: TEST_CREDENTIALS.username,
         },
       });
-    });
-
-    it("should call onBackToLogin when user clicks the back-to-login button", async () => {
-      const user = userEvent.setup({ delay: null });
-      const onBackToLogin = vi.fn();
-
-      render(<ForgetPasswordForm onBackToLogin={onBackToLogin} />);
-
-      await user.click(screen.getByRole("button", { name: /klik disini/i }));
-      expect(onBackToLogin).toHaveBeenCalledTimes(1);
     });
   });
 

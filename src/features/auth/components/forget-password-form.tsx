@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, Alert } from "@/components/ui";
+import { Button, Input, Alert, Link } from "@/components/ui";
 import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
 import { resetPassword } from "@/features/auth";
 import { ROUTES } from "@/config/constants";
@@ -20,11 +20,7 @@ const RESET_OTP_PENDING_KEY = "reset_otp_pending";
 const RESET_PASSWORD_TOKEN_KEY = "reset_password_token";
 const RESET_PASSWORD_IDENTIFIER_KEY = "reset_password_identifier";
 
-interface ForgetPasswordFormProps {
-  onBackToLogin?: () => void;
-}
-
-export function ForgetPasswordForm({ onBackToLogin }: ForgetPasswordFormProps) {
+export function ForgetPasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -155,13 +151,13 @@ export function ForgetPasswordForm({ onBackToLogin }: ForgetPasswordFormProps) {
         {/* Back to Login Link */}
         <p className="text-center text-sm text-pretty text-gray-900 sm:text-base">
           Kembali ke Halaman Login ?{" "}
-          <button
-            type="button"
-            onClick={onBackToLogin}
-            className="font-medium text-blue-600 hover:underline"
+          <Link
+            to={ROUTES.LOGIN}
+            variant="primary"
+            className="font-medium hover:underline"
           >
             Klik Disini
-          </button>
+          </Link>
         </p>
       </form>
     </>

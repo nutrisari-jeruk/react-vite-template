@@ -264,6 +264,39 @@ describe("UserList", () => {
 });
 ```
 
+## Test Coverage
+
+### What to Test
+
+| Priority | Area | Examples |
+|----------|------|----------|
+| 1 | **Critical paths** | Login, checkout, form submissions |
+| 2 | **Complex logic** | State machines, data transformations, calculations |
+| 3 | **Error handling** | Network failures, validation, edge cases |
+| 4 | **Accessibility** | ARIA labels, keyboard nav, focus management |
+| 5 | **User interactions** | Clicks, inputs, gestures, state changes |
+
+### Coverage Checklist
+
+When testing components/pages, verify:
+
+- [ ] **Rendering** - Component renders with props, handles loading/empty states
+- [ ] **Accessibility** - Proper ARIA, keyboard navigation works, alt text present
+- [ ] **Validation** - Form errors display correctly, required fields enforced
+- [ ] **Success flow** - Happy path completes, navigation works, data persists
+- [ ] **Error flow** - API failures show user-friendly messages, retry logic works
+- [ ] **Interactions** - Buttons/inputs respond correctly, state updates properly
+
+### What NOT to Test
+
+| ❌ Avoid | Reason |
+|----------|--------|
+| Implementation details (private methods) | Breaks on refactoring |
+| Third-party libraries | They have their own tests |
+| Static content | Low value, high maintenance |
+| Trivial functions | `const double = (n) => n * 2` |
+| CSS styles | Use visual regression instead |
+
 ## Testing Patterns
 
 ### Query by Role

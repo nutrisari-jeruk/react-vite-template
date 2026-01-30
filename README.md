@@ -531,10 +531,40 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 - Safe area inset support for iOS devices
 
 ### Testing
-- Vitest for fast tests
-- React Testing Library
-- User event simulation
-- Coverage reporting
+
+The project uses Vitest with React Testing Library for comprehensive component testing.
+
+**Tools:**
+- Vitest - Fast test runner with native ESM support
+- React Testing Library - DOM testing utilities
+- @testing-library/user-event - Realistic user interaction simulation
+- @testing-library/jest-dom - Custom DOM matchers
+
+**Test Coverage Areas:**
+
+| Priority | Area | Examples |
+|----------|------|----------|
+| 1 | Critical paths | Login, checkout, form submissions |
+| 2 | Complex logic | State machines, data transformations |
+| 3 | Error handling | Network failures, validation, edge cases |
+| 4 | Accessibility | ARIA labels, keyboard navigation |
+| 5 | User interactions | Clicks, inputs, state changes |
+
+**Coverage Checklist:**
+- Rendering with props, loading/empty states
+- Accessibility (ARIA, keyboard nav, alt text)
+- Form validation and error display
+- Success/error API flows
+- User interactions and state updates
+
+**Running Tests:**
+```bash
+npm run test            # Run all tests
+npm run test:ui         # Run Vitest UI
+npm run test:coverage   # Run with coverage report
+```
+
+> **See [docs/testing.md](./docs/testing.md)** for detailed testing patterns and best practices.
 
 ### Accessibility
 - ARIA attributes throughout all UI components

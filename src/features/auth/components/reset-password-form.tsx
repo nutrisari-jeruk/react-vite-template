@@ -185,7 +185,7 @@ export function ResetPasswordForm({ onBackToLogin }: ResetPasswordFormProps) {
               <li
                 key={label}
                 className={cn(
-                  "flex items-start gap-2 transition-colors",
+                  "flex items-start gap-2 motion-safe:transition-colors motion-safe:duration-200",
                   showCheck && "text-green-700",
                   showCross && "text-red-700",
                   showBullet && "text-gray-600"
@@ -258,7 +258,7 @@ export function ResetPasswordForm({ onBackToLogin }: ResetPasswordFormProps) {
             <button
               type="button"
               onClick={() => setShowNewPassword(!showNewPassword)}
-              className="text-gray-400 transition-colors hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 motion-safe:transition-colors motion-safe:duration-200"
               aria-label={
                 showNewPassword
                   ? "Sembunyikan kata sandi"
@@ -318,7 +318,7 @@ export function ResetPasswordForm({ onBackToLogin }: ResetPasswordFormProps) {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="text-gray-400 transition-colors hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 motion-safe:transition-colors motion-safe:duration-200"
               aria-label={
                 showConfirmPassword
                   ? "Sembunyikan kata sandi"

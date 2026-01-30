@@ -216,7 +216,7 @@ export function OtpForm({
             type="button"
             onClick={handleResend}
             disabled={isResendPending}
-            className="text-sm font-medium text-blue-600 hover:underline disabled:no-underline disabled:opacity-60"
+            className="text-sm font-medium text-blue-600 hover:underline disabled:no-underline disabled:opacity-60 motion-safe:transition-opacity motion-safe:duration-200"
           >
             {isResendPending ? "Mengirim ulang..." : "Kirim ulang"}
           </button>

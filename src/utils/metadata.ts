@@ -4,7 +4,7 @@
  * Provides a centralized way to update document metadata when routes change.
  */
 
-const SITE_NAME = "RSUD DDA";
+const SITE_NAME = "RSUD R.T. Notopuro";
 
 type PageMetadata = {
   title: string;

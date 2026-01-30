@@ -1,13 +1,21 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import LoginPage from "../Login";
 import { ROUTES } from "@/config/constants";
+import {
+  TEST_CREDENTIALS,
+  TEST_USER,
+  createTestQueryClient,
+} from "@/features/auth/components/__tests__/test-utils";
+import type { ReactNode } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
+
+// Mock navigate function - must be defined before vi.mock()
+const mockNavigate = vi.fn();
 
 // Mock react-router-dom
-const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
   const actual =
     await vi.importActual<typeof import("react-router-dom")>(
@@ -51,14 +59,9 @@ const mockLoginWithEmailAndPassword = loginWithEmailAndPassword as ReturnType<
 const mockSetAccessToken = setAccessToken as ReturnType<typeof vi.fn>;
 
 const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false, gcTime: 0, staleTime: 0 },
-      mutations: { retry: false },
-    },
-  });
+  const queryClient = createTestQueryClient();
 
-  function TestWrapper({ children }: { children: React.ReactNode }) {
+  function TestWrapper({ children }: { children: ReactNode }) {
     return (
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>{children}</MemoryRouter>
@@ -174,8 +177,8 @@ describe("LoginPage", () => {
     });
   });
 
-  describe("LoginForm Integration Tests", () => {
-    describe("Validation scenarios", () => {
+  describe("Form Integration Tests", () => {
+    describe("Form Validation Tests", () => {
       it("should show validation error when username is empty", async () => {
         const user = userEvent.setup();
         const wrapper = createWrapper();
@@ -194,7 +197,7 @@ describe("LoginPage", () => {
         render(<LoginPage />, { wrapper });
 
         const usernameInput = screen.getByLabelText("NIP / NIK Pegawai");
-        await user.type(usernameInput, "14029808221");
+        await user.type(usernameInput, TEST_CREDENTIALS.username);
 
         const submitButton = screen.getByRole("button", { name: /login/i });
         await user.click(submitButton);
@@ -204,14 +207,12 @@ describe("LoginPage", () => {
       });
     });
 
-    describe("Success scenarios", () => {
+    describe("Success Scenarios", () => {
       it("should navigate to OTP page when OTP is required", async () => {
         const user = userEvent.setup();
         mockLoginWithEmailAndPassword.mockResolvedValueOnce({
-          name: "Test User",
-          email: "test@example.com",
-          username: "14029808221",
-          token: "test-token",
+          ...TEST_USER,
+          token: TEST_USER.token,
           otp: { isRequired: true, expiresIn: 60 },
         });
 
@@ -220,21 +221,24 @@ describe("LoginPage", () => {
 
         await user.type(
           screen.getByLabelText("NIP / NIK Pegawai"),
-          "14029808221"
+          TEST_CREDENTIALS.username
         );
-        await user.type(screen.getByLabelText("Kata Sandi"), "password123");
+        await user.type(
+          screen.getByLabelText("Kata Sandi"),
+          TEST_CREDENTIALS.password
+        );
 
         const submitButton = screen.getByRole("button", { name: /login/i });
         await user.click(submitButton);
 
         await waitFor(() => {
           expect(mockLoginWithEmailAndPassword).toHaveBeenCalledWith({
-            username: "14029808221",
-            password: "password123",
+            username: TEST_CREDENTIALS.username,
+            password: TEST_CREDENTIALS.password,
           });
         });
 
-        expect(mockSetAccessToken).toHaveBeenCalledWith("test-token");
+        expect(mockSetAccessToken).toHaveBeenCalledWith(TEST_USER.token);
         expect(sessionStorage.getItem("otp_pending")).toBe("true");
         expect(mockNavigate).toHaveBeenCalledWith(ROUTES.OTP, {
           state: { expiresIn: 60 },
@@ -244,10 +248,8 @@ describe("LoginPage", () => {
       it("should navigate to Dashboard when OTP is not required", async () => {
         const user = userEvent.setup();
         mockLoginWithEmailAndPassword.mockResolvedValueOnce({
-          name: "Test User",
-          email: "test@example.com",
-          username: "14029808221",
-          token: "test-token",
+          ...TEST_USER,
+          token: TEST_USER.token,
           otp: { isRequired: false, expiresIn: 0 },
         });
 
@@ -256,27 +258,30 @@ describe("LoginPage", () => {
 
         await user.type(
           screen.getByLabelText("NIP / NIK Pegawai"),
-          "14029808221"
+          TEST_CREDENTIALS.username
         );
-        await user.type(screen.getByLabelText("Kata Sandi"), "password123");
+        await user.type(
+          screen.getByLabelText("Kata Sandi"),
+          TEST_CREDENTIALS.password
+        );
 
         const submitButton = screen.getByRole("button", { name: /login/i });
         await user.click(submitButton);
 
         await waitFor(() => {
           expect(mockLoginWithEmailAndPassword).toHaveBeenCalledWith({
-            username: "14029808221",
-            password: "password123",
+            username: TEST_CREDENTIALS.username,
+            password: TEST_CREDENTIALS.password,
           });
         });
 
-        expect(mockSetAccessToken).toHaveBeenCalledWith("test-token");
+        expect(mockSetAccessToken).toHaveBeenCalledWith(TEST_USER.token);
         expect(sessionStorage.getItem("otp_pending")).toBeNull();
         expect(mockNavigate).toHaveBeenCalledWith(ROUTES.DASHBOARD);
       });
     });
 
-    describe("Error scenarios", () => {
+    describe("Error Scenarios", () => {
       it("should display form-level error for generic API errors", async () => {
         const user = userEvent.setup();
         const error = new Error("Invalid credentials");
@@ -288,9 +293,12 @@ describe("LoginPage", () => {
 
         await user.type(
           screen.getByLabelText("NIP / NIK Pegawai"),
-          "14029808221"
+          TEST_CREDENTIALS.username
         );
-        await user.type(screen.getByLabelText("Kata Sandi"), "wrongpassword");
+        await user.type(
+          screen.getByLabelText("Kata Sandi"),
+          TEST_CREDENTIALS.wrongPassword
+        );
 
         const submitButton = screen.getByRole("button", { name: /login/i });
         await user.click(submitButton);
@@ -321,7 +329,10 @@ describe("LoginPage", () => {
           screen.getByLabelText("NIP / NIK Pegawai"),
           "invalid_user"
         );
-        await user.type(screen.getByLabelText("Kata Sandi"), "password123");
+        await user.type(
+          screen.getByLabelText("Kata Sandi"),
+          TEST_CREDENTIALS.password
+        );
 
         const submitButton = screen.getByRole("button", { name: /login/i });
         await user.click(submitButton);
@@ -350,9 +361,12 @@ describe("LoginPage", () => {
 
         await user.type(
           screen.getByLabelText("NIP / NIK Pegawai"),
-          "14029808221"
+          TEST_CREDENTIALS.username
         );
-        await user.type(screen.getByLabelText("Kata Sandi"), "wrongpassword");
+        await user.type(
+          screen.getByLabelText("Kata Sandi"),
+          TEST_CREDENTIALS.wrongPassword
+        );
 
         const submitButton = screen.getByRole("button", { name: /login/i });
         await user.click(submitButton);
@@ -363,7 +377,7 @@ describe("LoginPage", () => {
       });
     });
 
-    describe("Interaction tests", () => {
+    describe("Interaction Tests", () => {
       it("should toggle password visibility when clicking the eye icon", async () => {
         const user = userEvent.setup();
         const wrapper = createWrapper();
@@ -392,10 +406,8 @@ describe("LoginPage", () => {
             new Promise((resolve) => {
               setTimeout(() => {
                 resolve({
-                  name: "Test User",
-                  email: "test@example.com",
-                  username: "14029808221",
-                  token: "test-token",
+                  ...TEST_USER,
+                  token: TEST_USER.token,
                   otp: { isRequired: false, expiresIn: 0 },
                 });
               }, 100);
@@ -407,9 +419,12 @@ describe("LoginPage", () => {
 
         await user.type(
           screen.getByLabelText("NIP / NIK Pegawai"),
-          "14029808221"
+          TEST_CREDENTIALS.username
         );
-        await user.type(screen.getByLabelText("Kata Sandi"), "password123");
+        await user.type(
+          screen.getByLabelText("Kata Sandi"),
+          TEST_CREDENTIALS.password
+        );
 
         const submitButton = screen.getByRole("button", { name: /login/i });
         await user.click(submitButton);

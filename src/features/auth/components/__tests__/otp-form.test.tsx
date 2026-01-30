@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, waitFor } from "@/testing";
 import userEvent from "@testing-library/user-event";
 import { OtpForm } from "../otp-form";
+import { TEST_CREDENTIALS } from "./test-utils";
 
 // Mock auth API
 vi.mock("@/features/auth/api/auth-api", async () => {
@@ -138,7 +139,7 @@ describe("OtpForm", () => {
       render(<OtpForm expiresIn={defaultExpiresIn} />);
 
       const otpInput = screen.getByLabelText("Kode OTP");
-      await user.type(otpInput, "123456");
+      await user.type(otpInput, TEST_CREDENTIALS.otp);
 
       const submitButton = screen.getByRole("button", {
         name: /Validasi Kode OTP/i,
@@ -151,7 +152,7 @@ describe("OtpForm", () => {
     });
   });
 
-  describe("Validation Tests", () => {
+  describe("Form Validation Tests", () => {
     it("should show validation error when OTP is empty", async () => {
       const user = userEvent.setup({ delay: null });
       render(<OtpForm expiresIn={defaultExpiresIn} />);
@@ -215,7 +216,7 @@ describe("OtpForm", () => {
       render(<OtpForm expiresIn={defaultExpiresIn} onSuccess={onSuccess} />);
 
       const otpInput = screen.getByLabelText("Kode OTP");
-      await user.type(otpInput, "123456");
+      await user.type(otpInput, TEST_CREDENTIALS.otp);
 
       const submitButton = screen.getByRole("button", {
         name: /Validasi Kode OTP/i,
@@ -225,7 +226,7 @@ describe("OtpForm", () => {
       await waitFor(() => {
         expect(mockVerifyOtp).toHaveBeenCalled();
         const firstCall = mockVerifyOtp.mock.calls[0][0] as { otp: string };
-        expect(firstCall).toEqual({ otp: "123456" });
+        expect(firstCall).toEqual({ otp: TEST_CREDENTIALS.otp });
       });
 
       expect(mockSetAccessToken).toHaveBeenCalledWith("new-access-token");
@@ -238,7 +239,7 @@ describe("OtpForm", () => {
     it("should verify OTP successfully in reset_password mode", async () => {
       const user = userEvent.setup({ delay: null });
       const onSuccess = vi.fn();
-      const identifier = "1234567890";
+      const identifier = TEST_CREDENTIALS.username;
       mockValidateResetPasswordOtp.mockResolvedValueOnce({
         identifier: "reset-token-123",
       });
@@ -253,7 +254,7 @@ describe("OtpForm", () => {
       );
 
       const otpInput = screen.getByLabelText("Kode OTP");
-      await user.type(otpInput, "123456");
+      await user.type(otpInput, TEST_CREDENTIALS.otp);
 
       const submitButton = screen.getByRole("button", {
         name: /Validasi Kode OTP/i,
@@ -268,7 +269,7 @@ describe("OtpForm", () => {
           identifier: string;
         };
         expect(firstCall).toEqual({
-          otp: "123456",
+          otp: TEST_CREDENTIALS.otp,
           purpose: "password_reset",
           identifier,
         });
@@ -321,7 +322,7 @@ describe("OtpForm", () => {
       render(<OtpForm expiresIn={defaultExpiresIn} />);
 
       const otpInput = screen.getByLabelText("Kode OTP");
-      await user.type(otpInput, "123456");
+      await user.type(otpInput, TEST_CREDENTIALS.otp);
 
       const submitButton = screen.getByRole("button", {
         name: /Validasi Kode OTP/i,
@@ -354,7 +355,11 @@ describe("OtpForm", () => {
       mockResendResetPasswordOtp.mockRejectedValueOnce(error);
 
       render(
-        <OtpForm expiresIn={0} mode="reset_password" identifier="1234567890" />
+        <OtpForm
+          expiresIn={0}
+          mode="reset_password"
+          identifier={TEST_CREDENTIALS.username}
+        />
       );
 
       const resendButton = screen.getByText(/Kirim ulang/i);
@@ -373,7 +378,7 @@ describe("OtpForm", () => {
       render(<OtpForm expiresIn={defaultExpiresIn} mode="reset_password" />);
 
       const otpInput = screen.getByLabelText("Kode OTP");
-      await user.type(otpInput, "123456");
+      await user.type(otpInput, TEST_CREDENTIALS.otp);
 
       const submitButton = screen.getByRole("button", {
         name: /Validasi Kode OTP/i,
@@ -417,7 +422,7 @@ describe("OtpForm", () => {
 
     it("should resend reset password OTP and reset countdown timer", async () => {
       const user = userEvent.setup({ delay: null });
-      const identifier = "1234567890";
+      const identifier = TEST_CREDENTIALS.username;
       mockResendResetPasswordOtp.mockResolvedValueOnce({
         otp: { isRequired: true, expiresIn: 90 },
       });
@@ -475,7 +480,7 @@ describe("OtpForm", () => {
       render(<OtpForm expiresIn={defaultExpiresIn} />);
 
       const otpInput = screen.getByLabelText("Kode OTP");
-      await user.type(otpInput, "123456");
+      await user.type(otpInput, TEST_CREDENTIALS.otp);
 
       const submitButton = screen.getByRole("button", {
         name: /Validasi Kode OTP/i,
@@ -511,7 +516,7 @@ describe("OtpForm", () => {
       sessionStorage.setItem("otp_countdown_remaining", "60");
 
       const otpInput = screen.getByLabelText("Kode OTP");
-      await user.type(otpInput, "123456");
+      await user.type(otpInput, TEST_CREDENTIALS.otp);
 
       const submitButton = screen.getByRole("button", {
         name: /Validasi Kode OTP/i,
@@ -545,7 +550,11 @@ describe("OtpForm", () => {
 
     it("should use correct storage key for reset_password mode", () => {
       render(
-        <OtpForm expiresIn={60} mode="reset_password" identifier="1234567890" />
+        <OtpForm
+          expiresIn={60}
+          mode="reset_password"
+          identifier={TEST_CREDENTIALS.username}
+        />
       );
 
       // Should use reset_password specific key

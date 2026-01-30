@@ -1,13 +1,15 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { render, screen } from "@/testing";
 import OtpPage from "../Otp";
 import { ROUTES } from "@/config/constants";
 
+// Mock navigate function - must be defined before vi.mock()
 const mockNavigate = vi.fn();
-const mockGetAccessToken = vi.fn();
 
+const mockGetAccessToken = vi.fn();
 let mockLocationState: unknown = null;
 
+// Mock react-router-dom
 vi.mock("react-router-dom", async () => {
   const actual =
     await vi.importActual<typeof import("react-router-dom")>(
@@ -20,6 +22,7 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+// Mock auth module (getAccessToken is exported from here)
 vi.mock("@/features/auth", async () => {
   const actual =
     await vi.importActual<typeof import("@/features/auth")>("@/features/auth");
@@ -29,53 +32,81 @@ vi.mock("@/features/auth", async () => {
   };
 });
 
+// Mock OtpForm component
 vi.mock("@/features/auth/components/otp-form", () => ({
   OtpForm: () => <div>OTP_FORM</div>,
 }));
 
-describe("Otp Page", () => {
+describe("OtpPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     sessionStorage.clear();
     mockLocationState = null;
   });
 
-  it("redirects to login when access token is missing (login flow)", () => {
-    mockGetAccessToken.mockReturnValueOnce(null);
+  describe("Rendering Tests", () => {
+    it("should render OTP form when token exists and OTP is pending", () => {
+      mockGetAccessToken.mockReturnValueOnce("token");
+      mockLocationState = { expiresIn: 60 };
 
-    render(<OtpPage />);
+      render(<OtpPage />);
 
-    expect(mockNavigate).toHaveBeenCalledWith(ROUTES.LOGIN, { replace: true });
-  });
-
-  it("redirects to dashboard when token exists but OTP is not pending (login flow)", () => {
-    mockGetAccessToken.mockReturnValueOnce("token");
-
-    render(<OtpPage />);
-
-    expect(mockNavigate).toHaveBeenCalledWith(ROUTES.DASHBOARD, {
-      replace: true,
+      expect(screen.getByText("OTP_FORM")).toBeInTheDocument();
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
   });
 
-  it("sets pending flag and renders OTP form when expiresIn is provided (login flow)", () => {
-    mockGetAccessToken.mockReturnValueOnce("token");
-    mockLocationState = { expiresIn: 60 };
+  describe("Access Control Tests", () => {
+    it("redirects to login when access token is missing (login flow)", () => {
+      mockGetAccessToken.mockReturnValueOnce(null);
 
-    render(<OtpPage />);
+      render(<OtpPage />);
 
-    expect(sessionStorage.getItem("otp_pending")).toBe("true");
-    expect(screen.getByText("OTP_FORM")).toBeInTheDocument();
-    expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.LOGIN, {
+        replace: true,
+      });
+    });
+
+    it("redirects to dashboard when token exists but OTP is not pending (login flow)", () => {
+      mockGetAccessToken.mockReturnValueOnce("token");
+
+      render(<OtpPage />);
+
+      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.DASHBOARD, {
+        replace: true,
+      });
+    });
+
+    it("redirects to forget-password when reset_password flow is accessed without pending flag", () => {
+      mockLocationState = { flow: "reset_password" };
+
+      render(<OtpPage />);
+
+      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.FORGET_PASSWORD, {
+        replace: true,
+      });
+    });
   });
 
-  it("redirects to forget-password when reset_password flow is accessed without pending flag", () => {
-    mockLocationState = { flow: "reset_password" };
+  describe("Session Management Tests", () => {
+    it("sets pending flag in sessionStorage when expiresIn is provided (login flow)", () => {
+      mockGetAccessToken.mockReturnValueOnce("token");
+      mockLocationState = { expiresIn: 60 };
 
-    render(<OtpPage />);
+      render(<OtpPage />);
 
-    expect(mockNavigate).toHaveBeenCalledWith(ROUTES.FORGET_PASSWORD, {
-      replace: true,
+      expect(sessionStorage.getItem("otp_pending")).toBe("true");
+    });
+
+    it("does not set pending flag when expiresIn is not provided", () => {
+      mockGetAccessToken.mockReturnValueOnce("token");
+
+      render(<OtpPage />);
+
+      // Should redirect before setting the flag
+      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.DASHBOARD, {
+        replace: true,
+      });
     });
   });
 });

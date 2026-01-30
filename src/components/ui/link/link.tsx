@@ -1,5 +1,7 @@
-import { Link as RouterLink } from "react-router-dom";
-import type { LinkProps as RouterLinkProps } from "react-router-dom";
+import {
+  Link as RouterLink,
+  type LinkProps as RouterLinkProps,
+} from "react-router-dom";
 import { cn } from "@/utils";
 
 export interface LinkProps extends RouterLinkProps {

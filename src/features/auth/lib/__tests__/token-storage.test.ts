@@ -14,6 +14,7 @@ import {
   isTokenExpired,
   getTimeUntilExpiration,
   tokenStorage,
+  cookieStorage,
 } from "../token-storage";
 
 // Mock console methods to avoid noise in tests
@@ -370,6 +371,149 @@ describe("Token Storage Utilities", () => {
       expect(() => getAccessToken()).not.toThrow();
 
       globalThis.document = originalDocument;
+    });
+  });
+
+  describe("Cookie storage", () => {
+    function clearCookies() {
+      document.cookie.split(";").forEach((cookie) => {
+        const name = cookie.split("=")[0].trim();
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+      });
+    }
+
+    beforeEach(() => {
+      clearCookies();
+      localStorage.clear();
+    });
+
+    it("getToken parses cookie value", () => {
+      document.cookie = "token=abc123; path=/";
+      expect(cookieStorage.getToken("token")).toBe("abc123");
+    });
+
+    it("getToken returns null when cookie does not exist", () => {
+      expect(cookieStorage.getToken("token")).toBeNull();
+    });
+
+    it("getToken decodes URI-encoded values", () => {
+      document.cookie = "token=" + encodeURIComponent("a+b=c&d") + "; path=/";
+      expect(cookieStorage.getToken("token")).toBe("a+b=c&d");
+    });
+
+    it("setToken sets cookie with default path", () => {
+      cookieStorage.setToken("token", "value");
+      expect(cookieStorage.getToken("token")).toBe("value");
+    });
+
+    it("setToken with expires option sets expiry", () => {
+      cookieStorage.setToken("token", "value", { expires: 1 });
+      expect(cookieStorage.getToken("token")).toBe("value");
+    });
+
+    it("setToken with path option builds cookie string with path", () => {
+      let assignedCookie = "";
+      vi.spyOn(Document.prototype, "cookie", "set").mockImplementation((v) => {
+        assignedCookie = v ?? "";
+      });
+      cookieStorage.setToken("token", "value", { path: "/api" });
+      expect(assignedCookie).toContain("path=/api");
+      vi.restoreAllMocks();
+    });
+
+    it("setToken with domain option builds cookie string with domain", () => {
+      let assignedCookie = "";
+      vi.spyOn(Document.prototype, "cookie", "set").mockImplementation((v) => {
+        assignedCookie = v ?? "";
+      });
+      cookieStorage.setToken("token", "value", { domain: "example.com" });
+      expect(assignedCookie).toContain("domain=example.com");
+      vi.restoreAllMocks();
+    });
+
+    it("setToken with secure option builds cookie string with secure", () => {
+      let assignedCookie = "";
+      vi.spyOn(Document.prototype, "cookie", "set").mockImplementation((v) => {
+        assignedCookie = v ?? "";
+      });
+      cookieStorage.setToken("token", "value", { secure: true });
+      expect(assignedCookie).toContain("secure");
+      vi.restoreAllMocks();
+    });
+
+    it("setToken with sameSite option builds cookie string with sameSite", () => {
+      let assignedCookie = "";
+      vi.spyOn(Document.prototype, "cookie", "set").mockImplementation((v) => {
+        assignedCookie = v ?? "";
+      });
+      cookieStorage.setToken("token", "value", { sameSite: "strict" });
+      expect(assignedCookie).toContain("samesite=strict");
+      vi.restoreAllMocks();
+    });
+
+    it("removeToken clears cookie", () => {
+      cookieStorage.setToken("token", "value");
+      expect(cookieStorage.getToken("token")).toBe("value");
+      cookieStorage.removeToken("token");
+      expect(cookieStorage.getToken("token")).toBeNull();
+    });
+
+    it("setToken falls back to localStorage when document.cookie throws", () => {
+      const setCookieSpy = vi
+        .spyOn(Document.prototype, "cookie", "set")
+        .mockImplementation(() => {
+          throw new Error("Cookie blocked");
+        });
+      cookieStorage.setToken("token", "fallback-value");
+      setCookieSpy.mockRestore();
+      expect(localStorage.getItem("token")).toBe("fallback-value");
+      expect(mockConsoleError).toHaveBeenCalled();
+    });
+
+    it("removeToken falls back to localStorage when document.cookie throws", () => {
+      localStorage.setItem("token", "stored");
+      const setCookieSpy = vi
+        .spyOn(Document.prototype, "cookie", "set")
+        .mockImplementation(() => {
+          throw new Error("Cookie blocked");
+        });
+      cookieStorage.removeToken("token");
+      setCookieSpy.mockRestore();
+      expect(localStorage.getItem("token")).toBeNull();
+      expect(mockConsoleError).toHaveBeenCalled();
+    });
+
+    it("getToken returns null when document is undefined", () => {
+      const originalDocument = globalThis.document;
+      // @ts-expect-error - Simulate SSR
+      delete globalThis.document;
+      expect(cookieStorage.getToken("token")).toBeNull();
+      globalThis.document = originalDocument;
+    });
+
+    it("setToken no-ops when document is undefined", () => {
+      const originalDocument = globalThis.document;
+      // @ts-expect-error - Simulate SSR
+      delete globalThis.document;
+      expect(() => cookieStorage.setToken("token", "value")).not.toThrow();
+      globalThis.document = originalDocument;
+    });
+
+    it("removeToken no-ops when document is undefined", () => {
+      const originalDocument = globalThis.document;
+      // @ts-expect-error - Simulate SSR
+      delete globalThis.document;
+      expect(() => cookieStorage.removeToken("token")).not.toThrow();
+      globalThis.document = originalDocument;
+    });
+
+    it("getToken returns null when cookie value decode throws", () => {
+      const spy = vi
+        .spyOn(document, "cookie", "get")
+        .mockReturnValue("token=%");
+      const result = cookieStorage.getToken("token");
+      expect(result).toBeNull();
+      spy.mockRestore();
     });
   });
 

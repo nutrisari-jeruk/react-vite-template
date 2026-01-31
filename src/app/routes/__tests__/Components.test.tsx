@@ -1,7 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import ComponentsPage from "../Components";
+
+const mockScrollTo = vi.fn();
+let getElementByIdSpy: ReturnType<typeof vi.spyOn>;
 
 describe("Components Page", () => {
   const renderComponentsPage = () => {
@@ -76,6 +80,30 @@ describe("Components Page", () => {
       expect(
         screen.getByText("Searchable dropdown with type-to-filter")
       ).toBeInTheDocument();
+    });
+
+    describe("Combobox variants", () => {
+      it("renders all four Combobox variants (Choose a fruit, With error, With helper, Disabled)", () => {
+        renderComponentsPage();
+
+        const chooseFruit = screen.getByLabelText(/choose a fruit/i);
+        expect(chooseFruit).toBeInTheDocument();
+        expect(chooseFruit).toHaveAttribute("placeholder", "Type to search...");
+
+        const withError = screen.getByLabelText(/with error/i);
+        expect(withError).toBeInTheDocument();
+        const comboboxSection = document.getElementById("combobox");
+        expect(comboboxSection).toBeInTheDocument();
+        expect(comboboxSection).toHaveTextContent("This field is required");
+
+        const withHelper = screen.getByLabelText(/with helper/i);
+        expect(withHelper).toBeInTheDocument();
+        expect(screen.getByText("Pick one from the list")).toBeInTheDocument();
+
+        const disabledCombobox = screen.getByLabelText(/^disabled$/i);
+        expect(disabledCombobox).toBeInTheDocument();
+        expect(disabledCombobox).toBeDisabled();
+      });
     });
 
     it("renders Textarea section", () => {
@@ -340,6 +368,124 @@ describe("Components Page", () => {
       expect(disabledButtons.length).toBeGreaterThan(0);
       disabledButtons.forEach((button) => {
         expect(button).toBeDisabled();
+      });
+    });
+  });
+
+  describe("handleTocClick / TOC", () => {
+    const mockGetBoundingClientRect = () => ({
+      top: 100,
+      left: 0,
+      width: 1,
+      height: 1,
+      bottom: 101,
+      right: 1,
+      x: 0,
+      y: 100,
+      toJSON: () => ({}),
+    });
+
+    beforeEach(() => {
+      mockScrollTo.mockClear();
+      window.scrollTo = mockScrollTo;
+      Object.defineProperty(window, "pageYOffset", {
+        value: 0,
+        writable: true,
+        configurable: true,
+      });
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("scrolls to section when TOC link is clicked (smooth)", async () => {
+      const user = userEvent.setup();
+      vi.doMock("motion/react", async () => {
+        const actual =
+          await vi.importActual<typeof import("motion/react")>("motion/react");
+        return {
+          ...actual,
+          useReducedMotion: () => false,
+        };
+      });
+      vi.resetModules();
+      const { default: ComponentsPageSmooth } = await import("../Components");
+      const mockElement = {
+        getBoundingClientRect: mockGetBoundingClientRect,
+      } as unknown as HTMLElement;
+      getElementByIdSpy = vi
+        .spyOn(document, "getElementById")
+        .mockReturnValue(mockElement);
+
+      render(
+        <BrowserRouter>
+          <ComponentsPageSmooth />
+        </BrowserRouter>
+      );
+
+      const tocLink = screen.getByRole("link", { name: "Combobox" });
+      expect(tocLink).toHaveAttribute("href", "#combobox");
+      await user.click(tocLink);
+
+      expect(getElementByIdSpy).toHaveBeenCalledWith("combobox");
+      expect(mockScrollTo).toHaveBeenCalledWith({
+        top: 20,
+        behavior: "smooth",
+      });
+    });
+
+    it("does not scroll when target element is not found", async () => {
+      const user = userEvent.setup();
+      getElementByIdSpy = vi
+        .spyOn(document, "getElementById")
+        .mockReturnValue(null);
+
+      render(
+        <BrowserRouter>
+          <ComponentsPage />
+        </BrowserRouter>
+      );
+
+      const tocLink = screen.getByRole("link", { name: "Combobox" });
+      await user.click(tocLink);
+
+      expect(getElementByIdSpy).toHaveBeenCalledWith("combobox");
+      expect(mockScrollTo).not.toHaveBeenCalled();
+    });
+
+    it("uses auto scroll when reduced motion preferred", async () => {
+      const user = userEvent.setup();
+      vi.doMock("motion/react", async () => {
+        const actual =
+          await vi.importActual<typeof import("motion/react")>("motion/react");
+        return {
+          ...actual,
+          useReducedMotion: () => true,
+        };
+      });
+      vi.resetModules();
+      const { default: ComponentsPageWithReducedMotion } =
+        await import("../Components");
+      const mockElement = {
+        getBoundingClientRect: mockGetBoundingClientRect,
+      } as unknown as HTMLElement;
+      getElementByIdSpy = vi
+        .spyOn(document, "getElementById")
+        .mockReturnValue(mockElement);
+
+      render(
+        <BrowserRouter>
+          <ComponentsPageWithReducedMotion />
+        </BrowserRouter>
+      );
+
+      const tocLink = screen.getByRole("link", { name: "Combobox" });
+      await user.click(tocLink);
+
+      expect(mockScrollTo).toHaveBeenCalledWith({
+        top: 20,
+        behavior: "auto",
       });
     });
   });

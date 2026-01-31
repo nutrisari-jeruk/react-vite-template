@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@/testing";
+import userEvent from "@testing-library/user-event";
 import ResetPasswordPage from "../ResetPassword";
+
+const mockNavigate = vi.fn();
 
 // Mock react-router-dom
 vi.mock("react-router-dom", async () => {
@@ -10,13 +13,22 @@ vi.mock("react-router-dom", async () => {
     );
   return {
     ...actual,
-    useNavigate: () => vi.fn(),
+    useNavigate: () => mockNavigate,
   };
 });
 
-// Mock ResetPasswordForm component
+// Mock ResetPasswordForm component - accepts onBackToLogin and exposes trigger
 vi.mock("@/features/auth/components/reset-password-form", () => ({
-  ResetPasswordForm: () => <div>RESET_PASSWORD_FORM</div>,
+  ResetPasswordForm: ({ onBackToLogin }: { onBackToLogin?: () => void }) => (
+    <div>
+      <span>RESET_PASSWORD_FORM</span>
+      {onBackToLogin && (
+        <button type="button" onClick={onBackToLogin}>
+          Back to Login
+        </button>
+      )}
+    </div>
+  ),
 }));
 
 describe("ResetPasswordPage", () => {
@@ -53,6 +65,17 @@ describe("ResetPasswordPage", () => {
 
       const cardContainer = container.querySelector(".bg-white");
       expect(cardContainer).toBeInTheDocument();
+    });
+  });
+
+  describe("onBackToLogin callback", () => {
+    it("navigates to /login when onBackToLogin is called", async () => {
+      const user = userEvent.setup();
+      render(<ResetPasswordPage />);
+
+      await user.click(screen.getByRole("button", { name: "Back to Login" }));
+
+      expect(mockNavigate).toHaveBeenCalledWith("/login");
     });
   });
 });

@@ -17,24 +17,6 @@ export default function ResetPasswordPage() {
               alt="RSUD R.T. Notopuro Sidoarjo"
               className="h-full w-full object-cover"
             />
-            {/* Logos overlay */}
-            <div className="absolute top-6 left-1/2 flex -translate-x-1/2 items-center gap-3">
-              <ImageWithFallback
-                src="/logo-indonesia.png"
-                alt="Indonesia"
-                className="h-8 w-auto"
-              />
-              <ImageWithFallback
-                src="/logo-rsud.png"
-                alt="RSUD"
-                className="h-10 w-auto"
-              />
-              <ImageWithFallback
-                src="/logo-sidoarjo.png"
-                alt="Sidoarjo"
-                className="h-8 w-auto"
-              />
-            </div>
           </div>
 
           {/* Right side - Reset Password form */}

@@ -85,27 +85,6 @@ export default function OtpPage() {
               alt="Ilustrasi login medis"
               className="h-full w-full object-cover"
             />
-            {/* Logos overlay */}
-            <div className="absolute top-6 left-1/2 flex -translate-x-1/2 items-center gap-3">
-              <ImageWithFallback
-                src="/logo-indonesia.png"
-                alt="Logo Pemerintah Indonesia"
-                className="h-8 w-auto"
-                fallback={null}
-              />
-              <ImageWithFallback
-                src="/logo-rsud.png"
-                alt="Logo RSUD R.T. Notopuro"
-                className="h-10 w-auto"
-                fallback={null}
-              />
-              <ImageWithFallback
-                src="/logo-sidoarjo.png"
-                alt="Logo Kabupaten Sidoarjo"
-                className="h-8 w-auto"
-                fallback={null}
-              />
-            </div>
           </div>
 
           {/* Right side - OTP form */}

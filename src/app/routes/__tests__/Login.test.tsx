@@ -133,33 +133,6 @@ describe("LoginPage", () => {
   });
 
   describe("Accessibility Tests", () => {
-    it("should have proper alt text for Indonesia logo", () => {
-      const wrapper = createWrapper();
-      render(<LoginPage />, { wrapper });
-
-      const logo = screen.getByAltText("Logo Pemerintah Indonesia");
-      expect(logo).toBeInTheDocument();
-      expect(logo).toHaveAttribute("src", "/logo-indonesia.png");
-    });
-
-    it("should have proper alt text for RSUD logo", () => {
-      const wrapper = createWrapper();
-      render(<LoginPage />, { wrapper });
-
-      const logo = screen.getByAltText("Logo RSUD R.T. Notopuro");
-      expect(logo).toBeInTheDocument();
-      expect(logo).toHaveAttribute("src", "/logo-rsud.png");
-    });
-
-    it("should have proper alt text for Sidoarjo logo", () => {
-      const wrapper = createWrapper();
-      render(<LoginPage />, { wrapper });
-
-      const logo = screen.getByAltText("Logo Kabupaten Sidoarjo");
-      expect(logo).toBeInTheDocument();
-      expect(logo).toHaveAttribute("src", "/logo-sidoarjo.png");
-    });
-
     it("should have focus-visible styles on main container", () => {
       const wrapper = createWrapper();
       const { container } = render(<LoginPage />, { wrapper });

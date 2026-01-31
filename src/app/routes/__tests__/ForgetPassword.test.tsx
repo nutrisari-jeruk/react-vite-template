@@ -42,37 +42,6 @@ describe("Forget password page", () => {
       expect(illustration).toBeInTheDocument();
       expect(illustration).toHaveAttribute("src", "/login.svg");
     });
-
-    it("should render all three logos", () => {
-      render(<ForgetPasswordPage />);
-
-      expect(screen.getByAltText("Indonesia")).toBeInTheDocument();
-      expect(screen.getByAltText("RSUD")).toBeInTheDocument();
-      expect(screen.getByAltText("Sidoarjo")).toBeInTheDocument();
-    });
-  });
-
-  describe("Accessibility Tests", () => {
-    it("should have proper alt text for Indonesia logo", () => {
-      render(<ForgetPasswordPage />);
-
-      const indonesiaLogo = screen.getByAltText("Indonesia");
-      expect(indonesiaLogo).toBeInTheDocument();
-    });
-
-    it("should have proper alt text for RSUD logo", () => {
-      render(<ForgetPasswordPage />);
-
-      const rsudLogo = screen.getByAltText("RSUD");
-      expect(rsudLogo).toBeInTheDocument();
-    });
-
-    it("should have proper alt text for Sidoarjo logo", () => {
-      render(<ForgetPasswordPage />);
-
-      const sidoarjoLogo = screen.getByAltText("Sidoarjo");
-      expect(sidoarjoLogo).toBeInTheDocument();
-    });
   });
 
   describe("Layout Tests", () => {

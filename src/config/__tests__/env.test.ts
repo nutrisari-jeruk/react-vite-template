@@ -289,6 +289,87 @@ describe("Environment Configuration", () => {
     });
   });
 
+  describe("Env module reload edge cases", () => {
+    beforeEach(() => {
+      Object.keys(mockEnv).forEach((key) => {
+        if (key in import.meta.env) {
+          (import.meta.env as Record<string, unknown>)[key] =
+            mockEnv[key as keyof typeof mockEnv];
+        }
+      });
+    });
+
+    afterEach(() => {
+      vi.resetModules();
+      Object.keys(mockEnv).forEach((key) => {
+        if (key in import.meta.env) {
+          (import.meta.env as Record<string, unknown>)[key] =
+            mockEnv[key as keyof typeof mockEnv];
+        }
+      });
+    });
+
+    it("warns and falls back to development when VITE_APP_ENV is invalid", async () => {
+      (import.meta.env as Record<string, string>).VITE_APP_ENV = "invalid";
+      vi.resetModules();
+      const { env: reloadedEnv } = await import("../env");
+      expect(reloadedEnv.appEnv).toBe("development");
+      expect(mockConsoleWarn).toHaveBeenCalledWith(
+        "Invalid VITE_APP_ENV: invalid, using 'development'"
+      );
+    });
+
+    it("throws and logs when validateUrl receives invalid URL", async () => {
+      (import.meta.env as Record<string, string>).VITE_APP_URL =
+        "not-a-valid-url";
+      vi.resetModules();
+      await expect(import("../env")).rejects.toThrow("Invalid URL format");
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        "Environment configuration error:",
+        expect.any(Error)
+      );
+    });
+
+    it("warns and uses default when toNumber value is below min", async () => {
+      (import.meta.env as Record<string, string>).VITE_API_TIMEOUT = "500";
+      vi.resetModules();
+      const { env: reloadedEnv } = await import("../env");
+      expect(reloadedEnv.apiTimeout).toBe(10000);
+      expect(mockConsoleWarn).toHaveBeenCalledWith(
+        "Value 500 is below minimum 1000, using 10000"
+      );
+    });
+
+    it("warns and uses default when toNumber value exceeds max", async () => {
+      (import.meta.env as Record<string, string>).VITE_QUERY_RETRY_TIMES = "10";
+      vi.resetModules();
+      const { env: reloadedEnv } = await import("../env");
+      expect(reloadedEnv.queryRetryTimes).toBe(3);
+      expect(mockConsoleWarn).toHaveBeenCalledWith(
+        "Value 10 exceeds maximum 5, using 3"
+      );
+    });
+
+    it("logs detailed error message when DEV and config throws", async () => {
+      (import.meta.env as Record<string, unknown>).DEV = true;
+      (import.meta.env as Record<string, string>).VITE_APP_URL = "://invalid";
+      vi.resetModules();
+      await expect(import("../env")).rejects.toThrow();
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        "Environment configuration error:",
+        expect.any(Error)
+      );
+      const errorCalls = mockConsoleError.mock.calls;
+      const hasDetailedMessage = errorCalls.some(
+        (call) =>
+          Array.isArray(call) &&
+          typeof call[0] === "string" &&
+          call[0].includes("ENVIRONMENT CONFIGURATION ERROR")
+      );
+      expect(hasDetailedMessage).toBe(true);
+    });
+  });
+
   describe("Configuration Immutability", () => {
     it("env object is frozen or readonly-like", () => {
       // In a real app, the env config should not be modifiable at runtime

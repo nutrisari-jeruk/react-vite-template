@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@/testing";
+import userEvent from "@testing-library/user-event";
 import OtpPage from "../Otp";
 import { ROUTES } from "@/config/constants";
+
+const RESET_PASSWORD_TOKEN_KEY = "reset_password_token";
 
 // Mock navigate function - must be defined before vi.mock()
 const mockNavigate = vi.fn();
@@ -32,9 +35,25 @@ vi.mock("@/features/auth", async () => {
   };
 });
 
-// Mock OtpForm component
+// Mock OtpForm component - accepts onSuccess and exposes trigger for tests
 vi.mock("@/features/auth/components/otp-form", () => ({
-  OtpForm: () => <div>OTP_FORM</div>,
+  OtpForm: ({
+    onSuccess,
+  }: {
+    onSuccess?: () => void;
+    expiresIn?: number;
+    mode?: string;
+    identifier?: string;
+  }) => (
+    <div>
+      <span>OTP_FORM</span>
+      {onSuccess && (
+        <button type="button" onClick={onSuccess}>
+          Trigger onSuccess
+        </button>
+      )}
+    </div>
+  ),
 }));
 
 describe("OtpPage", () => {
@@ -105,6 +124,62 @@ describe("OtpPage", () => {
 
       // Should redirect before setting the flag
       expect(mockNavigate).toHaveBeenCalledWith(ROUTES.DASHBOARD, {
+        replace: true,
+      });
+    });
+
+    it("sets reset_otp_pending when reset_password flow has expiresIn in state", () => {
+      mockLocationState = { flow: "reset_password", expiresIn: 60 };
+
+      render(<OtpPage />);
+
+      expect(sessionStorage.getItem("reset_otp_pending")).toBe("true");
+    });
+  });
+
+  describe("onSuccess callback", () => {
+    it("navigates to DASHBOARD when onSuccess is called (login flow)", async () => {
+      const user = userEvent.setup();
+      mockGetAccessToken.mockReturnValue("token");
+      mockLocationState = { expiresIn: 60 };
+
+      render(<OtpPage />);
+
+      await user.click(
+        screen.getByRole("button", { name: "Trigger onSuccess" })
+      );
+
+      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.DASHBOARD);
+    });
+
+    it("navigates to RESET_PASSWORD with token when onSuccess is called (reset_password flow with token)", async () => {
+      const user = userEvent.setup();
+      mockLocationState = { flow: "reset_password", expiresIn: 60 };
+      sessionStorage.setItem(RESET_PASSWORD_TOKEN_KEY, "reset-token-123");
+
+      render(<OtpPage />);
+
+      await user.click(
+        screen.getByRole("button", { name: "Trigger onSuccess" })
+      );
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${ROUTES.RESET_PASSWORD}?token=${encodeURIComponent("reset-token-123")}`,
+        { replace: true }
+      );
+    });
+
+    it("navigates to FORGET_PASSWORD when onSuccess is called (reset_password flow without token)", async () => {
+      const user = userEvent.setup();
+      mockLocationState = { flow: "reset_password", expiresIn: 60 };
+
+      render(<OtpPage />);
+
+      await user.click(
+        screen.getByRole("button", { name: "Trigger onSuccess" })
+      );
+
+      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.FORGET_PASSWORD, {
         replace: true,
       });
     });

@@ -49,7 +49,7 @@ const localStorageStorage: TokenStorage = {
   },
 };
 
-const cookieStorage: TokenStorage = {
+export const cookieStorage: TokenStorage = {
   getToken: (key: string) => {
     if (typeof document === "undefined") return null;
     try {

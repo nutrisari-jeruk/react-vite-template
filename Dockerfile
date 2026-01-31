@@ -14,6 +14,8 @@ RUN npm ci --legacy-peer-deps
 COPY . .
 
 # Build the application for production
+# Note: .env is now included in build context (not in .dockerignore)
+# Vite bakes VITE_* variables at build time
 RUN npm run build:production
 
 # Production stage

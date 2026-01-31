@@ -296,12 +296,12 @@ const router = createBrowserRouter([
     element: (
       <>
         <MetadataUpdater />
-        <MainLayout />
+        <MainLayout showNavbar={false} />
       </>
     ),
     children: [
       {
-        index: true,
+        path: "*",
         element: (
           <LazyPage>
             <NotFound />

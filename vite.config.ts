@@ -37,55 +37,10 @@ export default defineConfig(({ mode }) => {
       target: "es2015", // Support modern browsers
 
       // Chunk splitting strategy
+      // Note: React 19 has complex internal dependencies that break with aggressive
+      // manual chunking. Let Vite/Rollup handle chunk splitting automatically.
       rollupOptions: {
         output: {
-          // Manual chunks for better caching and smaller chunk sizes
-          manualChunks: (id) => {
-            if (!id.includes("node_modules")) return;
-
-            // Match more specific patterns first (order matters)
-            if (id.includes("react-dom")) return "react-dom";
-            if (
-              (id.includes("/react/") || id.includes("\\react\\")) &&
-              !id.includes("react-dom") &&
-              !id.includes("react-hook-form") &&
-              !id.includes("react-query") &&
-              !id.includes("react-router")
-            ) {
-              return "react";
-            }
-
-            if (
-              id.includes("@tanstack") ||
-              id.includes("axios") ||
-              id.includes("react-query-auth")
-            ) {
-              return "query-vendor";
-            }
-
-            if (
-              id.includes("zod") ||
-              id.includes("react-hook-form") ||
-              id.includes("@hookform")
-            ) {
-              return "validation-vendor";
-            }
-
-            if (id.includes("motion") || id.includes("@base-ui")) {
-              return "ui-vendor";
-            }
-
-            if (
-              id.includes("clsx") ||
-              id.includes("tailwind-merge") ||
-              id.includes("lucide-react")
-            ) {
-              return "utils-vendor";
-            }
-
-            return "vendor";
-          },
-
           // Chunk file naming
           chunkFileNames: "assets/js/[name]-[hash].js",
           entryFileNames: "assets/js/[name]-[hash].js",

@@ -212,7 +212,7 @@ export const env: EnvConfig = (() => {
 
       // Maintenance Mode
       maintenanceMode: toBoolean(import.meta.env.VITE_MAINTENANCE_MODE, false),
-      maintenanceMessage: requireEnv("VITE_MAINTENANCE_MESSAGE", ""),
+      maintenanceMessage: import.meta.env.VITE_MAINTENANCE_MESSAGE || "",
     };
   } catch (error) {
     console.error("Environment configuration error:", error);

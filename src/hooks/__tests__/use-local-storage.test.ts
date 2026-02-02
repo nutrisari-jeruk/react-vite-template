@@ -60,7 +60,9 @@ describe("useLocalStorage", () => {
 
   it("handles JSON serialization for objects", () => {
     const { result } = renderHook(() =>
-      useLocalStorage("obj-key", { foo: "bar" })
+      useLocalStorage<{ foo: string; nested?: { a: number } }>("obj-key", {
+        foo: "bar",
+      })
     );
 
     act(() => {

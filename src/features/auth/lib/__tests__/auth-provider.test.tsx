@@ -62,7 +62,9 @@ describe("Auth Provider", () => {
 
       expect(result.current.data).toBeUndefined();
       expect(result.current.isError).toBe(true);
-      expect(result.current.error?.message).toBe("Not authenticated");
+      expect((result.current.error as Error)?.message).toBe(
+        "Not authenticated"
+      );
     });
 
     it("returns user when authenticated", async () => {
@@ -125,7 +127,7 @@ describe("Auth Provider", () => {
       });
 
       await act(async () => {
-        result.current.mutate();
+        result.current.mutate(undefined);
       });
 
       expect(mockLogout).toHaveBeenCalled();

@@ -59,6 +59,16 @@ const BASE_FILES = [
     target: "src/testing/test-utils.tsx",
   },
   { source: "base/src/testing/index.ts", target: "src/testing/index.ts" },
+  // Route pages
+  {
+    source: "base/src/app/routes/not-found.tsx",
+    target: "src/app/routes/not-found.tsx",
+  },
+  // Layouts (minimal navbar with markers)
+  {
+    source: "base/src/components/layouts/navbar.tsx",
+    target: "src/components/layouts/navbar.tsx",
+  },
   // Empty barrel files for extensibility
   { source: "base/src/hooks/index.ts", target: "src/hooks/index.ts" },
   {

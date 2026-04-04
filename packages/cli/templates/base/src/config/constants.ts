@@ -3,20 +3,7 @@
  */
 
 export const ROUTES = {
-  HOME: "/",
-  ABOUT: "/about",
-  DASHBOARD: "/dashboard",
-  COMPONENTS: "/components",
-  EXAMPLES: {
-    ERROR_HANDLING: "/examples/error-handling",
-    AUTH: "/examples/auth",
-    FORM_VALIDATION: "/examples/form-validation",
-  },
-  LOGIN: "/login",
-  REGISTER: "/register",
-  FORGET_PASSWORD: "/forget-password",
-  RESET_PASSWORD: "/reset-password",
-  OTP: "/otp",
+  // --- FRONTIER-FE: ROUTE CONSTANTS ---
   NOT_FOUND: "*",
 } as const;
 
@@ -33,12 +20,6 @@ export const API_ENDPOINTS = {
     REGISTER: "/auth/register",
     REFRESH: "/auth/refresh",
     ME: "/auth/me",
-    RESET_PASSWORD_REQUEST: "/v1/reset-password/request",
-    RESET_PASSWORD: "/v1/reset-password",
-    VERIFY_OTP: "/auth/verify-otp",
-    RESEND_OTP: "/auth/resend-otp",
-    RESEND_RESET_PASSWORD_OTP: "/v1/otp/resend",
-    VALIDATE_RESET_PASSWORD_OTP: "/v1/otp/validate",
   },
   USERS: {
     LIST: "/users",

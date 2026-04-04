@@ -6,6 +6,7 @@ import { logger } from "../utils/logger.js";
 import { readConfig, markInstalled, configExists } from "../utils/config.js";
 import { getItem, resolveDependencies, getItemsByType } from "../utils/registry.js";
 import { copyItemFiles, updateBarrelExport, collectNpmDeps } from "../utils/files.js";
+import { wireRoute } from "../utils/route-wiring.js";
 
 interface AddOptions {
   cwd: string;
@@ -113,12 +114,30 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
 
   // Copy files for each item
   const installedNames: string[] = [];
+  const pagesWithRoutes: typeof newItems = [];
+
   for (const item of newItems) {
     const files = await copyItemFiles(item, cwd);
     if (files.length > 0) {
       await updateBarrelExport(item, cwd);
       installedNames.push(item.name);
       logger.success(`Added ${pc.bold(item.name)} (${files.length} files)`);
+
+      // Track pages that need route wiring
+      if (item.type === "page" && item.route) {
+        pagesWithRoutes.push(item);
+      }
+    }
+  }
+
+  // Wire routes for page items
+  if (pagesWithRoutes.length > 0) {
+    logger.break();
+    logger.info("Wiring routes...");
+    for (const item of pagesWithRoutes) {
+      if (item.route) {
+        await wireRoute(cwd, item.route);
+      }
     }
   }
 

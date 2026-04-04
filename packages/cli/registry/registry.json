@@ -524,7 +524,19 @@
         { "source": "templates/pages/Home.tsx", "target": "src/app/routes/Home.tsx" }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["cn", "button", "landing-layout"]
+      "registryDependencies": ["cn", "button", "landing-layout"],
+      "route": {
+        "path": "/",
+        "constantKey": "HOME",
+        "componentName": "Home",
+        "importPath": "@/app/routes/Home",
+        "layout": "landing",
+        "navLink": { "label": "Home" },
+        "metadata": {
+          "title": "Home",
+          "description": "Welcome to the application."
+        }
+      }
     },
     {
       "name": "about",
@@ -534,7 +546,19 @@
         { "source": "templates/pages/About.tsx", "target": "src/app/routes/About.tsx" }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["cn", "landing-layout"]
+      "registryDependencies": ["cn", "landing-layout"],
+      "route": {
+        "path": "/about",
+        "constantKey": "ABOUT",
+        "componentName": "About",
+        "importPath": "@/app/routes/About",
+        "layout": "landing",
+        "navLink": { "label": "About" },
+        "metadata": {
+          "title": "About",
+          "description": "Learn more about our application."
+        }
+      }
     },
     {
       "name": "login",
@@ -544,7 +568,18 @@
         { "source": "templates/pages/Login.tsx", "target": "src/app/routes/Login.tsx" }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth"]
+      "registryDependencies": ["auth"],
+      "route": {
+        "path": "/login",
+        "constantKey": "LOGIN",
+        "componentName": "Login",
+        "importPath": "@/app/routes/Login",
+        "layout": null,
+        "metadata": {
+          "title": "Login",
+          "description": "Sign in to your account."
+        }
+      }
     },
     {
       "name": "register",
@@ -554,7 +589,18 @@
         { "source": "templates/pages/Register.tsx", "target": "src/app/routes/Register.tsx" }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth", "auth-layout"]
+      "registryDependencies": ["auth", "auth-layout"],
+      "route": {
+        "path": "/register",
+        "constantKey": "REGISTER",
+        "componentName": "Register",
+        "importPath": "@/app/routes/Register",
+        "layout": "auth",
+        "metadata": {
+          "title": "Register",
+          "description": "Create a new account."
+        }
+      }
     },
     {
       "name": "dashboard",
@@ -564,7 +610,21 @@
         { "source": "templates/pages/Dashboard.tsx", "target": "src/app/routes/Dashboard.tsx" }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth", "authenticated-layout"]
+      "registryDependencies": ["auth", "authenticated-layout"],
+      "route": {
+        "path": "/dashboard",
+        "constantKey": "DASHBOARD",
+        "componentName": "Dashboard",
+        "importPath": "@/app/routes/Dashboard",
+        "layout": "authenticated",
+        "protected": true,
+        "authLoader": true,
+        "navLink": { "label": "Dashboard" },
+        "metadata": {
+          "title": "Dashboard",
+          "description": "Your application dashboard."
+        }
+      }
     },
     {
       "name": "forget-password",
@@ -574,7 +634,18 @@
         { "source": "templates/pages/ForgetPassword.tsx", "target": "src/app/routes/ForgetPassword.tsx" }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth"]
+      "registryDependencies": ["auth"],
+      "route": {
+        "path": "/forget-password",
+        "constantKey": "FORGET_PASSWORD",
+        "componentName": "ForgetPassword",
+        "importPath": "@/app/routes/ForgetPassword",
+        "layout": null,
+        "metadata": {
+          "title": "Forgot Password",
+          "description": "Reset your password."
+        }
+      }
     },
     {
       "name": "reset-password",
@@ -584,7 +655,18 @@
         { "source": "templates/pages/ResetPassword.tsx", "target": "src/app/routes/ResetPassword.tsx" }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth"]
+      "registryDependencies": ["auth"],
+      "route": {
+        "path": "/reset-password",
+        "constantKey": "RESET_PASSWORD",
+        "componentName": "ResetPassword",
+        "importPath": "@/app/routes/ResetPassword",
+        "layout": null,
+        "metadata": {
+          "title": "Reset Password",
+          "description": "Set a new password for your account."
+        }
+      }
     },
     {
       "name": "otp",
@@ -594,7 +676,18 @@
         { "source": "templates/pages/Otp.tsx", "target": "src/app/routes/Otp.tsx" }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth"]
+      "registryDependencies": ["auth"],
+      "route": {
+        "path": "/otp",
+        "constantKey": "OTP",
+        "componentName": "Otp",
+        "importPath": "@/app/routes/Otp",
+        "layout": null,
+        "metadata": {
+          "title": "OTP Verification",
+          "description": "Verify your OTP code to complete authentication."
+        }
+      }
     }
   ]
 }

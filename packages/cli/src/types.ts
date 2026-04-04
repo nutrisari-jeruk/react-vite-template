@@ -10,6 +10,23 @@ export interface BarrelExport {
   exports: string[];
 }
 
+export interface RouteConfig {
+  path: string;
+  constantKey: string;
+  componentName: string;
+  importPath: string;
+  layout?: "main" | "landing" | "auth" | "authenticated" | null;
+  protected?: boolean;
+  authLoader?: boolean;
+  navLink?: {
+    label: string;
+  };
+  metadata?: {
+    title: string;
+    description: string;
+  };
+}
+
 export interface RegistryItem {
   name: string;
   type: ItemType;
@@ -18,6 +35,7 @@ export interface RegistryItem {
   npmDependencies?: string[];
   registryDependencies?: string[];
   barrel?: BarrelExport;
+  route?: RouteConfig;
 }
 
 export interface Registry {

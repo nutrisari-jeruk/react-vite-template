@@ -1,0 +1,268 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Primary Colors */
+  --color-primary: #3758f9;
+  --color-secondary: #13c296;
+  --color-primary-text: #637381;
+  --color-secondary-text: #8899a8;
+  --color-stroke: #dfe4ea;
+
+  /* Dark Colors */
+  --color-dark: #111928;
+  --color-dark-2: #1f2a37;
+  --color-dark-3: #374151;
+  --color-dark-4: #4b5563;
+  --color-dark-5: #6b7280;
+  --color-dark-6: #9ca3af;
+  --color-dark-7: #d1d5db;
+  --color-dark-8: #e5e7eb;
+
+  /* White */
+  --color-white: #ffffff;
+
+  /* Gray Colors */
+  --color-gray-1: #f9fafb;
+  --color-gray-2: #f3f4f6;
+  --color-gray-3: #e5e7eb;
+  --color-gray-4: #dee2e6;
+  --color-gray-5: #ced4da;
+  --color-gray-6: #ced4da;
+  --color-gray-7: #ced4da;
+
+  /* Yellow Colors */
+  --color-yellow: #fbbf24;
+  --color-yellow-dark: #f59e0b;
+  --color-yellow-dark-2: #d97706;
+  --color-yellow-light: #fcd34d;
+  --color-yellow-light-2: #fde68a;
+  --color-yellow-light-3: #fef3c7;
+  --color-yellow-light-4: #fffbeb;
+
+  /* Orange Colors */
+  --color-orange: #f27430;
+  --color-orange-dark: #e1580e;
+  --color-orange-light: #f59460;
+  --color-orange-light-2: #f8b490;
+  --color-orange-light-3: #fbd5c0;
+  --color-orange-light-4: #fde5d8;
+  --color-orange-light-5: #fff0e9;
+
+  /* Red Colors */
+  --color-red: #f23030;
+  --color-red-dark: #e10e0e;
+  --color-red-light: #f56060;
+  --color-red-light-2: #f89090;
+  --color-red-light-3: #fbc0c0;
+  --color-red-light-4: #fdd8d8;
+  --color-red-light-5: #feebeb;
+  --color-red-light-6: #fef3f3;
+
+  /* Pink Colors */
+  --color-pink: #d345f8;
+  --color-pink-dark: #c814f6;
+  --color-pink-light: #df76fa;
+  --color-pink-light-2: #eaa7fc;
+  --color-pink-light-3: #f6d8fe;
+  --color-pink-light-4: #fcf1fe;
+
+  /* Purple Colors */
+  --color-purple: #8646f4;
+  --color-purple-dark: #6d28d9;
+  --color-purple-dark-2: #5b21b6;
+  --color-purple-light: #a78bfa;
+  --color-purple-light-2: #c4b5fd;
+  --color-purple-light-3: #ddd6fe;
+  --color-purple-light-4: #ede9fe;
+  --color-purple-light-5: #f5f3ff;
+
+  /* Blue Colors */
+  --color-blue: #2d68f8;
+  --color-blue-dark: #1c3fb7;
+  --color-blue-light: #5475e5;
+  --color-blue-light-2: #8099ec;
+  --color-blue-light-3: #adbcf2;
+  --color-blue-light-4: #c3cef6;
+  --color-blue-light-5: #e1e8ff;
+
+  /* Cyan Colors */
+  --color-cyan: #01a9db;
+  --color-cyan-dark: #0b76b7;
+  --color-cyan-light: #18bfff;
+  --color-cyan-light-2: #77d1f3;
+  --color-cyan-light-3: #d0f0fd;
+
+  /* Teal Colors */
+  --color-teal: #02aaa4;
+  --color-teal-dark: #06a09b;
+  --color-teal-light: #20d9d2;
+  --color-teal-light-2: #72ddc3;
+  --color-teal-light-3: #c2f5e9;
+
+  /* Green Colors */
+  --color-green: #22ad5c;
+  --color-green-dark: #1a8245;
+  --color-green-light: #2cd673;
+  --color-green-light-2: #57de8f;
+  --color-green-light-3: #82e6ac;
+  --color-green-light-4: #acefc8;
+  --color-green-light-5: #c2f3d6;
+  --color-green-light-6: #daf8e6;
+
+  /* Z-Index Scale */
+  --z-inline: 1;
+  --z-dropdown: 10;
+  --z-tooltip: 20;
+  --z-sticky: 30;
+  --z-nav: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+}
+
+/* Skeleton shimmer animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Safe Area Utilities */
+.safe-top-0 {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-top-2 {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+}
+
+.safe-top-4 {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
+}
+
+.safe-right-0 {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.safe-bottom-0 {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-left-0 {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.safe-left-2 {
+  padding-left: calc(env(safe-area-inset-left, 0px) + 0.5rem);
+}
+
+.safe-left-4 {
+  padding-left: calc(env(safe-area-inset-left, 0px) + 1rem);
+}
+
+/* Tooltip Popup - ensure arrow can be positioned outside */
+[data-tooltip-variant] {
+  position: relative;
+}
+
+/* Tooltip Arrow Styles */
+.tooltip-arrow {
+  position: absolute !important;
+  pointer-events: none !important;
+  z-index: var(--z-inline) !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-style: solid !important;
+}
+
+/* Top arrow - same positioning for both variants */
+.tooltip-arrow[data-side="top"] {
+  border-top: 6px solid;
+  border-left: 6px solid transparent !important;
+  border-right: 6px solid transparent !important;
+  border-bottom: none !important;
+  top: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin-top: -1px !important;
+}
+
+/* Bottom arrow - same positioning for both variants */
+.tooltip-arrow[data-side="bottom"] {
+  border-bottom: 6px solid;
+  border-left: 6px solid transparent !important;
+  border-right: 6px solid transparent !important;
+  border-top: none !important;
+  bottom: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin-bottom: -1px !important;
+}
+
+/* Left arrow - same positioning for both variants */
+.tooltip-arrow[data-side="left"] {
+  border-left: 6px solid;
+  border-top: 6px solid transparent !important;
+  border-bottom: 6px solid transparent !important;
+  border-right: none !important;
+  left: 100% !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin-left: -1px !important;
+}
+
+/* Right arrow - same positioning for both variants */
+.tooltip-arrow[data-side="right"] {
+  border-right: 6px solid;
+  border-top: 6px solid transparent !important;
+  border-bottom: 6px solid transparent !important;
+  border-left: none !important;
+  right: 100% !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin-right: -1px !important;
+}
+
+/* Dark variant - gray arrow */
+.tooltip-arrow[data-tooltip-variant="dark"][data-side="top"] {
+  border-top-color: rgb(17 24 40) !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="dark"][data-side="bottom"] {
+  border-bottom-color: rgb(17 24 40) !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="dark"][data-side="left"] {
+  border-left-color: rgb(17 24 40) !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="dark"][data-side="right"] {
+  border-right-color: rgb(17 24 40) !important;
+}
+
+/* Light variant - white arrow */
+.tooltip-arrow[data-tooltip-variant="light"][data-side="top"] {
+  border-top-color: #ffffff !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="light"][data-side="bottom"] {
+  border-bottom-color: #ffffff !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="light"][data-side="left"] {
+  border-left-color: #ffffff !important;
+}
+
+.tooltip-arrow[data-tooltip-variant="light"][data-side="right"] {
+  border-right-color: #ffffff !important;
+}
+
+/* Hide native password reveal when Input uses iconRight (custom toggle).
+   Prevents double eye on login / reset-password. */
+input[data-hide-native-reveal][type="password"]::-ms-reveal {
+  display: none !important;
+}

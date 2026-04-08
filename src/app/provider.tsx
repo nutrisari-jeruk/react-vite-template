@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { env } from "@/config/env";
-import { isRetryableError } from "@/lib/api-error";
+import { isRetryableError } from "@/libs/apiError";
 
 const queryClient = new QueryClient({
   defaultOptions: {

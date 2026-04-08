@@ -1,7 +1,7 @@
-export { DataTable } from "./data-table";
+export { DataTable } from "./DataTable";
 export type {
   Column,
   PaginationState,
   SortingState,
   ServerTableProps,
-} from "./data-table";
+} from "./DataTable";

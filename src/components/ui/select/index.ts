@@ -1,1 +1,1 @@
-export { Select, Select as default } from "./select";
+export { Select, Select as default } from "./Select";

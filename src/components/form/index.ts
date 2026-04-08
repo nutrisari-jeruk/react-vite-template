@@ -7,5 +7,5 @@ export {
   FormDescription,
   FormMessage,
   useFormField,
-} from "./form";
-export { default } from "./form";
+} from "./Form";
+export { default } from "./Form";

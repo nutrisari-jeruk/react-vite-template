@@ -14,7 +14,7 @@ import {
 } from "@/components/layouts";
 import { setPageMetadata, setCanonicalUrl } from "@/utils";
 import { getRouteMetadata } from "@/config/routes-metadata";
-import { AuthLoader } from "@/features/auth/lib/auth-provider";
+import { AuthLoader } from "@/features/auth/lib/AuthProvider";
 import { getAccessToken } from "@/features/auth";
 
 const Home = lazy(() => import("@/app/routes/Home"));
@@ -26,15 +26,15 @@ const Otp = lazy(() => import("@/app/routes/Otp"));
 const Dashboard = lazy(() => import("@/app/routes/Dashboard"));
 const About = lazy(() => import("@/app/routes/About"));
 const Components = lazy(() => import("@/app/routes/Components"));
-const AuthExample = lazy(() => import("@/app/routes/examples/auth"));
+const AuthExample = lazy(() => import("@/app/routes/examples/Auth"));
 const ErrorExamples = lazy(
-  () => import("@/app/routes/examples/error-handling")
+  () => import("@/app/routes/examples/ErrorHandling")
 );
 const FormValidationExample = lazy(
-  () => import("@/app/routes/examples/form-validation")
+  () => import("@/app/routes/examples/FormValidation")
 );
-const DataTableExample = lazy(() => import("@/app/routes/examples/data-table"));
-const NotFound = lazy(() => import("@/app/routes/not-found"));
+const DataTableExample = lazy(() => import("@/app/routes/examples/DataTable"));
+const NotFound = lazy(() => import("@/app/routes/NotFound"));
 
 function PageLoader() {
   return (

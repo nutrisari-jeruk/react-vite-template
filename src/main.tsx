@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ErrorBoundary } from "@/components/error-boundary";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { App } from "@/app";
 import { startMockWorker } from "@/mocks/browser";
 import "./index.css";

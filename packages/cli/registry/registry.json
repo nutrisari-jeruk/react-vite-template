@@ -1,0 +1,693 @@
+{
+  "$schema": "./schema.json",
+  "version": "0.1.0",
+  "items": [
+    {
+      "name": "cn",
+      "type": "lib",
+      "description": "Tailwind CSS class name merger utility (clsx + tailwind-merge)",
+      "files": [
+        { "source": "templates/lib/cn.ts", "target": "src/utils/cn.ts" },
+        { "source": "templates/lib/cn-index.ts", "target": "src/utils/index.ts" }
+      ],
+      "npmDependencies": ["clsx", "tailwind-merge"],
+      "registryDependencies": []
+    },
+    {
+      "name": "api-client",
+      "type": "lib",
+      "description": "Axios HTTP client with auth tokens, retry, request tracing, and error classes",
+      "files": [
+        { "source": "templates/lib/api-client.ts", "target": "src/lib/api-client.ts" },
+        { "source": "templates/lib/api-error.ts", "target": "src/lib/api-error.ts" },
+        { "source": "templates/lib/lib-index.ts", "target": "src/lib/index.ts" }
+      ],
+      "npmDependencies": ["axios"],
+      "registryDependencies": []
+    },
+    {
+      "name": "env",
+      "type": "lib",
+      "description": "Type-safe environment variable validation and access",
+      "files": [
+        { "source": "templates/lib/env.ts", "target": "src/config/env.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": []
+    },
+    {
+      "name": "button",
+      "type": "ui",
+      "description": "Button with 11 variants (primary, secondary, danger, outline, link) and 3 sizes",
+      "files": [
+        { "source": "templates/ui/button/button.tsx", "target": "src/components/ui/button/button.tsx" },
+        { "source": "templates/ui/button/index.ts", "target": "src/components/ui/button/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Button } from \"./button\";"]
+      }
+    },
+    {
+      "name": "input",
+      "type": "ui",
+      "description": "Text input with 3 variants (default, filled, outlined) and 3 sizes",
+      "files": [
+        { "source": "templates/ui/input/input.tsx", "target": "src/components/ui/input/input.tsx" },
+        { "source": "templates/ui/input/index.ts", "target": "src/components/ui/input/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Input } from \"./input\";"]
+      }
+    },
+    {
+      "name": "textarea",
+      "type": "ui",
+      "description": "Multi-line text area input",
+      "files": [
+        { "source": "templates/ui/textarea/textarea.tsx", "target": "src/components/ui/textarea/textarea.tsx" },
+        { "source": "templates/ui/textarea/index.ts", "target": "src/components/ui/textarea/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Textarea } from \"./textarea\";"]
+      }
+    },
+    {
+      "name": "select",
+      "type": "ui",
+      "description": "Select dropdown with 3 variants and 3 sizes, built on Base UI",
+      "files": [
+        { "source": "templates/ui/select/select.tsx", "target": "src/components/ui/select/select.tsx" },
+        { "source": "templates/ui/select/index.ts", "target": "src/components/ui/select/index.ts" }
+      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Select } from \"./select\";"]
+      }
+    },
+    {
+      "name": "combobox",
+      "type": "ui",
+      "description": "Searchable dropdown/autocomplete built on Base UI",
+      "files": [
+        { "source": "templates/ui/combobox/combobox.tsx", "target": "src/components/ui/combobox/combobox.tsx" },
+        { "source": "templates/ui/combobox/index.ts", "target": "src/components/ui/combobox/index.ts" }
+      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": [
+          "export { Combobox } from \"./combobox\";",
+          "export type { ComboboxOption } from \"./combobox\";"
+        ]
+      }
+    },
+    {
+      "name": "checkbox",
+      "type": "ui",
+      "description": "Checkbox input component",
+      "files": [
+        { "source": "templates/ui/checkbox/checkbox.tsx", "target": "src/components/ui/checkbox/checkbox.tsx" },
+        { "source": "templates/ui/checkbox/index.ts", "target": "src/components/ui/checkbox/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Checkbox } from \"./checkbox\";"]
+      }
+    },
+    {
+      "name": "switch",
+      "type": "ui",
+      "description": "Toggle switch built on Base UI",
+      "files": [
+        { "source": "templates/ui/switch/switch.tsx", "target": "src/components/ui/switch/switch.tsx" },
+        { "source": "templates/ui/switch/index.ts", "target": "src/components/ui/switch/index.ts" }
+      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Switch } from \"./switch\";"]
+      }
+    },
+    {
+      "name": "toggle",
+      "type": "ui",
+      "description": "Toggle button component",
+      "files": [
+        { "source": "templates/ui/toggle/toggle.tsx", "target": "src/components/ui/toggle/toggle.tsx" },
+        { "source": "templates/ui/toggle/index.ts", "target": "src/components/ui/toggle/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Toggle } from \"./toggle\";"]
+      }
+    },
+    {
+      "name": "alert",
+      "type": "ui",
+      "description": "Alert with 4 variants (info, success, warning, danger) and animations",
+      "files": [
+        { "source": "templates/ui/alert/alert.tsx", "target": "src/components/ui/alert/alert.tsx" },
+        { "source": "templates/ui/alert/index.ts", "target": "src/components/ui/alert/index.ts" }
+      ],
+      "npmDependencies": ["motion"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Alert } from \"./alert\";"]
+      }
+    },
+    {
+      "name": "badge",
+      "type": "ui",
+      "description": "Badge with 6 variants, 3 sizes, pill and dot options",
+      "files": [
+        { "source": "templates/ui/badge/badge.tsx", "target": "src/components/ui/badge/badge.tsx" },
+        { "source": "templates/ui/badge/index.ts", "target": "src/components/ui/badge/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Badge } from \"./badge\";"]
+      }
+    },
+    {
+      "name": "card",
+      "type": "ui",
+      "description": "Card container component",
+      "files": [
+        { "source": "templates/ui/card/card.tsx", "target": "src/components/ui/card/card.tsx" },
+        { "source": "templates/ui/card/index.ts", "target": "src/components/ui/card/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Card } from \"./card\";"]
+      }
+    },
+    {
+      "name": "avatar",
+      "type": "ui",
+      "description": "Avatar and AvatarGroup components",
+      "files": [
+        { "source": "templates/ui/avatar/avatar.tsx", "target": "src/components/ui/avatar/avatar.tsx" },
+        { "source": "templates/ui/avatar/index.ts", "target": "src/components/ui/avatar/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Avatar, AvatarGroup } from \"./avatar\";"]
+      }
+    },
+    {
+      "name": "skeleton",
+      "type": "ui",
+      "description": "Loading skeleton placeholders (Skeleton, SkeletonText, SkeletonCard)",
+      "files": [
+        { "source": "templates/ui/skeleton/skeleton.tsx", "target": "src/components/ui/skeleton/skeleton.tsx" },
+        { "source": "templates/ui/skeleton/index.ts", "target": "src/components/ui/skeleton/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Skeleton, SkeletonText, SkeletonCard } from \"./skeleton\";"]
+      }
+    },
+    {
+      "name": "table",
+      "type": "ui",
+      "description": "Table with Header, Body, Row, Cell, and Head sub-components",
+      "files": [
+        { "source": "templates/ui/table/table.tsx", "target": "src/components/ui/table/table.tsx" },
+        { "source": "templates/ui/table/index.ts", "target": "src/components/ui/table/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from \"./table\";"]
+      }
+    },
+    {
+      "name": "pagination",
+      "type": "ui",
+      "description": "Pagination component with page navigation",
+      "files": [
+        { "source": "templates/ui/pagination/pagination.tsx", "target": "src/components/ui/pagination/pagination.tsx" },
+        { "source": "templates/ui/pagination/index.ts", "target": "src/components/ui/pagination/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Pagination } from \"./pagination\";"]
+      }
+    },
+    {
+      "name": "tooltip",
+      "type": "ui",
+      "description": "Tooltip with dark/light variants and 4 placements, built on Base UI",
+      "files": [
+        { "source": "templates/ui/tooltip/tooltip.tsx", "target": "src/components/ui/tooltip/tooltip.tsx" },
+        { "source": "templates/ui/tooltip/index.ts", "target": "src/components/ui/tooltip/index.ts" }
+      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Tooltip } from \"./tooltip\";"]
+      }
+    },
+    {
+      "name": "dialog",
+      "type": "ui",
+      "description": "Modal dialog with 5 sizes and animations, built on Base UI",
+      "files": [
+        { "source": "templates/ui/dialog/dialog.tsx", "target": "src/components/ui/dialog/dialog.tsx" },
+        { "source": "templates/ui/dialog/index.ts", "target": "src/components/ui/dialog/index.ts" }
+      ],
+      "npmDependencies": ["@base-ui/react", "motion"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Dialog, DialogTrigger, DialogContent, DialogFooter, DialogClose } from \"./dialog\";"]
+      }
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "ui",
+      "description": "Dropdown menu with items, checkboxes, radio groups, built on Base UI",
+      "files": [
+        { "source": "templates/ui/dropdown-menu/dropdown-menu.tsx", "target": "src/components/ui/dropdown-menu/dropdown-menu.tsx" },
+        { "source": "templates/ui/dropdown-menu/index.ts", "target": "src/components/ui/dropdown-menu/index.ts" }
+      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup } from \"./dropdown-menu\";"]
+      }
+    },
+    {
+      "name": "link",
+      "type": "ui",
+      "description": "Link component for navigation",
+      "files": [
+        { "source": "templates/ui/link/link.tsx", "target": "src/components/ui/link/link.tsx" },
+        { "source": "templates/ui/link/index.ts", "target": "src/components/ui/link/index.ts" }
+      ],
+      "npmDependencies": ["react-router-dom"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { Link } from \"./link\";"]
+      }
+    },
+    {
+      "name": "image-with-fallback",
+      "type": "ui",
+      "description": "Image component with loading fallback and error handling",
+      "files": [
+        { "source": "templates/ui/image-with-fallback/image-with-fallback.tsx", "target": "src/components/ui/image-with-fallback/image-with-fallback.tsx" },
+        { "source": "templates/ui/image-with-fallback/index.ts", "target": "src/components/ui/image-with-fallback/index.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { ImageWithFallback } from \"./image-with-fallback\";"]
+      }
+    },
+    {
+      "name": "use-breakpoint",
+      "type": "hook",
+      "description": "Detect current Tailwind CSS breakpoint (sm, md, lg, xl, 2xl)",
+      "files": [
+        { "source": "templates/hooks/use-breakpoint.ts", "target": "src/hooks/use-breakpoint.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["use-media-query"],
+      "barrel": {
+        "file": "src/hooks/index.ts",
+        "exports": ["export { useBreakpoint } from \"./use-breakpoint\";"]
+      }
+    },
+    {
+      "name": "use-media-query",
+      "type": "hook",
+      "description": "SSR-safe media query hook",
+      "files": [
+        { "source": "templates/hooks/use-media-query.ts", "target": "src/hooks/use-media-query.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": [],
+      "barrel": {
+        "file": "src/hooks/index.ts",
+        "exports": ["export { useMediaQuery } from \"./use-media-query\";"]
+      }
+    },
+    {
+      "name": "use-local-storage",
+      "type": "hook",
+      "description": "Persistent state hook backed by localStorage",
+      "files": [
+        { "source": "templates/hooks/use-local-storage.ts", "target": "src/hooks/use-local-storage.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": [],
+      "barrel": {
+        "file": "src/hooks/index.ts",
+        "exports": ["export { useLocalStorage } from \"./use-local-storage\";"]
+      }
+    },
+    {
+      "name": "use-countdown",
+      "type": "hook",
+      "description": "Countdown timer hook with start, pause, and reset",
+      "files": [
+        { "source": "templates/hooks/use-countdown.ts", "target": "src/hooks/use-countdown.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": [],
+      "barrel": {
+        "file": "src/hooks/index.ts",
+        "exports": ["export { useCountdown } from \"./use-countdown\";"]
+      }
+    },
+    {
+      "name": "use-api-error",
+      "type": "hook",
+      "description": "Hook for handling API errors with toast notifications",
+      "files": [
+        { "source": "templates/hooks/use-api-error.ts", "target": "src/hooks/use-api-error.ts" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["api-client"],
+      "barrel": {
+        "file": "src/hooks/index.ts",
+        "exports": ["export { useApiError } from \"./use-api-error\";"]
+      }
+    },
+    {
+      "name": "auth",
+      "type": "feature",
+      "description": "Complete authentication feature: login, register, OTP, password reset, token management",
+      "files": [
+        { "source": "templates/features/auth/api/auth-api.ts", "target": "src/features/auth/api/auth-api.ts" },
+        { "source": "templates/features/auth/api/index.ts", "target": "src/features/auth/api/index.ts" },
+        { "source": "templates/features/auth/components/auth-guard.tsx", "target": "src/features/auth/components/auth-guard.tsx" },
+        { "source": "templates/features/auth/components/login-form.tsx", "target": "src/features/auth/components/login-form.tsx" },
+        { "source": "templates/features/auth/components/register-form.tsx", "target": "src/features/auth/components/register-form.tsx" },
+        { "source": "templates/features/auth/components/forget-password-form.tsx", "target": "src/features/auth/components/forget-password-form.tsx" },
+        { "source": "templates/features/auth/components/reset-password-form.tsx", "target": "src/features/auth/components/reset-password-form.tsx" },
+        { "source": "templates/features/auth/components/otp-form.tsx", "target": "src/features/auth/components/otp-form.tsx" },
+        { "source": "templates/features/auth/components/index.ts", "target": "src/features/auth/components/index.ts" },
+        { "source": "templates/features/auth/hooks/use-auth.ts", "target": "src/features/auth/hooks/use-auth.ts" },
+        { "source": "templates/features/auth/lib/auth-provider.tsx", "target": "src/features/auth/lib/auth-provider.tsx" },
+        { "source": "templates/features/auth/lib/token-storage.ts", "target": "src/features/auth/lib/token-storage.ts" },
+        { "source": "templates/features/auth/types/user.ts", "target": "src/features/auth/types/user.ts" },
+        { "source": "templates/features/auth/types/index.ts", "target": "src/features/auth/types/index.ts" },
+        { "source": "templates/features/auth/index.ts", "target": "src/features/auth/index.ts" }
+      ],
+      "npmDependencies": ["react-query-auth", "react-hook-form", "@hookform/resolvers", "zod", "axios"],
+      "registryDependencies": ["api-client", "cn", "button", "input"]
+    },
+    {
+      "name": "main-layout",
+      "type": "layout",
+      "description": "Main application layout with navbar and footer",
+      "files": [
+        { "source": "templates/layouts/main-layout.tsx", "target": "src/components/layouts/main-layout.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/layouts/index.ts",
+        "exports": ["export { MainLayout } from \"./main-layout\";"]
+      }
+    },
+    {
+      "name": "landing-layout",
+      "type": "layout",
+      "description": "Landing page layout with hero-friendly structure",
+      "files": [
+        { "source": "templates/layouts/landing-layout.tsx", "target": "src/components/layouts/landing-layout.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/layouts/index.ts",
+        "exports": ["export { LandingLayout } from \"./landing-layout\";"]
+      }
+    },
+    {
+      "name": "auth-layout",
+      "type": "layout",
+      "description": "Authentication page layout (login, register, etc.)",
+      "files": [
+        { "source": "templates/layouts/auth-layout.tsx", "target": "src/components/layouts/auth-layout.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/layouts/index.ts",
+        "exports": ["export { AuthLayout } from \"./auth-layout\";"]
+      }
+    },
+    {
+      "name": "authenticated-layout",
+      "type": "layout",
+      "description": "Layout for authenticated/dashboard pages",
+      "files": [
+        { "source": "templates/layouts/authenticated-layout.tsx", "target": "src/components/layouts/authenticated-layout.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn", "auth"],
+      "barrel": {
+        "file": "src/components/layouts/index.ts",
+        "exports": ["export { AuthenticatedLayout } from \"./authenticated-layout\";"]
+      }
+    },
+    {
+      "name": "navbar",
+      "type": "layout",
+      "description": "Navigation bar component",
+      "files": [
+        { "source": "templates/layouts/navbar.tsx", "target": "src/components/layouts/navbar.tsx" }
+      ],
+      "npmDependencies": ["react-router-dom", "lucide-react"],
+      "registryDependencies": ["cn", "button"],
+      "barrel": {
+        "file": "src/components/layouts/index.ts",
+        "exports": ["export { Navbar } from \"./navbar\";"]
+      }
+    },
+    {
+      "name": "footer",
+      "type": "layout",
+      "description": "Footer component",
+      "files": [
+        { "source": "templates/layouts/footer.tsx", "target": "src/components/layouts/footer.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/layouts/index.ts",
+        "exports": ["export { Footer } from \"./footer\";"]
+      }
+    },
+    {
+      "name": "home",
+      "type": "page",
+      "description": "Home/landing page",
+      "files": [
+        { "source": "templates/pages/Home.tsx", "target": "src/app/routes/Home.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn", "button", "landing-layout"],
+      "route": {
+        "path": "/",
+        "constantKey": "HOME",
+        "componentName": "Home",
+        "importPath": "@/app/routes/Home",
+        "layout": "landing",
+        "navLink": { "label": "Home" },
+        "metadata": {
+          "title": "Home",
+          "description": "Welcome to the application."
+        }
+      }
+    },
+    {
+      "name": "about",
+      "type": "page",
+      "description": "About page",
+      "files": [
+        { "source": "templates/pages/About.tsx", "target": "src/app/routes/About.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn", "landing-layout"],
+      "route": {
+        "path": "/about",
+        "constantKey": "ABOUT",
+        "componentName": "About",
+        "importPath": "@/app/routes/About",
+        "layout": "landing",
+        "navLink": { "label": "About" },
+        "metadata": {
+          "title": "About",
+          "description": "Learn more about our application."
+        }
+      }
+    },
+    {
+      "name": "login",
+      "type": "page",
+      "description": "Login page",
+      "files": [
+        { "source": "templates/pages/Login.tsx", "target": "src/app/routes/Login.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["auth"],
+      "route": {
+        "path": "/login",
+        "constantKey": "LOGIN",
+        "componentName": "Login",
+        "importPath": "@/app/routes/Login",
+        "layout": null,
+        "metadata": {
+          "title": "Login",
+          "description": "Sign in to your account."
+        }
+      }
+    },
+    {
+      "name": "register",
+      "type": "page",
+      "description": "Registration page",
+      "files": [
+        { "source": "templates/pages/Register.tsx", "target": "src/app/routes/Register.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["auth", "auth-layout"],
+      "route": {
+        "path": "/register",
+        "constantKey": "REGISTER",
+        "componentName": "Register",
+        "importPath": "@/app/routes/Register",
+        "layout": "auth",
+        "metadata": {
+          "title": "Register",
+          "description": "Create a new account."
+        }
+      }
+    },
+    {
+      "name": "dashboard",
+      "type": "page",
+      "description": "Dashboard page (protected, requires auth)",
+      "files": [
+        { "source": "templates/pages/Dashboard.tsx", "target": "src/app/routes/Dashboard.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["auth", "authenticated-layout"],
+      "route": {
+        "path": "/dashboard",
+        "constantKey": "DASHBOARD",
+        "componentName": "Dashboard",
+        "importPath": "@/app/routes/Dashboard",
+        "layout": "authenticated",
+        "protected": true,
+        "authLoader": true,
+        "navLink": { "label": "Dashboard" },
+        "metadata": {
+          "title": "Dashboard",
+          "description": "Your application dashboard."
+        }
+      }
+    },
+    {
+      "name": "forget-password",
+      "type": "page",
+      "description": "Forgot password page",
+      "files": [
+        { "source": "templates/pages/ForgetPassword.tsx", "target": "src/app/routes/ForgetPassword.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["auth"],
+      "route": {
+        "path": "/forget-password",
+        "constantKey": "FORGET_PASSWORD",
+        "componentName": "ForgetPassword",
+        "importPath": "@/app/routes/ForgetPassword",
+        "layout": null,
+        "metadata": {
+          "title": "Forgot Password",
+          "description": "Reset your password."
+        }
+      }
+    },
+    {
+      "name": "reset-password",
+      "type": "page",
+      "description": "Reset password page",
+      "files": [
+        { "source": "templates/pages/ResetPassword.tsx", "target": "src/app/routes/ResetPassword.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["auth"],
+      "route": {
+        "path": "/reset-password",
+        "constantKey": "RESET_PASSWORD",
+        "componentName": "ResetPassword",
+        "importPath": "@/app/routes/ResetPassword",
+        "layout": null,
+        "metadata": {
+          "title": "Reset Password",
+          "description": "Set a new password for your account."
+        }
+      }
+    },
+    {
+      "name": "otp",
+      "type": "page",
+      "description": "OTP verification page",
+      "files": [
+        { "source": "templates/pages/Otp.tsx", "target": "src/app/routes/Otp.tsx" }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["auth"],
+      "route": {
+        "path": "/otp",
+        "constantKey": "OTP",
+        "componentName": "Otp",
+        "importPath": "@/app/routes/Otp",
+        "layout": null,
+        "metadata": {
+          "title": "OTP Verification",
+          "description": "Verify your OTP code to complete authentication."
+        }
+      }
+    }
+  ]
+}

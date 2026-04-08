@@ -1,0 +1,41 @@
+{
+  "name": "frontier-fe",
+  "version": "0.1.0",
+  "description": "CLI for scaffolding React + Vite projects with production-ready components, features, and patterns",
+  "type": "module",
+  "bin": {
+    "frontier-fe": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "registry"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "dev": "tsup src/index.ts --format esm --watch",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "commander": "^13.1.0",
+    "fs-extra": "^11.3.0",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.10.1",
+    "@types/prompts": "^2.4.9",
+    "tsup": "^8.5.0",
+    "typescript": "~5.9.3"
+  },
+  "keywords": [
+    "react",
+    "vite",
+    "template",
+    "cli",
+    "frontend",
+    "scaffold"
+  ],
+  "license": "MIT"
+}

@@ -1,6 +1,6 @@
-export { MainLayout } from "./main-layout";
-export { LandingLayout } from "./landing-layout";
-export { AuthLayout } from "./auth-layout";
-export { AuthenticatedLayout } from "./authenticated-layout";
-export { Navbar } from "./navbar";
-export { Footer } from "./footer";
+export { MainLayout } from "./MainLayout";
+export { LandingLayout } from "./LandingLayout";
+export { AuthLayout } from "./AuthLayout";
+export { AuthenticatedLayout } from "./AuthenticatedLayout";
+export { Navbar } from "./Navbar";
+export { Footer } from "./Footer";

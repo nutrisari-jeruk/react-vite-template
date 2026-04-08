@@ -8,5 +8,5 @@ export {
   registerWithEmailAndPassword,
   logout,
   refreshToken,
-} from "./auth-api";
-export type { AuthResponse, LoginInput, RegisterInput } from "./auth-api";
+} from "./authApi";
+export type { AuthResponse, LoginInput, RegisterInput } from "./authApi";

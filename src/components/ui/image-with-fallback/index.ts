@@ -1,1 +1,1 @@
-export { ImageWithFallback } from "./image-with-fallback";
+export { ImageWithFallback } from "./ImageWithFallback";

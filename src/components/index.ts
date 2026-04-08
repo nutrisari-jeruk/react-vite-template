@@ -5,10 +5,10 @@ export * from "./ui";
 export * from "./layouts";
 
 // Shared Components
-export { ErrorBoundary, withErrorBoundary } from "./error-boundary";
-export type { ErrorFallbackProps } from "./error-boundary";
-export { CodeBlock } from "./code-block";
-export { ComponentDemo } from "./component-demo";
+export { ErrorBoundary, withErrorBoundary } from "./ErrorBoundary";
+export type { ErrorFallbackProps } from "./ErrorBoundary";
+export { CodeBlock } from "./CodeBlock";
+export { ComponentDemo } from "./ComponentDemo";
 
 // Data Components
 export { DataTable } from "./data-table";
@@ -20,9 +20,9 @@ export type {
 } from "./data-table";
 
 // Form Components (Simple wrappers - use Form from "./form" for full React Hook Form integration)
-export { FormInput } from "./form-input";
-export { FormSelect } from "./form-select";
-export { FormTextarea } from "./form-textarea";
+export { FormInput } from "./FormInput";
+export { FormSelect } from "./FormSelect";
+export { FormTextarea } from "./FormTextarea";
 
 // React Hook Form Integration
 export {

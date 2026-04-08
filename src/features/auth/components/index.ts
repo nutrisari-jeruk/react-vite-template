@@ -2,9 +2,9 @@
  * Auth components barrel export
  */
 
-export { LoginForm } from "./login-form";
-export { OtpForm } from "./otp-form";
-export { RegisterForm } from "./register-form";
-export { ForgetPasswordForm } from "./forget-password-form";
-export { ResetPasswordForm } from "./reset-password-form";
-export { AuthGuard } from "./auth-guard";
+export { LoginForm } from "./LoginForm";
+export { OtpForm } from "./OtpForm";
+export { RegisterForm } from "./RegisterForm";
+export { ForgetPasswordForm } from "./ForgetPasswordForm";
+export { ResetPasswordForm } from "./ResetPasswordForm";
+export { AuthGuard } from "./AuthGuard";

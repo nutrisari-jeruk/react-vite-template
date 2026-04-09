@@ -10,8 +10,8 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuLabel,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
+} from ".";
+import { Button } from "../button";
 
 describe("DropdownMenu", () => {
   it("renders trigger button", () => {

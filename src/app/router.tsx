@@ -27,9 +27,7 @@ const Dashboard = lazy(() => import("@/app/routes/Dashboard"));
 const About = lazy(() => import("@/app/routes/About"));
 const Components = lazy(() => import("@/app/routes/Components"));
 const AuthExample = lazy(() => import("@/app/routes/examples/Auth"));
-const ErrorExamples = lazy(
-  () => import("@/app/routes/examples/ErrorHandling")
-);
+const ErrorExamples = lazy(() => import("@/app/routes/examples/ErrorHandling"));
 const FormValidationExample = lazy(
   () => import("@/app/routes/examples/FormValidation")
 );

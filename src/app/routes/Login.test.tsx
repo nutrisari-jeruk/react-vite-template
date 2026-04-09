@@ -28,10 +28,10 @@ vi.mock("react-router-dom", async () => {
 });
 
 // Mock auth API
-vi.mock("@/features/auth/api/auth-api", async () => {
+vi.mock("@/features/auth/api/authApi", async () => {
   const actual = await vi.importActual<
-    typeof import("@/features/auth/api/auth-api")
-  >("@/features/auth/api/auth-api");
+    typeof import("@/features/auth/api/authApi")
+  >("@/features/auth/api/authApi");
   return {
     ...actual,
     loginWithEmailAndPassword: vi.fn(),
@@ -39,10 +39,10 @@ vi.mock("@/features/auth/api/auth-api", async () => {
 });
 
 // Mock token storage
-vi.mock("@/features/auth/lib/token-storage", async () => {
+vi.mock("@/features/auth/lib/tokenStorage", async () => {
   const actual = await vi.importActual<
-    typeof import("@/features/auth/lib/token-storage")
-  >("@/features/auth/lib/token-storage");
+    typeof import("@/features/auth/lib/tokenStorage")
+  >("@/features/auth/lib/tokenStorage");
   return {
     ...actual,
     setAccessToken: vi.fn(),

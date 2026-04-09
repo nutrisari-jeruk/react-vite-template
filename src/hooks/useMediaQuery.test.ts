@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import { useMediaQuery } from "../useMediaQuery";
+import { useMediaQuery } from "./useMediaQuery";
 
 // Mock matchMedia
 const createMatchMedia = (matches: boolean) => {

@@ -6,7 +6,7 @@ import {
   setOgTitle,
   setPageMetadata,
   resetMetadata,
-} from "../metadata";
+} from "./metadata";
 
 describe("metadata", () => {
   const originalTitle = document.title;

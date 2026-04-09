@@ -1,5 +1,5 @@
 import { render, screen } from "@/tests";
-import { Link } from "../ui/link";
+import { Link } from ".";
 
 describe("Link", () => {
   it("renders children correctly", () => {

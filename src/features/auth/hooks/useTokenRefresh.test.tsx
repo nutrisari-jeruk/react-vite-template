@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { useTokenRefresh } from "../useAuth";
-import * as tokenStorage from "../../lib/tokenStorage";
+import { useTokenRefresh } from "./useAuth";
+import * as tokenStorage from "../lib/tokenStorage";
 
 // Mock react-router-dom
 const navigate = vi.fn();

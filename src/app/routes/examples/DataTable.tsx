@@ -6,7 +6,7 @@ import {
   type PaginationState,
   type SortingState,
 } from "@/components/data-table";
-import { Badge } from "@/components/ui/badge/badge";
+import { Badge } from "@/components/ui/badge";
 
 // Mock data types
 interface User {

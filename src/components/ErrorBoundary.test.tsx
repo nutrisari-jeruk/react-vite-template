@@ -4,14 +4,12 @@ import {
   ErrorBoundary,
   type ErrorFallbackProps,
   withErrorBoundary,
-} from "../ErrorBoundary";
+} from "./ErrorBoundary";
 
 // Mock import.meta.env.DEV
-vi.mock("../error-boundary", async () => {
+vi.mock("./ErrorBoundary", async () => {
   const actual =
-    await vi.importActual<typeof import("../error-boundary")>(
-      "../error-boundary"
-    );
+    await vi.importActual<typeof import("./ErrorBoundary")>("./ErrorBoundary");
   return {
     ...actual,
     // We'll handle the DEV check in the tests

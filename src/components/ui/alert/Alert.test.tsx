@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { act } from "react";
-import { Alert } from "../ui/alert";
+import { Alert } from ".";
 
 describe("Alert", () => {
   beforeEach(() => {

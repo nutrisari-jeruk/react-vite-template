@@ -1,5 +1,5 @@
 import { ImageWithFallback } from "@/components/ui";
-import { ForgetPasswordForm } from "@/features/auth/components/forget-password-form";
+import { ForgetPasswordForm } from "@/features/auth";
 
 export default function ForgetPasswordPage() {
   return (

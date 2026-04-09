@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ImageWithFallback } from "../ui/image-with-fallback";
+import { ImageWithFallback } from ".";
 
 describe("ImageWithFallback", () => {
   it("renders image when src loads", () => {

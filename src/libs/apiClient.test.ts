@@ -79,7 +79,7 @@ describe("API Client", () => {
     it("injects Authorization header when token exists", async () => {
       mockGetAccessToken.mockReturnValue("test-token-123");
 
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const adapter = vi.fn((config) => {
         expect(config.headers?.Authorization).toBe("Bearer test-token-123");
@@ -100,7 +100,7 @@ describe("API Client", () => {
     it("does not inject Authorization header when no token", async () => {
       mockGetAccessToken.mockReturnValue(null);
 
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const adapter = vi.fn((config) => {
         expect(config.headers?.Authorization).toBeUndefined();
@@ -117,7 +117,7 @@ describe("API Client", () => {
     });
 
     it("injects X-Request-ID header", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const adapter = vi.fn((config) => {
         expect(config.headers?.["X-Request-ID"]).toBeDefined();
@@ -137,7 +137,7 @@ describe("API Client", () => {
 
   describe("response error handling", () => {
     it("transforms 400/422 to ValidationError", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi.fn().mockRejectedValue(
         createAxiosError(422, {
@@ -159,7 +159,7 @@ describe("API Client", () => {
     });
 
     it("transforms 401 to UnauthorizedError", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi
         .fn()
@@ -177,7 +177,7 @@ describe("API Client", () => {
     });
 
     it("transforms 403 to ForbiddenError", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi
         .fn()
@@ -192,7 +192,7 @@ describe("API Client", () => {
     });
 
     it("transforms 404 to NotFoundError", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi
         .fn()
@@ -209,7 +209,7 @@ describe("API Client", () => {
     });
 
     it("transforms 409 to ConflictError", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi
         .fn()
@@ -226,7 +226,7 @@ describe("API Client", () => {
     });
 
     it("transforms 429 to RateLimitError with retry-after", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const err = createAxiosError(
         429,
@@ -246,7 +246,7 @@ describe("API Client", () => {
     });
 
     it("transforms 500 to ServerError", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi
         .fn()
@@ -261,7 +261,7 @@ describe("API Client", () => {
     });
 
     it("transforms 503 to ServiceUnavailableError", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi
         .fn()
@@ -280,7 +280,7 @@ describe("API Client", () => {
     });
 
     it("transforms network error (no response) to NetworkError", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi.fn().mockRejectedValue({
         isAxiosError: true,
@@ -296,7 +296,7 @@ describe("API Client", () => {
     });
 
     it("transforms ECONNABORTED to TimeoutError", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi.fn().mockRejectedValue({
         isAxiosError: true,
@@ -312,7 +312,7 @@ describe("API Client", () => {
     });
 
     it("passes through non-axios errors unchanged", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
       const plainError = new Error("plain error");
       const mockAdapter = vi.fn().mockRejectedValue(plainError);
       try {
@@ -323,7 +323,7 @@ describe("API Client", () => {
     });
 
     it("transforms unknown status code to generic Error with response message", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
       const mockAdapter = vi
         .fn()
         .mockRejectedValue(createAxiosError(418, { message: "I'm a teapot" }));
@@ -336,7 +336,7 @@ describe("API Client", () => {
     });
 
     it("transforms unknown status code using error.message when response has no message", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
       const err = createAxiosError(418, {});
       Object.assign(err, { message: "axios message" });
       const mockAdapter = vi.fn().mockRejectedValue(err);
@@ -351,7 +351,7 @@ describe("API Client", () => {
   describe("401 token refresh", () => {
     it("retries request with new token after successful refresh", async () => {
       mockGetRefreshToken.mockReturnValue("refresh-token");
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
       let callCount = 0;
       api.defaults.adapter = vi.fn((config) => {
         callCount++;
@@ -394,7 +394,7 @@ describe("API Client", () => {
         value: { ...originalLocation, pathname: "/dashboard", href: "" },
         writable: true,
       });
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
       api.defaults.adapter = vi.fn((config) => {
         if (config.url?.includes("/auth/refresh")) {
           return Promise.reject(new Error("Refresh failed"));
@@ -418,7 +418,7 @@ describe("API Client", () => {
         value: { ...originalLocation, pathname: "/login", href: "" },
         writable: true,
       });
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
       api.defaults.adapter = vi.fn((config) => {
         if (config.url?.includes("/auth/refresh")) {
           return Promise.reject(new Error("Refresh failed"));
@@ -442,7 +442,7 @@ describe("API Client", () => {
         value: { ...originalLocation, pathname: "/dashboard", href: "" },
         writable: true,
       });
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
       const mockAdapter = vi.fn().mockRejectedValue(
         createAxiosError(
           401,
@@ -464,7 +464,7 @@ describe("API Client", () => {
 
   describe("request methods", () => {
     it("GET request succeeds", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi.fn().mockResolvedValue({
         data: { success: true, data: { id: 1, name: "Test" } },
@@ -489,7 +489,7 @@ describe("API Client", () => {
     });
 
     it("POST request succeeds", async () => {
-      const { api } = await import("../api-client");
+      const { api } = await import("./apiClient");
 
       const mockAdapter = vi.fn().mockResolvedValue({
         data: { success: true },

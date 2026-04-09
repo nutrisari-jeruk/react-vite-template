@@ -410,7 +410,7 @@ describe("Components Page", () => {
         };
       });
       vi.resetModules();
-      const { default: ComponentsPageSmooth } = await import("../Components");
+      const { default: ComponentsPageSmooth } = await import("./Components");
       const mockElement = {
         getBoundingClientRect: mockGetBoundingClientRect,
       } as unknown as HTMLElement;
@@ -466,7 +466,7 @@ describe("Components Page", () => {
       });
       vi.resetModules();
       const { default: ComponentsPageWithReducedMotion } =
-        await import("../Components");
+        await import("./Components");
       const mockElement = {
         getBoundingClientRect: mockGetBoundingClientRect,
       } as unknown as HTMLElement;

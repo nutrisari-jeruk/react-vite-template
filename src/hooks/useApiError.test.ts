@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import type { AxiosError } from "axios";
-import { useApiError } from "../useApiError";
+import { useApiError } from "./useApiError";
 import { ApiError, ValidationError, NetworkError } from "@/libs/apiError";
 
 describe("useApiError Hook", () => {

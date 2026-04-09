@@ -363,7 +363,7 @@ The `DataTable` component provides a full-featured data table with server-side p
 **Usage:**
 ```typescript
 import { DataTable, type Column } from '@/components/data-table'
-import { Badge } from '@/components/ui/badge/badge'
+import { Badge } from '@/components/ui/badge'
 
 interface User {
   id: number

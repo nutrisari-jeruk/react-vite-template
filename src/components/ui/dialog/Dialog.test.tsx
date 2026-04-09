@@ -7,8 +7,8 @@ import {
   DialogContent,
   DialogFooter,
   DialogClose,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+} from ".";
+import { Button } from "../button";
 
 function ControlledDialog() {
   const [open, setOpen] = useState(false);

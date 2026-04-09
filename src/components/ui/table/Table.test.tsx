@@ -9,7 +9,7 @@ import {
   TableCell,
   TableFooter,
   TableCaption,
-} from "../ui/table";
+} from ".";
 
 describe("Table", () => {
   it("renders table with header, body, and cells", () => {

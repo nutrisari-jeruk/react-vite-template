@@ -5,7 +5,7 @@ import {
   API_ENDPOINTS,
   QUERY_KEYS,
   HTTP_STATUS,
-} from "../constants";
+} from "./constants";
 
 describe("Constants", () => {
   describe("ROUTES", () => {

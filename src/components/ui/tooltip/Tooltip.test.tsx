@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Tooltip } from "../ui/tooltip";
-import { Button } from "../ui/button";
+import { Tooltip } from ".";
+import { Button } from "../button";
 
 describe("Tooltip", () => {
   it("renders trigger correctly", () => {

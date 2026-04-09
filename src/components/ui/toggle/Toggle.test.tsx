@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Toggle } from "../ui/toggle";
+import { Toggle } from ".";
 
 describe("Toggle", () => {
   it("renders toggle input", () => {

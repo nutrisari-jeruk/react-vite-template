@@ -15,7 +15,7 @@ vi.mock("react-router-dom", async () => {
 });
 
 // Mock ForgetPasswordForm component
-vi.mock("@/features/auth/components/forget-password-form", () => ({
+vi.mock("@/features/auth/components/ForgetPasswordForm", () => ({
   ForgetPasswordForm: () => <div>FORGET_PASSWORD_FORM</div>,
 }));
 

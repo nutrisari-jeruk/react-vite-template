@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { Skeleton, SkeletonText, SkeletonCard } from "../ui/skeleton";
+import { Skeleton, SkeletonText, SkeletonCard } from ".";
 
 describe("Skeleton", () => {
   it("renders skeleton with default variant", () => {

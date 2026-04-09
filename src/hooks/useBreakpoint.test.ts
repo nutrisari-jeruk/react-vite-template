@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react";
-import { useBreakpoint } from "../useBreakpoint";
+import { useBreakpoint } from "./useBreakpoint";
 
 const createMatchMedia = (width: number) => {
   return vi.fn().mockImplementation((query: string) => {

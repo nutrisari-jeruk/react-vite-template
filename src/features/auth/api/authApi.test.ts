@@ -11,7 +11,7 @@ import {
   resendOtp,
   resendResetPasswordOtp,
   validateResetPasswordOtp,
-} from "../authApi";
+} from "./authApi";
 
 const mockApiGet = vi.fn();
 const mockApiPost = vi.fn();
@@ -25,7 +25,7 @@ vi.mock("@/libs/apiClient", () => ({
   },
 }));
 
-vi.mock("../../lib/token-storage", () => ({
+vi.mock("../lib/tokenStorage", () => ({
   getAccessToken: () => mockGetAccessToken(),
   clearAuthTokens: () => mockClearAuthTokens(),
 }));

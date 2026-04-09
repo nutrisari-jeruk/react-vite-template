@@ -14,7 +14,13 @@ export type { LoginInput, RegisterInput } from "./lib/AuthProvider";
 
 // Auth components
 export { AuthGuard } from "./components/AuthGuard";
-export { LoginForm, RegisterForm, ResetPasswordForm } from "./components";
+export {
+  LoginForm,
+  RegisterForm,
+  ResetPasswordForm,
+  ForgetPasswordForm,
+  OtpForm,
+} from "./components";
 
 // Auth API
 export {

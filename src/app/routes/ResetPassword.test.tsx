@@ -18,7 +18,7 @@ vi.mock("react-router-dom", async () => {
 });
 
 // Mock ResetPasswordForm component - accepts onBackToLogin and exposes trigger
-vi.mock("@/features/auth/components/reset-password-form", () => ({
+vi.mock("@/features/auth/components/ResetPasswordForm", () => ({
   ResetPasswordForm: ({ onBackToLogin }: { onBackToLogin?: () => void }) => (
     <div>
       <span>RESET_PASSWORD_FORM</span>

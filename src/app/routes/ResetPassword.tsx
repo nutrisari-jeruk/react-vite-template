@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ImageWithFallback } from "@/components/ui";
-import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
+import { ResetPasswordForm } from "@/features/auth";
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();

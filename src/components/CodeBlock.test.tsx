@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CodeBlock } from "../CodeBlock";
+import { CodeBlock } from "./CodeBlock";
 
 describe("CodeBlock", () => {
   const mockWriteText = vi.fn();

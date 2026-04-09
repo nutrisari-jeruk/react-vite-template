@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { OtpForm } from "@/features/auth/components/otp-form";
+import { OtpForm } from "@/features/auth";
 import { ImageWithFallback } from "@/components/ui";
 import { getAccessToken } from "@/features/auth";
 import { ROUTES } from "@/config/constants";

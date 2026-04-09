@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { Card } from "../ui/card";
+import { Card } from ".";
 
 describe("Card", () => {
   it("renders children correctly", () => {

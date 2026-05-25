@@ -6,6 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) and AI agents workin
 
 - **CLAUDE.md** (this file) - Conventions, patterns, and rules
 - **[README.md](./README.md)** - Detailed component examples, usage patterns, and implementation
+- **[docs/](./docs/)** - In-depth reference:
+  - [project-structure.md](./docs/project-structure.md) - Full directory tree, naming conventions, import rules
+  - [components-and-styling.md](./docs/components-and-styling.md) - Component organization, variant patterns, Tailwind usage
+  - [api-layer.md](./docs/api-layer.md) - API client architecture, interceptors, error classes
+  - [error-handling.md](./docs/error-handling.md) - Error boundary patterns, API error classes, useApiError hook
+  - [state-management.md](./docs/state-management.md) - TanStack Query patterns, URL state, form state
+  - [testing.md](./docs/testing.md) - Test setup, patterns, custom render, best practices
+  - [security.md](./docs/security.md) - Token storage, XSS/CSRF, input validation
+  - [project-configuration.md](./docs/project-configuration.md) - TypeScript, Vite, ESLint, Prettier, Vitest config
+  - [linting-and-code-quality.md](./docs/linting-and-code-quality.md) - ESLint rules, import ordering, type-aware linting
+  - [cli-development.md](./docs/cli-development.md) - CLI architecture, commands, registry format, route wiring, publishing
 
 ## SOP Standard
 
@@ -306,13 +317,21 @@ test("renders component", () => {
 - **Guess component props - always verify first**
 - **Upgrade axios without Tech Lead approval** (pinned to 1.14.0 for security)
 
-## Important Notes
+## CLI Development
 
-- **Line endings:** Enforced LF (not CRLF) via `.gitattributes`
-- **UI components:** Lowercase folder names, PascalCase file names and exports
-- **Page components:** PascalCase filenames, default exports
-- **Hooks:** camelCase filenames (`useAuth.ts`)
-- **Tests:** Co-located with source, not in `__tests__/` subdirectories
-- **Environment:** All vars must be in `.env.example` and `src/config/env.ts`
-- **New routes:** Must update router.tsx, constants.ts, and navigation
-- **axios security:** Pinned to `1.14.0` — do not add `^` or `~`
+The `frontier-fe` CLI lives in `packages/cli/` (published to npm). Templates are in `packages/cli/templates/`.
+
+**Source of truth:** `src/` is the development home (dev server, tests, iteration). Templates are the distribution copy.
+
+```bash
+npm run sync:templates          # Copy src/ → packages/cli/templates/
+npm run sync:templates:check    # CI mode — exits non-zero if out of sync
+npm run cli:build               # Build CLI (tsup → packages/cli/dist/)
+```
+
+**After editing template source files:** Run `npm run sync:templates` before committing. Test files are excluded from template copies.
+
+**Before changing conventions,** update both this file and the corresponding [docs/](./docs/) files to keep documentation in sync.
+
+> **See [docs/cli-development.md](./docs/cli-development.md)** for the full CLI reference: commands, registry format, route wiring, dependency resolution, and npm publishing.
+

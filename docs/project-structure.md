@@ -2,7 +2,7 @@
 
 ## Overview
 
-The project follows a feature-based structure that scales well and maintains clear boundaries between different parts of the application.
+The project follows the **Bulletproof React** architecture — a feature-based structure that scales well and maintains clear boundaries between different parts of the application.
 
 ## Root Structure
 
@@ -13,12 +13,10 @@ src/
 ├── config/               # Configuration
 ├── features/             # Feature modules
 ├── hooks/                # Shared hooks
-├── lib/                  # Core utilities
-├── pages/                # Route pages
-├── testing/              # Test utilities
+├── libs/                 # Core utilities
+├── tests/                # Test utilities
 ├── types/                # Shared types
 ├── utils/                # Utility functions
-├── assets/               # Static assets
 ├── main.tsx              # Entry point
 └── index.css             # Global styles
 ```
@@ -33,7 +31,13 @@ Application shell containing providers, router, and the main App component.
 app/
 ├── index.tsx         # Main App component
 ├── provider.tsx      # Centralized providers
-└── router.tsx        # Route configuration
+├── router.tsx        # Route configuration with lazy loading
+└── routes/           # Route components (PascalCase files)
+    ├── Home.tsx
+    ├── About.tsx
+    ├── Components.tsx
+    ├── not-found.tsx
+    └── examples/     # Example pages
 ```
 
 **Purpose**: Bootstrap the application, configure providers, define routes.
@@ -46,24 +50,27 @@ Shared components used across the application.
 components/
 ├── ui/                   # UI primitives
 │   ├── button/
-│   │   ├── button.tsx
+│   │   ├── Button.tsx
+│   │   ├── Button.test.tsx
 │   │   └── index.ts
 │   ├── input/
-│   ├── card/
+│   ├── dialog/
+│   ├── toast/
 │   └── index.ts          # Re-exports all UI components
+├── form/                 # React Hook Form integration
+├── data-table/           # Server-side data table
 ├── layouts/              # Layout components
-│   ├── main-layout.tsx
-│   ├── navbar.tsx
-│   ├── footer.tsx
+│   ├── MainLayout.tsx
+│   ├── Navbar.tsx
+│   ├── Sidebar.tsx
 │   └── index.ts
-├── __tests__/            # Component tests
-├── error-boundary.tsx    # Shared components
-├── combobox.tsx
+├── ErrorBoundary.tsx     # Shared components
 └── index.ts              # Main barrel export
 ```
 
 **Rules**:
-- UI components have no business logic
+- UI component folders use lowercase (`button/`), component files use PascalCase (`Button.tsx`)
+- Tests are co-located (`Button.test.tsx` next to `Button.tsx`)
 - Each UI component has its own folder with barrel export
 - Layouts handle page structure
 
@@ -91,11 +98,14 @@ Self-contained feature modules.
 features/
 └── auth/
     ├── components/       # Feature-specific components
-    │   └── auth-guard.tsx
+    │   ├── LoginForm.tsx
+    │   ├── OtpForm.tsx
+    │   └── ResetPasswordForm.tsx
     ├── hooks/            # Feature-specific hooks
-    │   └── use-auth.ts
+    │   ├── useAuth.ts
+    │   └── useTokenRefresh.ts
+    ├── api/              # Feature API calls
     ├── lib/              # Feature utilities
-    │   └── token-storage.ts
     ├── types/            # Feature types
     │   └── index.ts
     └── index.ts          # Public API
@@ -104,7 +114,7 @@ features/
 **Rules**:
 - Features are self-contained
 - Only export public API through `index.ts`
-- Features can import from shared modules (`@/components`, `@/lib`)
+- Features can import from shared modules (`@/components`, `@/libs`)
 - Features should NOT import from other features
 
 ### `src/hooks/`
@@ -113,19 +123,18 @@ Shared custom React hooks.
 
 ```
 hooks/
-├── use-api-error.ts
-├── use-local-storage.ts
+├── useLocalStorage.ts
+├── useMediaQuery.ts
+├── useBreakpoint.ts
 └── index.ts
 ```
 
-**Naming**: `use-[name].ts` (kebab-case with `use-` prefix)
-
-### `src/lib/`
+### `src/libs/`
 
 Core utilities and third-party integrations.
 
 ```
-lib/
+libs/
 ├── api-client.ts     # Axios instance with interceptors
 ├── api-error.ts      # Custom error classes
 └── index.ts          # Barrel export
@@ -133,38 +142,14 @@ lib/
 
 **Purpose**: Low-level utilities that don't fit in features or hooks.
 
-### `src/pages/`
-
-Route page components.
-
-```
-pages/
-├── __tests__/
-├── home.tsx
-├── about.tsx
-├── components.tsx
-├── auth-example.tsx
-├── error-examples.tsx
-├── form-validation-example.tsx
-└── not-found.tsx
-```
-
-**Rules**:
-- Kebab-case filenames
-- Default exports (for lazy loading)
-- Minimal logic - compose from features and components
-
-### `src/testing/`
+### `src/tests/`
 
 Test utilities and configuration.
 
 ```
-testing/
+tests/
 ├── setup.ts          # Test setup (jest-dom)
 ├── test-utils.tsx    # Custom render with providers
-├── mocks/
-│   ├── handlers.ts   # MSW handlers
-│   └── server.ts     # MSW server
 └── index.ts          # Barrel export
 ```
 
@@ -183,7 +168,7 @@ Pure utility functions.
 
 ```
 utils/
-├── cn.ts             # className utility
+├── cn.ts             # className utility (clsx + tailwind-merge)
 └── index.ts          # Barrel export
 ```
 
@@ -191,11 +176,11 @@ utils/
 
 | Type | Convention | Example |
 |------|------------|---------|
-| Components | kebab-case | `button.tsx`, `auth-guard.tsx` |
-| Hooks | use-[name].ts | `use-auth.ts` |
+| UI components | PascalCase | `Button.tsx`, `LoginForm.tsx` |
+| Page routes | PascalCase | `Home.tsx`, `DataTable.tsx` |
+| Hooks | camelCase with `use` prefix | `useAuth.ts`, `useLocalStorage.ts` |
 | Utilities | kebab-case | `cn.ts`, `api-client.ts` |
-| Tests | [name].test.tsx | `button.test.tsx` |
-| Types | kebab-case or index.ts | `index.ts` |
+| Tests | Co-located, `[Name].test.tsx` | `Button.test.tsx` next to `Button.tsx` |
 
 ## Import Aliases
 
@@ -203,7 +188,7 @@ The project uses `@/` as an alias for `src/`:
 
 ```typescript
 // ✅ Good
-import { Button } from "@/components";
+import { Button } from "@/components/ui";
 import { useAuth } from "@/features/auth";
 import { env } from "@/config";
 

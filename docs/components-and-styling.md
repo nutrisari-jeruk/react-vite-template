@@ -9,7 +9,7 @@ Reusable UI primitives with no business logic.
 ```
 components/ui/
 ├── button/
-│   ├── button.tsx
+│   ├── Button.tsx
 │   └── index.ts
 ├── input/
 ├── select/
@@ -29,8 +29,8 @@ components/ui/
 Each UI component follows this pattern:
 
 ```typescript
-// src/components/ui/button/button.tsx
-import { cn } from "@/utils/cn";
+// src/components/ui/button/Button.tsx
+import { cn } from "@/utils";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "danger";
@@ -81,8 +81,8 @@ export function Button({
 
 ```typescript
 // src/components/ui/button/index.ts
-export { Button } from "./button";
-export type { ButtonProps } from "./button";
+export { Button } from "./Button";
+export type { ButtonProps } from "./Button";
 ```
 
 ## Styling with Tailwind CSS
@@ -92,7 +92,7 @@ export type { ButtonProps } from "./button";
 Use the `cn` utility for conditional class names:
 
 ```typescript
-import { cn } from "@/utils/cn";
+import { cn } from "@/utils";
 
 // Combines clsx and tailwind-merge
 <div className={cn(
@@ -143,10 +143,10 @@ The project is dark mode ready using Tailwind's dark variant:
 ### MainLayout
 
 ```typescript
-// src/components/layouts/main-layout.tsx
+// src/components/layouts/MainLayout.tsx
 import { Outlet } from "react-router-dom";
-import { Navbar } from "./navbar";
-import { Footer } from "./footer";
+import { Navbar } from "./Navbar";
+import { Footer } from "./Footer";
 
 export function MainLayout() {
   return (
@@ -184,7 +184,7 @@ const router = createBrowserRouter([
 Components that integrate with React Hook Form:
 
 ```typescript
-// src/components/form-input.tsx
+// src/components/FormInput.tsx
 import { forwardRef } from "react";
 import { Input } from "./ui/input";
 

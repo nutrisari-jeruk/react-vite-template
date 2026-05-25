@@ -7,7 +7,7 @@ The API layer provides a centralized HTTP client with interceptors, error handli
 ## Architecture
 
 ```
-src/lib/
+src/libs/
 ├── api-client.ts     # Axios instance with interceptors
 ├── api-error.ts      # Custom error classes
 └── index.ts          # Barrel export
@@ -18,7 +18,7 @@ src/lib/
 ### Configuration
 
 ```typescript
-// src/lib/api-client.ts
+// src/libs/api-client.ts
 import axios from "axios";
 import { env } from "@/config/env";
 
@@ -80,7 +80,7 @@ api.interceptors.response.use(
 ### Basic Requests
 
 ```typescript
-import { api } from "@/lib";
+import { api } from "@/libs";
 
 // GET
 const { data } = await api.get("/users");
@@ -99,7 +99,7 @@ await api.delete("/users/1");
 
 ```typescript
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "@/lib";
+import { api } from "@/libs";
 import { QUERY_KEYS } from "@/config";
 
 // Query
@@ -135,13 +135,13 @@ import {
   RateLimitError,     // 429 - Too many requests
   ServerError,        // 500, 502, 504 - Server errors
   ServiceUnavailableError, // 503 - Service unavailable
-} from "@/lib";
+} from "@/libs";
 ```
 
 ### Error Handling
 
 ```typescript
-import { getErrorMessage, getFieldErrors, isRetryableError } from "@/lib";
+import { getErrorMessage, getFieldErrors, isRetryableError } from "@/libs";
 
 try {
   await api.post("/users", data);
@@ -184,7 +184,7 @@ function MyComponent() {
 
   return (
     <form>
-      {isError && <Alert variant="error">{error?.message}</Alert>}
+      {isError && <Alert variant="danger">{error?.message}</Alert>}
 
       <Input error={getFieldError("email")} />
     </form>

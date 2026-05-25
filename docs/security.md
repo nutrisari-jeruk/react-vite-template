@@ -65,7 +65,7 @@ if (expiresIn < 5 * 60 * 1000) {
 On 401 responses, tokens are automatically cleared:
 
 ```typescript
-// src/lib/api-client.ts
+// src/libs/api-client.ts
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -241,7 +241,7 @@ catch (error) {
 The API error handler provides safe messages:
 
 ```typescript
-import { getErrorMessage } from "@/lib";
+import { getErrorMessage } from "@/libs";
 
 // Returns user-friendly message, not raw error
 const message = getErrorMessage(error);

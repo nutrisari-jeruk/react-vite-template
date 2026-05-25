@@ -48,8 +48,8 @@ Imports are automatically sorted and grouped:
 **Example**:
 ```tsx
 import { useState } from "react"; // External - React first
-import { Button } from "@/components/ui/button"; // Internal
-import { useAuth } from "@/features/auth/hooks/useAuth"; // Internal
+import { Button } from "@/components/ui"; // Internal
+import { useAuth } from "@/features/auth"; // Internal
 import { MyComponent } from "./MyComponent"; // Relative
 import type { User } from "@/types"; // Type import
 ```
@@ -118,11 +118,11 @@ The `eslint-plugin-import` is configured with TypeScript resolver to properly ha
 
 ```tsx
 // ✅ Preferred
-import type { ButtonProps } from "@/components/ui/button";
-import { Button } from "@/components/ui/button";
+import type { ButtonProps } from "@/components/ui";
+import { Button } from "@/components/ui";
 
 // ❌ Avoid
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui";
 ```
 
 ### 2. Handle Unused Variables

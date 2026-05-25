@@ -27,7 +27,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: "./src/testing/setup.ts",
+    setupFiles: "./src/tests/setup.ts",
   },
 });
 ```
@@ -35,7 +35,7 @@ export default defineConfig({
 ### Test Setup
 
 ```typescript
-// src/testing/setup.ts
+// src/tests/setup.ts
 import "@testing-library/jest-dom";
 ```
 
@@ -46,7 +46,7 @@ import "@testing-library/jest-dom";
 Use the custom render that includes providers:
 
 ```typescript
-// src/testing/test-utils.tsx
+// src/tests/test-utils.tsx
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -77,7 +77,7 @@ export { customRender as render };
 
 ```typescript
 // Import from testing utilities instead of @testing-library/react
-import { render, screen } from "@/testing";
+import { render, screen } from "@/tests";
 
 test("renders component", () => {
   render(<MyComponent />);
@@ -89,27 +89,24 @@ test("renders component", () => {
 
 ### File Location
 
-Tests are co-located with source files:
+Tests are co-located with their source files (e.g., `Button.test.tsx` next to `Button.tsx`):
 
 ```
 src/
 ├── components/
-│   ├── __tests__/
-│   │   ├── button.test.tsx
-│   │   └── input.test.tsx
 │   └── ui/
 │       └── button/
-│           └── button.tsx
-├── pages/
-│   ├── __tests__/
-│   │   ├── home.test.tsx
-│   │   └── about.test.tsx
-│   └── home.tsx
+│           ├── Button.tsx
+│           └── Button.test.tsx
+├── app/
+│   └── routes/
+│       ├── Home.tsx
+│       └── Home.test.tsx
 ```
 
 ### Naming Convention
 
-- Test files: `[component].test.tsx`
+- Test files: `[Name].test.tsx` (co-located with source)
 - Test descriptions: Describe behavior, not implementation
 
 ## Writing Tests
@@ -117,7 +114,7 @@ src/
 ### Component Tests
 
 ```typescript
-import { render, screen } from "@/testing";
+import { render, screen } from "@/tests";
 import userEvent from "@testing-library/user-event";
 import { Button } from "@/components";
 
@@ -152,7 +149,7 @@ describe("Button", () => {
 ### Form Tests
 
 ```typescript
-import { render, screen, waitFor } from "@/testing";
+import { render, screen, waitFor } from "@/tests";
 import userEvent from "@testing-library/user-event";
 import { ContactForm } from "./contact-form";
 
@@ -223,11 +220,11 @@ describe("useLocalStorage", () => {
 ### Async Tests
 
 ```typescript
-import { render, screen, waitFor } from "@/testing";
+import { render, screen, waitFor } from "@/tests";
 import { UserList } from "./user-list";
-import { api } from "@/lib";
+import { api } from "@/libs";
 
-vi.mock("@/lib", () => ({
+vi.mock("@/libs", () => ({
   api: {
     get: vi.fn(),
   },

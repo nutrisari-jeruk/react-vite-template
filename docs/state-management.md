@@ -10,7 +10,8 @@ This application uses a combination of state management approaches based on the 
 | URL State | React Router |
 | Form State | React Hook Form |
 | UI State | React useState/useReducer |
-| Global UI State | React Context (if needed) |
+| Local UI State | React useState |
+| Global UI State | Zustand (`src/stores/`) |
 
 ## Server State with TanStack Query
 
@@ -60,7 +61,7 @@ export const QUERY_KEYS = {
 
 ```typescript
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib";
+import { api } from "@/libs";
 import { QUERY_KEYS } from "@/config";
 
 // List query
@@ -85,7 +86,7 @@ function useUser(id: string) {
 
 ```typescript
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "@/lib";
+import { api } from "@/libs";
 import { QUERY_KEYS } from "@/config";
 
 function useCreateUser() {

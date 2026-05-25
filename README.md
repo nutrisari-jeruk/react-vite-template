@@ -68,87 +68,33 @@ npm run format:check     # Check code formatting
 npm run test             # Run Vitest tests
 npm run test:ui          # Run Vitest UI
 npm run test:coverage    # Run tests with coverage
+
+# CLI / Templates
+npm run cli:build        # Build the frontier-fe CLI
+npm run sync:templates   # Sync src/ → packages/cli/templates/
+npm run sync:templates:check  # Check templates are in sync (CI)
 ```
 
 ## Project Structure
 
-This project follows the **Bulletproof React** architecture pattern:
+This project follows the **Bulletproof React** architecture pattern with feature-based modular structure.
 
 ```
 src/
-├── app/                  # Application layer
-│   ├── index.tsx        # Main App component
-│   ├── provider.tsx     # Centralized providers (QueryClient, etc.)
-│   ├── router.tsx       # Route configuration with lazy loading
-│   └── routes/          # Route components (PascalCase files)
-│       ├── Home.tsx
-│       ├── About.tsx
-│       ├── Components.tsx
-│       ├── not-found.tsx
-│       └── examples/    # Example pages
-│           ├── auth.tsx
-│           ├── data-table.tsx
-│           ├── error-handling.tsx
-│           └── form-validation.tsx
-├── components/           # Shared components
-│   ├── ui/              # UI primitives (lowercase folders, PascalCase exports)
-│   │   ├── alert/       # Alert component with animations
-│   │   ├── avatar/      # Avatar and AvatarGroup
-│   │   ├── badge/       # Badge component with Tailwind UI styling
-│   │   ├── button/      # Button with variants and sizes
-│   │   ├── card/        # Card container
-│   │   ├── checkbox/    # Checkbox input
-│   │   ├── combobox/    # Searchable dropdown with Base UI
-│   │   ├── dialog/      # Modal dialog with animations
-│   │   ├── dropdown-menu/ # Dropdown menu with Base UI
-│   │   ├── input/       # Text input with validation
-│   │   ├── pagination/  # Pagination component
-│   │   ├── select/      # Select dropdown with Base UI
-│   │   ├── skeleton/    # Loading placeholders
-│   │   ├── switch/      # Segmented control switch
-│   │   ├── table/       # Table components (Table, TableHeader, TableBody, etc.)
-│   │   ├── textarea/    # Multi-line text input
-│   │   ├── toast/       # Global notification system
-│   │   ├── toggle/      # Toggle button
-│   │   └── tooltip/     # Tooltip component with variants and placements
-│   ├── form/            # React Hook Form integration components
-│   ├── data-table/      # Server-side data table with row selection
-│   ├── layouts/         # Layout components (MainLayout, Navbar, Sidebar)
-│   ├── __tests__/       # Component tests
-│   └── *.tsx            # Shared components (ErrorBoundary, etc.)
-├── config/              # Configuration
-│   ├── env.ts           # Environment variables (validated)
-│   ├── constants.ts     # Routes, API endpoints, query keys
-│   └── index.ts         # Barrel export
-├── features/            # Feature modules (self-contained)
-│   └── auth/            # Authentication feature
-│       ├── components/  # Feature-specific components
-│       ├── hooks/       # Feature-specific hooks
-│       ├── lib/         # Feature utilities
-│       ├── types/       # Feature types
-│       └── index.ts     # Public API
-├── hooks/               # Shared custom hooks
-│   ├── use-media-query.ts   # Media query hook (SSR-safe)
-│   ├── use-breakpoint.ts    # Tailwind breakpoint hook
-│   ├── __tests__/           # Hook tests
-│   └── index.ts             # Barrel export
-├── lib/                 # Core utilities
-│   ├── api-client.ts    # Axios instance with interceptors
-│   ├── api-error.ts     # Custom error classes
-│   └── index.ts         # Barrel export
-├── testing/             # Test utilities
-│   ├── setup.ts         # Test configuration
-│   ├── test-utils.tsx   # Custom render with providers
-│   └── mocks/           # MSW handlers (future)
-├── types/               # Shared TypeScript types
-├── utils/               # Utility functions
-├── main.tsx             # Entry point
-└── index.css            # Global styles + Tailwind directives + custom animations
+├── app/             # Application layer (router, providers, routes)
+├── components/      # Shared components (ui/, form/, data-table/, layouts/)
+├── config/          # Environment variables, constants
+├── features/        # Self-contained feature modules
+├── hooks/           # Shared custom hooks
+├── lib/             # Core utilities (api-client, api-error)
+├── testing/         # Test utilities and setup
+├── types/           # Shared TypeScript types
+├── utils/           # Utility functions
+├── main.tsx         # Entry point
+└── index.css        # Global styles
 ```
 
-> **Note:** UI components use lowercase folder/file names (e.g., `button/button.tsx`) but export PascalCase component names (`export function Button() {}`). This is a common pattern that avoids case-sensitivity issues while maintaining React conventions.
-
-> **For AI Assistants:** See [AGENTS.md](./AGENTS.md) for detailed conventions and guidelines.
+> **See [docs/project-structure.md](./docs/project-structure.md)** for the full directory tree, naming conventions, and import rules.
 
 ## Key Features
 
@@ -344,6 +290,8 @@ All components include:
 - ✅ Respects `prefers-reduced-motion`
 - ✅ Comprehensive test coverage
 
+> **See [docs/components-and-styling.md](./docs/components-and-styling.md)** for component organization, variant patterns, and styling conventions.
+
 ### DataTable Component
 
 The `DataTable` component provides a full-featured data table with server-side pagination, sorting, filtering, and row selection capabilities.
@@ -503,6 +451,8 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 - DevTools for debugging
 - Configured with sensible defaults
 
+> **See [docs/state-management.md](./docs/state-management.md)** for queries, mutations, optimistic updates, and URL/form state patterns.
+
 ### Axios
 - Centralized HTTP client
 - Request/response interceptors
@@ -582,6 +532,8 @@ npm run test:coverage   # Run with coverage report
 - Husky git hooks
 - Lint-staged for automated checks
 
+> **See [docs/linting-and-code-quality.md](./docs/linting-and-code-quality.md)** for ESLint rules, import ordering, and type-aware linting.
+
 ### Authentication
 - Secure token storage with cookies/localStorage
 - Environment-based storage strategy
@@ -643,6 +595,8 @@ const response = await api.put('/users/1', { name: 'Jane' })
 // DELETE request
 const response = await api.delete('/users/1')
 ```
+
+> **See [docs/api-layer.md](./docs/api-layer.md)** for the full API client architecture, interceptors, and error classes.
 
 ## API Error Handling
 
@@ -819,6 +773,8 @@ function App() {
   }, [shouldRefresh, refresh])
 }
 ```
+
+> **See [docs/security.md](./docs/security.md)** for token storage, XSS/CSRF prevention, input validation, and dependency security.
 
 ### Dialog Component
 
@@ -1047,6 +1003,8 @@ Navigate to `/form-validation` to see a comprehensive form validation example wi
 - Required terms checkbox
 - Real-time validation on blur
 - User-friendly error messages
+
+> **See [docs/error-handling.md](./docs/error-handling.md)** for error boundary patterns, API error classes, and the useApiError hook.
 
 ## Error Handling
 
@@ -1309,6 +1267,8 @@ if (env.maintenanceMode) {
 }
 ```
 
+> **See [docs/project-configuration.md](./docs/project-configuration.md)** for TypeScript, Vite, ESLint, Prettier, Vitest, and Tailwind configuration details.
+
 ## Git Configuration
 
 ### Line Endings
@@ -1351,6 +1311,19 @@ Pre-commit hooks are configured to run lint-staged:
 - ESLint with auto-fix on TypeScript files
 - Prettier formatting on all files
 
+## frontier-fe CLI
+
+This repo doubles as the source for the `frontier-fe` CLI — a shadcn-style project scaffolder published to npm. It lets you bootstrap a new SOP-compliant project and add components on demand.
+
+```bash
+npx frontier-fe init my-app          # Create a new project
+npx frontier-fe add button dialog    # Add components
+npx frontier-fe add --all --type ui  # Add all items of a type
+npx frontier-fe list                 # List available items
+```
+
+> **See [docs/cli-development.md](./docs/cli-development.md)** for the full CLI reference: commands, registry format, route wiring, sync workflow, and npm publishing.
+
 ## Development
 
 ### Adding a New Route
@@ -1381,15 +1354,15 @@ const MyPage = lazy(() => import("@/app/routes/MyPage"))
 ### Creating a UI Component
 
 1. Create folder `src/components/ui/[name]/` (lowercase)
-2. Create component file `[name].tsx` (lowercase)
+2. Create component file `[Name].tsx` (PascalCase)
 3. Export component as PascalCase: `export function ComponentName() {}`
 4. Create barrel export `index.ts`
 5. Export from `src/components/ui/index.ts`
-6. Create tests in `src/components/__tests__/`
+6. Add co-located test `[Name].test.tsx`
 
 **Example:**
 ```typescript
-// src/components/ui/my-component/my-component.tsx
+// src/components/ui/my-component/MyComponent.tsx
 export interface MyComponentProps {
   variant?: 'primary' | 'secondary'
 }
@@ -1399,7 +1372,7 @@ export function MyComponent({ variant = 'primary' }: MyComponentProps) {
 }
 
 // src/components/ui/my-component/index.ts
-export { MyComponent } from './my-component'
+export { MyComponent } from './MyComponent'
 
 // src/components/ui/index.ts
 export { MyComponent } from "./my-component"
@@ -1419,7 +1392,7 @@ export { MyComponent } from "./my-component"
 3. Define query keys in `src/config/constants.ts`
 4. Type your API responses in `src/types/`
 
-> **For detailed conventions:** See [AGENTS.md](./AGENTS.md)
+> **For detailed conventions:** See [CLAUDE.md](./CLAUDE.md) for AI assistants or [docs/project-structure.md](./docs/project-structure.md) for naming conventions and import rules.
 
 ## Build Optimization
 

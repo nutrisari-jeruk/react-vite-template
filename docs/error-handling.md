@@ -111,7 +111,7 @@ import {
   ValidationError,
   UnauthorizedError,
   isRetryableError,
-} from "@/lib";
+} from "@/libs";
 
 try {
   await api.post("/users", data);
@@ -182,7 +182,7 @@ function MyForm() {
   return (
     <form onSubmit={handleSubmit}>
       {isError && (
-        <Alert variant="error">{error?.message}</Alert>
+        <Alert variant="danger">{error?.message}</Alert>
       )}
 
       <Input
@@ -204,7 +204,7 @@ function MyForm() {
 ```typescript
 import { useForm } from "react-hook-form";
 import { useApiError } from "@/hooks";
-import { getFieldErrors } from "@/lib";
+import { getFieldErrors } from "@/libs";
 
 function RegistrationForm() {
   const { register, handleSubmit, setError, formState } = useForm();
@@ -228,7 +228,7 @@ function RegistrationForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {error && <Alert variant="error">{error.message}</Alert>}
+      {error && <Alert variant="danger">{error.message}</Alert>}
 
       <input {...register("email")} />
       {formState.errors.email && (
@@ -246,7 +246,7 @@ function RegistrationForm() {
 Get user-friendly error message:
 
 ```typescript
-import { getErrorMessage } from "@/lib";
+import { getErrorMessage } from "@/libs";
 
 try {
   await api.post("/action");
@@ -263,7 +263,7 @@ try {
 Extract field errors from API response:
 
 ```typescript
-import { getFieldErrors } from "@/lib";
+import { getFieldErrors } from "@/libs";
 
 try {
   await api.post("/users", data);
@@ -278,7 +278,7 @@ try {
 Check if error can be retried:
 
 ```typescript
-import { isRetryableError } from "@/lib";
+import { isRetryableError } from "@/libs";
 
 // Retryable: NetworkError, TimeoutError, RateLimitError, ServerError
 // Not retryable: ValidationError, UnauthorizedError, ForbiddenError, NotFoundError
@@ -300,7 +300,7 @@ function ErrorDisplay({ error }) {
 
   return (
     <Alert
-      variant="error"
+      variant="danger"
       title="Error"
       dismissible
       onDismiss={() => clearError()}

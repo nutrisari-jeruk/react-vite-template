@@ -37,8 +37,8 @@ src/
 ├── config/           # Configuration (env, constants)
 ├── features/         # Feature modules
 ├── hooks/            # Shared hooks
-├── lib/              # Core utilities (api, errors)
-├── testing/          # Test utilities
+├── libs/             # Core utilities (api, errors)
+├── tests/            # Test utilities
 ├── types/            # Shared types
 └── utils/            # Utility functions
 ```
@@ -63,7 +63,7 @@ Route configuration with lazy-loaded pages.
 All route components are lazy-loaded for better initial bundle size:
 
 ```typescript
-const Home = lazy(() => import("@/app/routes/home"));
+const Home = lazy(() => import("@/app/routes/Home"));
 ```
 
 ### Barrel Exports

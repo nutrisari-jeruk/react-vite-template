@@ -9,5 +9,5 @@ export {
   DropdownMenuSeparator,
   DropdownMenuLabel,
   DropdownMenuGroup,
-} from "./dropdown-menu";
-export { default } from "./dropdown-menu";
+} from "./DropdownMenu";
+export { default } from "./DropdownMenu";

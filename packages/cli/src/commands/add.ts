@@ -1,16 +1,26 @@
 import { execSync } from "child_process";
+import { existsSync } from "fs";
 import pc from "picocolors";
 import prompts from "prompts";
 import type { RegistryItem } from "../types.js";
 import { logger } from "../utils/logger.js";
 import { readConfig, markInstalled, configExists } from "../utils/config.js";
-import { getItem, resolveDependencies, getItemsByType } from "../utils/registry.js";
-import { copyItemFiles, updateBarrelExport, collectNpmDeps } from "../utils/files.js";
+import {
+  getItem,
+  resolveDependencies,
+  getItemsByType,
+} from "../utils/registry.js";
+import {
+  copyItemFiles,
+  updateBarrelExport,
+  collectNpmDeps,
+} from "../utils/files.js";
 import { wireRoute } from "../utils/route-wiring.js";
 
 interface AddOptions {
   cwd: string;
   all?: boolean;
+  type?: string;
   yes?: boolean;
   overwrite?: boolean;
 }
@@ -28,9 +38,17 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
     process.exit(1);
   }
 
-  // If --all flag, expand names to all items of that type
-  if (options.all && names.length === 1) {
-    const type = names[0];
+  // If --all flag, expand to all items (optionally filtered by --type)
+  if (options.all) {
+    const type = options.type || names[0];
+    if (!type) {
+      logger.error(
+        "The --all flag requires a type. Use " +
+          pc.cyan("--type <type>") +
+          " or provide the type as an argument."
+      );
+      process.exit(1);
+    }
     const items = await getItemsByType(type);
     if (items.length === 0) {
       logger.error(`No items found for type "${type}".`);
@@ -38,6 +56,17 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
     }
     names = items.map((i) => i.name);
     logger.info(`Adding all ${type} items (${names.length} items)`);
+  }
+
+  if (names.length === 0) {
+    logger.error(
+      "No items specified. Use " +
+        pc.cyan("frontier-fe add <items...>") +
+        " or " +
+        pc.cyan("frontier-fe add --all --type <type>") +
+        "."
+    );
+    process.exit(1);
   }
 
   // Validate all requested items exist
@@ -174,13 +203,8 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
 }
 
 function detectPackageManager(cwd: string): "npm" | "yarn" | "pnpm" {
-  try {
-    const fs = require("fs");
-    if (fs.existsSync(`${cwd}/pnpm-lock.yaml`)) return "pnpm";
-    if (fs.existsSync(`${cwd}/yarn.lock`)) return "yarn";
-  } catch {
-    // ignore
-  }
+  if (existsSync(`${cwd}/pnpm-lock.yaml`)) return "pnpm";
+  if (existsSync(`${cwd}/yarn.lock`)) return "yarn";
   return "npm";
 }
 

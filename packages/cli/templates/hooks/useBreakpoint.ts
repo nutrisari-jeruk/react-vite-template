@@ -21,7 +21,7 @@
  * ```
  */
 
-import { useMediaQuery } from "./use-media-query";
+import { useMediaQuery } from "./useMediaQuery";
 
 export type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 

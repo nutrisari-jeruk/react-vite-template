@@ -4,5 +4,5 @@ export {
   DialogContent,
   DialogFooter,
   DialogClose,
-} from "./dialog";
-export type { default } from "./dialog";
+} from "./Dialog";
+export type { default } from "./Dialog";

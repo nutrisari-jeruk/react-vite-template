@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, Alert, Link } from "@/components/ui";
-import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
+import { getFieldErrors, getErrorMessage } from "@/libs/apiError";
 import { resetPassword } from "@/features/auth";
 import { ROUTES } from "@/config/constants";
 import { z } from "zod";

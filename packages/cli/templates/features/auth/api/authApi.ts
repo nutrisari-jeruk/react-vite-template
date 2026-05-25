@@ -2,10 +2,10 @@
  * Auth API functions for react-query-auth integration
  */
 
-import { api, type ApiResponse } from "@/lib/api-client";
-import { isAxiosError } from "@/lib/api-error";
+import { api, type ApiResponse } from "@/libs/apiClient";
+import { isAxiosError } from "@/libs/apiError";
 import { API_ENDPOINTS } from "@/config/constants";
-import { getAccessToken, clearAuthTokens } from "../lib/token-storage";
+import { getAccessToken, clearAuthTokens } from "../lib/tokenStorage";
 import type { User } from "../types/user";
 
 /**

@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import { Alert, Button, Input } from "@/components";
 import { cn } from "@/utils/cn";
-import { useRegister, registerInputSchema } from "../lib/auth-provider";
+import { useRegister, registerInputSchema } from "../lib/AuthProvider";
 
 interface RegisterFormProps {
   onSuccess?: () => void;

@@ -11,7 +11,9 @@ import { getTemplatesDir } from "../utils/registry.js";
 
 interface InitOptions {
   cwd: string;
+  projectName?: string;
   yes?: boolean;
+  pm?: "npm" | "yarn" | "pnpm";
 }
 
 const BASE_FILES = [
@@ -155,8 +157,8 @@ export async function init(options: InitOptions): Promise<void> {
   logger.break();
 
   // Interactive prompts
-  let projectName = path.basename(cwd);
-  if (!options.yes) {
+  let projectName = options.projectName || path.basename(cwd);
+  if (!options.yes && !options.projectName) {
     const response = await prompts([
       {
         type: "text",
@@ -167,6 +169,9 @@ export async function init(options: InitOptions): Promise<void> {
     ]);
     projectName = response.name || projectName;
   }
+
+  // Determine package manager
+  const pm = options.pm || detectPackageManager(cwd);
 
   // Create config
   const config: FrontierConfig = {
@@ -234,15 +239,15 @@ export async function init(options: InitOptions): Promise<void> {
     });
 
     if (install) {
-      await installDeps(cwd);
+      await installDeps(cwd, pm);
     } else {
       logger.break();
       logger.info("Skip dependency installation. Run manually:");
-      logger.dim(`  npm install ${BASE_NPM_DEPS.join(" ")}`);
-      logger.dim(`  npm install -D ${BASE_DEV_DEPS.join(" ")}`);
+      logger.dim(`  ${pm} install ${BASE_NPM_DEPS.join(" ")}`);
+      logger.dim(`  ${pm} install -D ${BASE_DEV_DEPS.join(" ")}`);
     }
   } else {
-    await installDeps(cwd);
+    await installDeps(cwd, pm);
   }
 
   // Done
@@ -251,7 +256,9 @@ export async function init(options: InitOptions): Promise<void> {
   logger.break();
   logger.title("Next steps:");
   logger.item(`cd ${projectName}`);
-  logger.item("frontier-fe add button input card  " + pc.dim("# add UI components"));
+  logger.item(
+    "frontier-fe add button input card  " + pc.dim("# add UI components")
+  );
   logger.item(
     "frontier-fe add auth               " + pc.dim("# add auth feature")
   );
@@ -261,20 +268,42 @@ export async function init(options: InitOptions): Promise<void> {
   logger.break();
 }
 
-async function installDeps(cwd: string): Promise<void> {
+async function installDeps(
+  cwd: string,
+  pm: "npm" | "yarn" | "pnpm"
+): Promise<void> {
   logger.info("Installing dependencies...");
   try {
-    execSync(`npm install ${BASE_NPM_DEPS.join(" ")}`, {
+    const installCmd =
+      pm === "yarn" ? "yarn add" : pm === "pnpm" ? "pnpm add" : "npm install";
+    const installDevCmd =
+      pm === "yarn"
+        ? "yarn add -D"
+        : pm === "pnpm"
+          ? "pnpm add -D"
+          : "npm install -D";
+
+    execSync(`${installCmd} ${BASE_NPM_DEPS.join(" ")}`, {
       cwd,
       stdio: "pipe",
     });
-    execSync(`npm install -D ${BASE_DEV_DEPS.join(" ")}`, {
+    execSync(`${installDevCmd} ${BASE_DEV_DEPS.join(" ")}`, {
       cwd,
       stdio: "pipe",
     });
     logger.success("Dependencies installed.");
   } catch {
     logger.warn("Failed to install dependencies automatically.");
-    logger.dim("Run `npm install` manually.");
+    logger.dim(`Run \`${pm} install\` manually.`);
   }
+}
+
+function detectPackageManager(cwd: string): "npm" | "yarn" | "pnpm" {
+  try {
+    if (fs.pathExistsSync(`${cwd}/pnpm-lock.yaml`)) return "pnpm";
+    if (fs.pathExistsSync(`${cwd}/yarn.lock`)) return "yarn";
+  } catch {
+    // ignore
+  }
+  return "npm";
 }

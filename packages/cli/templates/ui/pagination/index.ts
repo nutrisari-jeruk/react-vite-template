@@ -1,2 +1,2 @@
-export { Pagination } from "./pagination";
-export { default } from "./pagination";
+export { Pagination } from "./Pagination";
+export { default } from "./Pagination";

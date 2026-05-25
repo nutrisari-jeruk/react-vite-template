@@ -3,10 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, Link, Alert } from "@/components/ui";
-import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
-import { loginInputSchema } from "../lib/auth-provider";
-import { loginWithEmailAndPassword } from "../api/auth-api";
-import { setAccessToken } from "../lib/token-storage";
+import { getFieldErrors, getErrorMessage } from "@/libs/apiError";
+import { loginInputSchema } from "../lib/AuthProvider";
+import { loginWithEmailAndPassword } from "../api/authApi";
+import { setAccessToken } from "../lib/tokenStorage";
 import { ROUTES } from "@/config/constants";
 
 const ALERT_TIMEOUT_MS = 3000;

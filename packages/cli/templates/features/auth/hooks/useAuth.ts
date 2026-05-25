@@ -13,7 +13,7 @@ import {
   isAuthenticated as checkIsAuthenticated,
   getTimeUntilExpiration,
   isTokenExpired as checkIsTokenExpired,
-} from "../lib/token-storage";
+} from "../lib/tokenStorage";
 
 interface UseAuthResult {
   isAuthenticated: boolean;

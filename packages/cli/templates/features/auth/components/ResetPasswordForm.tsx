@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Button, Input, Alert, Link } from "@/components/ui";
-import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
+import { getFieldErrors, getErrorMessage } from "@/libs/apiError";
 import { setNewPassword } from "@/features/auth";
 import { ROUTES } from "@/config/constants";
 import { cn } from "@/utils/cn";

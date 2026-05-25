@@ -12,9 +12,9 @@ import {
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
   logout,
-} from "../api/auth-api";
+} from "../api/authApi";
 import type { User } from "../types/user";
-import { setAccessToken, clearAuthTokens } from "../lib/token-storage";
+import { setAccessToken, clearAuthTokens } from "../lib/tokenStorage";
 
 // Validation schemas
 export const loginInputSchema = z.object({

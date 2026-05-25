@@ -1,1 +1,2 @@
-// Utils barrel export\nexport { cn } from "./cn";
+export { cn } from "./cn";
+export * from "./metadata";

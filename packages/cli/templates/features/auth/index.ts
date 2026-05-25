@@ -9,11 +9,11 @@ export {
   AuthLoader,
   loginInputSchema,
   registerInputSchema,
-} from "./lib/auth-provider";
-export type { LoginInput, RegisterInput } from "./lib/auth-provider";
+} from "./lib/AuthProvider";
+export type { LoginInput, RegisterInput } from "./lib/AuthProvider";
 
 // Auth components
-export { AuthGuard } from "./components/auth-guard";
+export { AuthGuard } from "./components/AuthGuard";
 export { LoginForm, RegisterForm, ResetPasswordForm } from "./components";
 
 // Auth API
@@ -25,7 +25,7 @@ export {
   refreshToken,
   resetPassword,
   setNewPassword,
-} from "./api/auth-api";
+} from "./api/authApi";
 export type {
   AuthResponse,
   LoginInput as ApiLoginInput,
@@ -34,7 +34,7 @@ export type {
   ResetPasswordResponse,
   SetNewPasswordInput,
   SetNewPasswordResponse,
-} from "./api/auth-api";
+} from "./api/authApi";
 
 // Token storage utilities (kept for backward compatibility)
 export {
@@ -50,10 +50,10 @@ export {
   isTokenExpired,
   getTimeUntilExpiration,
   tokenStorage,
-} from "./lib/token-storage";
+} from "./lib/tokenStorage";
 
 // Legacy hooks (deprecated - use useUser, useLogin, useLogout, useRegister instead)
-export { useAuth, useTokenRefresh } from "./hooks/use-auth";
+export { useAuth, useTokenRefresh } from "./hooks/useAuth";
 
 // Types
 export type {

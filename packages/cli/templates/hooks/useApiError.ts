@@ -10,7 +10,7 @@ import {
   getErrorMessage,
   getFieldErrors,
   isRetryableError,
-} from "@/lib/api-error";
+} from "@/libs/apiError";
 
 interface UseApiErrorResult {
   error: ApiError | Error | null;

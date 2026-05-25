@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { AuthGuard } from "@/features/auth";
-import { Navbar } from "./navbar";
-import { Footer } from "./footer";
+import { Navbar } from "./Navbar";
+import { Footer } from "./Footer";
 
 /**
  * AuthenticatedLayout

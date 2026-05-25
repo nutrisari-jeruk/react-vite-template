@@ -11,8 +11,8 @@
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useUser } from "../lib/auth-provider";
-import { getAccessToken } from "../lib/token-storage";
+import { useUser } from "../lib/AuthProvider";
+import { getAccessToken } from "../lib/tokenStorage";
 
 interface AuthGuardProps {
   children: ReactNode;

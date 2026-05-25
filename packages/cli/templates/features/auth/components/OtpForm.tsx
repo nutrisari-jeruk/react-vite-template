@@ -3,15 +3,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Input } from "@/components/ui";
-import { getFieldErrors, getErrorMessage } from "@/lib/api-error";
+import { getFieldErrors, getErrorMessage } from "@/libs/apiError";
 import {
   verifyOtp,
   resendOtp,
   resendResetPasswordOtp,
   validateResetPasswordOtp,
-} from "../api/auth-api";
+} from "../api/authApi";
 import { useCountdown } from "@/hooks";
-import { setAccessToken } from "../lib/token-storage";
+import { setAccessToken } from "../lib/tokenStorage";
 import { QUERY_KEYS } from "@/config/constants";
 import { z } from "zod";
 

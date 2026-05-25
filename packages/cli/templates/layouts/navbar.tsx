@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/utils/cn";
-import { useUser, useLogout } from "@/features/auth/lib/auth-provider";
+import { useUser, useLogout } from "@/features/auth/lib/AuthProvider";
 
 interface MenuItem {
   path: string;

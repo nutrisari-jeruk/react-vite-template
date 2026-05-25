@@ -1,2 +1,2 @@
-export { Skeleton, SkeletonText, SkeletonCard } from "./skeleton";
-export { default } from "./skeleton";
+export { Skeleton, SkeletonText, SkeletonCard } from "./Skeleton";
+export { default } from "./Skeleton";

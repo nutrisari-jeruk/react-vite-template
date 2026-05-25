@@ -29,6 +29,29 @@ const BASE_FILES = [
   { source: "base/.gitattributes", target: ".gitattributes" },
   { source: "base/.editorconfig", target: ".editorconfig" },
   { source: "base/.env.example", target: ".env.example" },
+  // Claude Code automation
+  { source: "base/.mcp.json", target: ".mcp.json" },
+  { source: "base/.claude/settings.json", target: ".claude/settings.json" },
+  {
+    source: "base/.claude/agents/code-reviewer.md",
+    target: ".claude/agents/code-reviewer.md",
+  },
+  {
+    source: "base/.claude/skills/new-component/SKILL.md",
+    target: ".claude/skills/new-component/SKILL.md",
+  },
+  {
+    source: "base/.claude/skills/new-page/SKILL.md",
+    target: ".claude/skills/new-page/SKILL.md",
+  },
+  {
+    source: "base/.claude/skills/run-tests/SKILL.md",
+    target: ".claude/skills/run-tests/SKILL.md",
+  },
+  {
+    source: "base/.claude/skills/security-review/SKILL.md",
+    target: ".claude/skills/security-review/SKILL.md",
+  },
   { source: "base/index.html", target: "index.html" },
   // Core source files
   { source: "base/src/main.tsx", target: "src/main.tsx" },

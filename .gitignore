@@ -28,5 +28,4 @@ coverage
 
 .env
 
-.cursor
-.claude
+.claude/settings.local.json

@@ -156,7 +156,12 @@ const BASE_DEV_DEPS = [
 ];
 
 export async function init(options: InitOptions): Promise<void> {
-  const cwd = options.cwd;
+  // If project name given, create and use a subdirectory
+  let cwd = options.cwd;
+  if (options.projectName) {
+    cwd = path.resolve(cwd, options.projectName);
+    await fs.ensureDir(cwd);
+  }
 
   // Check if already initialized
   if (await configExists(cwd)) {

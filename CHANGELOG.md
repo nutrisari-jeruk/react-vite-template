@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.0] - 2026-05-26
+
+### Initial Release
+
+Initial tagged release of the frontier-fe CLI and template project.
+
+### ✨ Added
+
+- **CLI**: shadcn-style scaffolding with blocks, sections, skills, and PM detection
+- **Auth**: full authentication system (login, register, forgot/reset password, OTP verification) with MSW mocking
+- **Components**: Button, Input, Select, Card, Alert, Avatar, AvatarGroup, Tooltip, DropdownMenu, DataTable (client + server-side), Dialog, Toast, Skeleton, Pagination, Switch, Combobox, Link, Form system with React Hook Form + Zod
+- **Pages**: Home, About, Components, Login, Register, NotFound, form validation examples, error examples
+- **Infrastructure**: Docker support, Vite environment configs, API error handling, path aliases
+- **Testing**: Vitest setup with co-located tests, 70%+ coverage target, MSW integration
+
+---
+
 ## [2.0.0] - 2026-01-24
 
 ### 🎉 Major Release - Comprehensive UI System Overhaul
@@ -228,5 +245,6 @@ import {
 
 ---
 
-[2.0.0]: https://github.com/yourusername/react-vite-template/compare/v1.0.0...v2.0.0
-[1.0.0]: https://github.com/yourusername/react-vite-template/releases/tag/v1.0.0
+[0.1.0]: https://github.com/rsudsda/frontier-fe-template/releases/tag/frontier-fe@0.1.0
+[2.0.0]: https://github.com/rsudsda/frontier-fe-template/compare/frontier-fe@0.1.0...v2.0.0
+[1.0.0]: https://github.com/rsudsda/frontier-fe-template/releases/tag/v1.0.0

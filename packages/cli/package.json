@@ -1,6 +1,6 @@
 {
   "name": "frontier-fe",
-  "version": "0.2.1",
+  "version": "0.1.0",
   "description": "shadcn-style CLI for scaffolding SOP-compliant React + Vite projects. Add UI components, features, hooks, layouts, and pages on demand.",
   "type": "module",
   "bin": {

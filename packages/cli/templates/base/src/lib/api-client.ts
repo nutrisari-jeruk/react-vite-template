@@ -1,6 +1,5 @@
 import axios from "axios";
 import { env } from "@/config/env";
-import { API_ENDPOINTS } from "@/config/constants";
 import {
   isAxiosError,
   NetworkError,
@@ -14,12 +13,6 @@ import {
   ServerError,
   ServiceUnavailableError,
 } from "./api-error";
-import {
-  getAccessToken,
-  getRefreshToken,
-  setAccessToken,
-  clearAuthTokens,
-} from "@/features/auth";
 
 export interface ApiResponse<T = unknown> {
   success: boolean;
@@ -45,22 +38,9 @@ export const api = axios.create({
   timeout: env.apiTimeout,
 });
 
-// Track ongoing token refresh to prevent multiple concurrent refresh attempts
-let refreshPromise: Promise<{
-  accessToken: string;
-  refreshToken: string;
-}> | null = null;
-
-// Type extension to track retry attempts on requests
-declare module "axios" {
-  interface InternalAxiosRequestConfig {
-    _retry?: boolean;
-  }
-}
-
 api.interceptors.request.use(
   (config) => {
-    const token = getAccessToken();
+    const token = localStorage.getItem("auth_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -105,80 +85,16 @@ api.interceptors.response.use(
           )
         );
 
-      case 401: {
-        // Attempt token refresh before clearing session
-        const originalRequest = error.config as typeof error.config & {
-          _retry?: boolean;
-        };
-
-        // Check if this is an auth endpoint that should handle redirects itself
-        const isAuthEndpoint =
-          originalRequest.url?.includes(API_ENDPOINTS.AUTH.ME) ||
-          originalRequest.url?.includes("/auth/me");
-
-        if (!originalRequest._retry) {
-          originalRequest._retry = true;
-
-          const refreshTokenValue = getRefreshToken();
-          if (refreshTokenValue) {
-            // Use existing refresh promise if refresh is already in progress
-            if (!refreshPromise) {
-              refreshPromise = api
-                .post<
-                  ApiResponse<{ accessToken: string; refreshToken: string }>
-                >(API_ENDPOINTS.AUTH.REFRESH, {
-                  refreshToken: refreshTokenValue,
-                })
-                .then((response) => {
-                  refreshPromise = null;
-                  if (!response.data.data) {
-                    throw new Error("Token refresh failed");
-                  }
-                  return response.data.data;
-                })
-                .catch((err) => {
-                  refreshPromise = null;
-                  throw err;
-                });
-            }
-
-            // Return the refresh promise chain
-            return refreshPromise
-              .then((refreshedTokens) => {
-                setAccessToken(refreshedTokens.accessToken);
-                // Retry original request with new token
-                originalRequest.headers.Authorization = `Bearer ${refreshedTokens.accessToken}`;
-                return api(originalRequest);
-              })
-              .catch(() => {
-                // Refresh failed - clear tokens
-                clearAuthTokens();
-                // Only redirect if not an auth endpoint (let auth flow handle it)
-                if (!isAuthEndpoint && window.location.pathname !== "/login") {
-                  window.location.href = "/login";
-                }
-                throw new UnauthorizedError(
-                  responseData?.message ||
-                    "Session expired. Please log in again."
-                );
-              });
-          }
-        }
-
-        // Clear tokens
-        clearAuthTokens();
-
-        // Only redirect if not an auth endpoint (let auth flow handle redirects)
-        if (!isAuthEndpoint && window.location.pathname !== "/login") {
+      case 401:
+        localStorage.removeItem("auth_token");
+        if (window.location.pathname !== "/login") {
           window.location.href = "/login";
         }
-
         return Promise.reject(
           new UnauthorizedError(
             responseData?.message || "Session expired. Please log in again."
           )
         );
-      }
 
       case 403:
         return Promise.reject(

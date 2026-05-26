@@ -4,7 +4,6 @@ import {
   RouterProvider,
   useLocation,
 } from "react-router-dom";
-import type { ReactNode } from "react";
 import { setPageMetadata, setCanonicalUrl } from "@/utils";
 import { getRouteMetadata } from "@/config/routes-metadata";
 
@@ -23,31 +22,6 @@ function LazyPage({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<PageLoader />}>{children}</Suspense>;
 }
 
-/**
- * ProtectedRoute - Redirects to login if no auth token exists
- */
-function ProtectedRoute({ children }: { children: ReactNode }) {
-  // NOTE: Uncomment when auth feature is added:
-  // import { getAccessToken } from "@/features/auth";
-  // const hasToken = !!getAccessToken();
-  const hasToken = true;
-
-  useEffect(() => {
-    if (!hasToken) {
-      window.location.href = "/login";
-    }
-  }, [hasToken]);
-
-  if (!hasToken) {
-    return null;
-  }
-
-  return <>{children}</>;
-}
-
-/**
- * Updates page metadata based on the current route.
- */
 function MetadataUpdater() {
   const location = useLocation();
 

@@ -110,50 +110,50 @@ const BASE_FILES = [
   },
 ];
 
-const BASE_NPM_DEPS = [
-  "@tanstack/react-query",
-  "axios",
-  "clsx",
-  "react",
-  "react-dom",
-  "react-router-dom",
-  "tailwind-merge",
-];
+const BASE_NPM_DEPS: Record<string, string> = {
+  "@tanstack/react-query": "^5.100.14",
+  axios: "1.14.0",
+  clsx: "^2.1.1",
+  react: "^19.2.6",
+  "react-dom": "^19.2.6",
+  "react-router-dom": "^7.15.1",
+  "tailwind-merge": "^3.6.0",
+};
 
-const BASE_DEV_DEPS = [
-  "@eslint/js",
-  "@tailwindcss/postcss",
-  "@testing-library/jest-dom",
-  "@testing-library/react",
-  "@testing-library/user-event",
-  "@types/node",
-  "@types/react",
-  "@types/react-dom",
-  "@vitejs/plugin-react-swc",
-  "autoprefixer",
-  "eslint",
-  "eslint-config-prettier",
-  "eslint-import-resolver-typescript",
-  "eslint-plugin-import",
-  "eslint-plugin-jsx-a11y",
-  "eslint-plugin-prettier",
-  "eslint-plugin-react",
-  "eslint-plugin-react-hooks",
-  "eslint-plugin-react-refresh",
-  "globals",
-  "husky",
-  "jsdom",
-  "lint-staged",
-  "postcss",
-  "prettier",
-  "prettier-plugin-tailwindcss",
-  "tailwindcss",
-  "terser",
-  "typescript",
-  "typescript-eslint",
-  "vite",
-  "vitest",
-];
+const BASE_DEV_DEPS: Record<string, string> = {
+  "@eslint/js": "^9.39.4",
+  "@tailwindcss/postcss": "^4.3.0",
+  "@testing-library/jest-dom": "^6.9.1",
+  "@testing-library/react": "^16.3.2",
+  "@testing-library/user-event": "^14.6.1",
+  "@types/node": "^24.12.4",
+  "@types/react": "^19.2.15",
+  "@types/react-dom": "^19.2.3",
+  "@vitejs/plugin-react-swc": "^4.3.1",
+  autoprefixer: "^10.5.0",
+  eslint: "^9.39.4",
+  "eslint-config-prettier": "^10.1.8",
+  "eslint-import-resolver-typescript": "^4.4.4",
+  "eslint-plugin-import": "^2.32.0",
+  "eslint-plugin-jsx-a11y": "^6.10.2",
+  "eslint-plugin-prettier": "^5.5.5",
+  "eslint-plugin-react": "^7.37.5",
+  "eslint-plugin-react-hooks": "^7.1.1",
+  "eslint-plugin-react-refresh": "^0.4.26",
+  globals: "^16.5.0",
+  husky: "^9.1.7",
+  jsdom: "^27.4.0",
+  "lint-staged": "^16.4.0",
+  postcss: "^8.5.15",
+  prettier: "^3.8.3",
+  "prettier-plugin-tailwindcss": "^0.7.4",
+  tailwindcss: "^4.3.0",
+  terser: "^5.48.0",
+  typescript: "~5.9.3",
+  "typescript-eslint": "^8.59.4",
+  vite: "^8.0.14",
+  vitest: "^4.1.7",
+};
 
 export async function init(options: InitOptions): Promise<void> {
   // If project name given, create and use a subdirectory
@@ -244,7 +244,6 @@ export async function init(options: InitOptions): Promise<void> {
         test: "vitest",
         "test:coverage": "vitest --coverage",
         preview: "vite preview",
-        prepare: "husky",
       },
       dependencies: {},
       devDependencies: {},
@@ -271,8 +270,7 @@ export async function init(options: InitOptions): Promise<void> {
     } else {
       logger.break();
       logger.info("Skip dependency installation. Run manually:");
-      logger.dim(`  ${pm} install ${BASE_NPM_DEPS.join(" ")}`);
-      logger.dim(`  ${pm} install -D ${BASE_DEV_DEPS.join(" ")}`);
+      logger.dim(`  ${pm} install`);
     }
   } else {
     await installDeps(cwd, pm);
@@ -301,28 +299,35 @@ async function installDeps(
   pm: "npm" | "yarn" | "pnpm"
 ): Promise<void> {
   logger.info("Installing dependencies...");
-  try {
-    const installCmd =
-      pm === "yarn" ? "yarn add" : pm === "pnpm" ? "pnpm add" : "npm install";
-    const installDevCmd =
-      pm === "yarn"
-        ? "yarn add -D"
-        : pm === "pnpm"
-          ? "pnpm add -D"
-          : "npm install -D";
 
-    execSync(`${installCmd} ${BASE_NPM_DEPS.join(" ")}`, {
-      cwd,
-      stdio: "pipe",
-    });
-    execSync(`${installDevCmd} ${BASE_DEV_DEPS.join(" ")}`, {
-      cwd,
-      stdio: "pipe",
-    });
+  // Write deps directly into package.json, then run a single install.
+  // Passing ~30+ package names as CLI args can exceed shell arg limits.
+  const pkgPath = path.resolve(cwd, "package.json");
+  const pkg = await fs.readJSON(pkgPath);
+  pkg.dependencies = pkg.dependencies || {};
+  pkg.devDependencies = pkg.devDependencies || {};
+  for (const [dep, version] of Object.entries(BASE_NPM_DEPS)) {
+    pkg.dependencies[dep] = version;
+  }
+  for (const [dep, version] of Object.entries(BASE_DEV_DEPS)) {
+    pkg.devDependencies[dep] = version;
+  }
+  await fs.writeJSON(pkgPath, pkg, { spaces: 2 });
+
+  try {
+    execSync(`${pm} install`, { cwd, stdio: "pipe" });
     logger.success("Dependencies installed.");
-  } catch {
+    // Add husky prepare script now that husky is actually installed
+    const updatedPkg = await fs.readJSON(pkgPath);
+    updatedPkg.scripts = updatedPkg.scripts || {};
+    updatedPkg.scripts.prepare = "husky";
+    await fs.writeJSON(pkgPath, updatedPkg, { spaces: 2 });
+  } catch (err) {
     logger.warn("Failed to install dependencies automatically.");
     logger.dim(`Run \`${pm} install\` manually.`);
+    if (err instanceof Error && err.message) {
+      logger.dim(`  Error: ${err.message.split("\n")[0]}`);
+    }
   }
 }
 

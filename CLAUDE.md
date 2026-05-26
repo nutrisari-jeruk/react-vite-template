@@ -44,13 +44,13 @@ src/
 
 ## File Naming Conventions
 
-| Type | Convention | Example |
-|------|------------|---------|
-| UI components | lowercase folder, PascalCase file | `button/Button.tsx` → `Button` |
-| Page routes | PascalCase | `Home.tsx`, `DataTable.tsx` |
-| Hooks | camelCase with `use` prefix | `useAuth.ts`, `useLocalStorage.ts` |
-| Utilities | kebab-case | `cn.ts`, `metadata.ts` |
-| Tests | Co-located, same name + `.test.tsx` | `Button.test.tsx` next to `Button.tsx` |
+| Type          | Convention                          | Example                                |
+| ------------- | ----------------------------------- | -------------------------------------- |
+| UI components | lowercase folder, PascalCase file   | `button/Button.tsx` → `Button`         |
+| Page routes   | PascalCase                          | `Home.tsx`, `DataTable.tsx`            |
+| Hooks         | camelCase with `use` prefix         | `useAuth.ts`, `useLocalStorage.ts`     |
+| Utilities     | kebab-case                          | `cn.ts`, `metadata.ts`                 |
+| Tests         | Co-located, same name + `.test.tsx` | `Button.test.tsx` next to `Button.tsx` |
 
 ## Import Patterns
 
@@ -74,6 +74,7 @@ import { Button, Input, Card } from "@/components/ui";
 ### UI Components (`src/components/ui/`)
 
 **Structure:**
+
 ```
 src/components/ui/button/
 ├── Button.tsx       # export function Button() {}
@@ -82,6 +83,7 @@ src/components/ui/button/
 ```
 
 **When adding UI components:**
+
 1. Create `src/components/ui/[name]/[Name].tsx` (PascalCase file)
 2. Export as PascalCase: `export function ComponentName() {}`
 3. Create `index.ts` barrel export
@@ -91,6 +93,7 @@ src/components/ui/button/
 ### Page Routes (`src/app/routes/`)
 
 **When adding routes:**
+
 1. Create page in `src/app/routes/[PageName].tsx` (PascalCase)
 2. Use default export: `export default function PageName() {}`
 3. Add lazy import in `src/app/router.tsx`
@@ -100,6 +103,7 @@ src/components/ui/button/
 ### Feature Modules (`src/features/`)
 
 **Structure:**
+
 ```
 src/features/[feature-name]/
 ├── components/          # Feature-specific components (PascalCase files)
@@ -111,18 +115,19 @@ src/features/[feature-name]/
 ```
 
 **Rules:**
+
 - Features should NOT import from other features directly
 - Only export public API through `index.ts`
 - Import from `@/components`, `@/libs`, `@/hooks` is allowed
 
 ## State Management
 
-| State type | Where |
-|---|---|
-| Server state (API data) | TanStack Query — `useQuery` / `useMutation` |
-| Global UI state (auth session, theme) | Zustand — `src/stores/` |
-| URL state (pagination, filters) | `useSearchParams` |
-| Local UI state (modal open, form input) | `useState` |
+| State type                              | Where                                       |
+| --------------------------------------- | ------------------------------------------- |
+| Server state (API data)                 | TanStack Query — `useQuery` / `useMutation` |
+| Global UI state (auth session, theme)   | Zustand — `src/stores/`                     |
+| URL state (pagination, filters)         | `useSearchParams`                           |
+| Local UI state (modal open, form input) | `useState`                                  |
 
 **NEVER store server state in Zustand. NEVER fetch data with useEffect + useState.**
 
@@ -138,51 +143,51 @@ const { user, setAuth, clearAuth } = useAuthStore();
 
 ### Button (`src/components/ui/button/Button.tsx`)
 
-| Prop | Values |
-|------|--------|
+| Prop      | Values                                                                                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `variant` | `primary`, `secondary`, `danger`, `outline-primary`, `outline-secondary`, `outline-danger`, `white`, `outline-white`, `link`, `link-primary`, `link-muted` |
-| `size` | `sm`, `md`, `lg` |
+| `size`    | `sm`, `md`, `lg`                                                                                                                                           |
 
 ### Badge (`src/components/ui/badge/Badge.tsx`)
 
-| Prop | Values |
-|------|--------|
+| Prop      | Values                                                       |
+| --------- | ------------------------------------------------------------ |
 | `variant` | `default`, `primary`, `success`, `warning`, `danger`, `info` |
-| `size` | `sm`, `md`, `lg` |
-| `pill` | boolean |
-| `dot` | boolean |
+| `size`    | `sm`, `md`, `lg`                                             |
+| `pill`    | boolean                                                      |
+| `dot`     | boolean                                                      |
 
 ### Alert (`src/components/ui/alert/Alert.tsx`)
 
-| Prop | Values |
-|------|--------|
+| Prop      | Values                                 |
+| --------- | -------------------------------------- |
 | `variant` | `info`, `success`, `warning`, `danger` |
 
 ### Input (`src/components/ui/input/Input.tsx`)
 
-| Prop | Values |
-|------|--------|
-| `size` | `sm`, `md`, `lg` |
+| Prop      | Values                          |
+| --------- | ------------------------------- |
+| `size`    | `sm`, `md`, `lg`                |
 | `variant` | `default`, `filled`, `outlined` |
 
 ### Select (`src/components/ui/select/Select.tsx`)
 
-| Prop | Values |
-|------|--------|
-| `size` | `sm`, `md`, `lg` |
+| Prop      | Values                          |
+| --------- | ------------------------------- |
+| `size`    | `sm`, `md`, `lg`                |
 | `variant` | `default`, `filled`, `outlined` |
 
 ### Dialog (`src/components/ui/dialog/Dialog.tsx`)
 
-| Prop | Values |
-|------|--------|
+| Prop   | Values                         |
+| ------ | ------------------------------ |
 | `size` | `sm`, `md`, `lg`, `xl`, `full` |
 
 ### Tooltip (`src/components/ui/tooltip/Tooltip.tsx`)
 
-| Prop | Values |
-|------|--------|
-| `variant` | `dark`, `light` |
+| Prop        | Values                           |
+| ----------- | -------------------------------- |
+| `variant`   | `dark`, `light`                  |
 | `placement` | `top`, `bottom`, `left`, `right` |
 
 **For detailed usage examples, see [README.md](./README.md#ui-components).**
@@ -198,6 +203,7 @@ import { cn } from "@/utils";
 **Never use template literals for className merging.**
 
 **Special Tailwind utilities:**
+
 - `h-dvh` instead of `h-screen` (mobile viewport)
 - `text-balance` for headings, `text-pretty` for body
 - `tabular-nums` for data display
@@ -218,6 +224,7 @@ const response = await api.get("/users");
 ```
 
 Always use the centralized `api` client from `@/libs`. It includes:
+
 - Automatic auth token injection
 - Auto token refresh on 401
 - Request ID tracing via `X-Request-ID`
@@ -259,34 +266,40 @@ test("renders component", () => {
 ## Common Tasks
 
 ### Adding a UI Component
+
 1. Create `src/components/ui/[name]/[Name].tsx` (PascalCase)
 2. Create barrel `index.ts`
 3. Export from `src/components/ui/index.ts`
 4. Add co-located `[Name].test.tsx`
 
 ### Adding a Zustand Store
+
 1. Create `src/stores/[name]Store.ts`
 2. Export from `src/stores/index.ts`
 3. Use only for: theme, auth session, UI preferences
 
 ### Adding a Feature
+
 1. Create `src/features/[name]/`
 2. Add subfolders: `components/`, `hooks/`, `api/`, `lib/`, `types/`
 3. Create `index.ts` with public API exports
 
 ### Adding a Page
+
 1. Create `src/app/routes/[PageName].tsx` (PascalCase, default export)
 2. Add lazy import in `src/app/router.tsx`
 3. Add to `ROUTES` in `src/config/constants.ts`
 4. Update navigation
 
 ### Adding a Hook
+
 1. Create `src/hooks/use[Name].ts` (camelCase)
 2. Export from `src/hooks/index.ts`
 
 ## Do's and Don'ts
 
 ### Do
+
 - Use barrel exports for clean imports
 - Use **PascalCase** for component files (`Button.tsx`, `LoginForm.tsx`)
 - Use **camelCase** for hook files (`useAuth.ts`, `useLocalStorage.ts`)
@@ -302,6 +315,7 @@ test("renders component", () => {
 - **Read the component source file if unsure about available props**
 
 ### Don't
+
 - Use kebab-case for component or hook files
 - Use `__tests__/` subdirectories — put tests next to source files
 - Use `any` type — ESLint will error
@@ -334,4 +348,3 @@ npm run cli:build               # Build CLI (tsup → packages/cli/dist/)
 **Before changing conventions,** update both this file and the corresponding [docs/](./docs/) files to keep documentation in sync.
 
 > **See [docs/cli-development.md](./docs/cli-development.md)** for the full CLI reference: commands, registry format, route wiring, dependency resolution, and npm publishing.
-

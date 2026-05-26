@@ -10,10 +10,10 @@ This document covers security best practices implemented in the application.
 
 The application uses environment-aware token storage:
 
-| Environment | Storage | Reason |
-|-------------|---------|--------|
+| Environment | Storage      | Reason           |
+| ----------- | ------------ | ---------------- |
 | Development | localStorage | Easier debugging |
-| Production | Cookies | More secure |
+| Production  | Cookies      | More secure      |
 
 ```typescript
 // src/features/auth/lib/token-storage.ts
@@ -34,10 +34,10 @@ Production cookies use secure settings:
 
 ```typescript
 const cookieOptions = {
-  secure: true,      // HTTPS only
+  secure: true, // HTTPS only
   sameSite: "strict", // CSRF protection
   path: "/",
-  expires: 7,        // Days
+  expires: 7, // Days
 };
 ```
 
@@ -208,7 +208,7 @@ If using CSP headers, configure appropriately:
 
 ```typescript
 // Example CSP header (set on server)
-Content-Security-Policy: 
+Content-Security-Policy:
   default-src 'self';
   script-src 'self';
   style-src 'self' 'unsafe-inline';
@@ -271,23 +271,27 @@ Commit `package-lock.json` to ensure consistent installs.
 ## Best Practices Checklist
 
 ### Authentication
+
 - [ ] Use secure token storage in production
 - [ ] Validate token expiration
 - [ ] Clear tokens on logout/401
 - [ ] Use HTTPS only
 
 ### Data Handling
+
 - [ ] Validate all user input
 - [ ] Sanitize HTML if rendering user content
 - [ ] Validate URLs before navigation
 - [ ] Don't expose sensitive data in errors
 
 ### Configuration
+
 - [ ] Never commit secrets
 - [ ] Validate environment variables
 - [ ] Use different configs per environment
 
 ### Dependencies
+
 - [ ] Regular security audits
 - [ ] Keep dependencies updated
 - [ ] Review new dependencies

@@ -6,18 +6,18 @@ This is a React frontend application built with modern tools and the Bulletproof
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| Framework | React 19 with TypeScript |
-| Build Tool | Vite |
-| Routing | React Router v7 |
-| Styling | Tailwind CSS |
-| Data Fetching | TanStack Query |
-| HTTP Client | Axios |
-| Forms | React Hook Form + Zod |
-| Testing | Vitest + Testing Library |
-| Code Quality | ESLint + Prettier |
-| Git Hooks | Husky + lint-staged |
+| Category      | Technology               |
+| ------------- | ------------------------ |
+| Framework     | React 19 with TypeScript |
+| Build Tool    | Vite                     |
+| Routing       | React Router v7          |
+| Styling       | Tailwind CSS             |
+| Data Fetching | TanStack Query           |
+| HTTP Client   | Axios                    |
+| Forms         | React Hook Form + Zod    |
+| Testing       | Vitest + Testing Library |
+| Code Quality  | ESLint + Prettier        |
+| Git Hooks     | Husky + lint-staged      |
 
 ## Architecture
 
@@ -46,20 +46,25 @@ src/
 ## Entry Points
 
 ### `main.tsx`
+
 Application entry point that renders the root component with error boundary.
 
 ### `src/app/index.tsx`
+
 Main App component that composes providers and router.
 
 ### `src/app/provider.tsx`
+
 Centralized provider setup (QueryClientProvider, etc.).
 
 ### `src/app/router.tsx`
+
 Route configuration with lazy-loaded pages.
 
 ## Key Patterns
 
 ### Lazy Loading
+
 All route components are lazy-loaded for better initial bundle size:
 
 ```typescript
@@ -67,6 +72,7 @@ const Home = lazy(() => import("@/app/routes/Home"));
 ```
 
 ### Barrel Exports
+
 Each module exposes a public API through `index.ts`:
 
 ```typescript
@@ -76,6 +82,7 @@ import { useAuth } from "@/features/auth";
 ```
 
 ### Provider Composition
+
 Providers are composed in `src/app/provider.tsx`:
 
 ```typescript

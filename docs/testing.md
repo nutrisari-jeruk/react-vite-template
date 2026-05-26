@@ -4,12 +4,12 @@
 
 The application uses Vitest with React Testing Library for testing.
 
-| Tool | Purpose |
-|------|---------|
-| Vitest | Test runner |
-| React Testing Library | Component testing |
+| Tool                        | Purpose                     |
+| --------------------------- | --------------------------- |
+| Vitest                      | Test runner                 |
+| React Testing Library       | Component testing           |
 | @testing-library/user-event | User interaction simulation |
-| @testing-library/jest-dom | DOM matchers |
+| @testing-library/jest-dom   | DOM matchers                |
 
 ## Setup
 
@@ -196,16 +196,12 @@ describe("useLocalStorage", () => {
   });
 
   it("returns initial value", () => {
-    const { result } = renderHook(() =>
-      useLocalStorage("key", "initial")
-    );
+    const { result } = renderHook(() => useLocalStorage("key", "initial"));
     expect(result.current[0]).toBe("initial");
   });
 
   it("persists value to localStorage", () => {
-    const { result } = renderHook(() =>
-      useLocalStorage("key", "initial")
-    );
+    const { result } = renderHook(() => useLocalStorage("key", "initial"));
 
     act(() => {
       result.current[1]("updated");
@@ -265,13 +261,13 @@ describe("UserList", () => {
 
 ### What to Test
 
-| Priority | Area | Examples |
-|----------|------|----------|
-| 1 | **Critical paths** | Login, checkout, form submissions |
-| 2 | **Complex logic** | State machines, data transformations, calculations |
-| 3 | **Error handling** | Network failures, validation, edge cases |
-| 4 | **Accessibility** | ARIA labels, keyboard nav, focus management |
-| 5 | **User interactions** | Clicks, inputs, gestures, state changes |
+| Priority | Area                  | Examples                                           |
+| -------- | --------------------- | -------------------------------------------------- |
+| 1        | **Critical paths**    | Login, checkout, form submissions                  |
+| 2        | **Complex logic**     | State machines, data transformations, calculations |
+| 3        | **Error handling**    | Network failures, validation, edge cases           |
+| 4        | **Accessibility**     | ARIA labels, keyboard nav, focus management        |
+| 5        | **User interactions** | Clicks, inputs, gestures, state changes            |
 
 ### Coverage Checklist
 
@@ -286,13 +282,13 @@ When testing components/pages, verify:
 
 ### What NOT to Test
 
-| ❌ Avoid | Reason |
-|----------|--------|
-| Implementation details (private methods) | Breaks on refactoring |
-| Third-party libraries | They have their own tests |
-| Static content | Low value, high maintenance |
-| Trivial functions | `const double = (n) => n * 2` |
-| CSS styles | Use visual regression instead |
+| ❌ Avoid                                 | Reason                        |
+| ---------------------------------------- | ----------------------------- |
+| Implementation details (private methods) | Breaks on refactoring         |
+| Third-party libraries                    | They have their own tests     |
+| Static content                           | Low value, high maintenance   |
+| Trivial functions                        | `const double = (n) => n * 2` |
+| CSS styles                               | Use visual regression instead |
 
 ## Testing Patterns
 

@@ -18,22 +18,22 @@ Scaffold a new page route following SOP Coding Standard 2.0 conventions. Creates
 
 Ask the user for:
 
-| Param | Example | Notes |
-|-------|---------|-------|
-| **Name** | `Profile` | PascalCase page name |
-| **Path** | `/profile` or `/settings/profile` | URL path, use kebab-case segments |
-| **Layout** | `main` | One of: `none`, `landing`, `main`, `auth`, `authenticated` |
-| **Nav label** | `"Profile"` | Display text in navbar, or `none` to skip |
+| Param         | Example                           | Notes                                                      |
+| ------------- | --------------------------------- | ---------------------------------------------------------- |
+| **Name**      | `Profile`                         | PascalCase page name                                       |
+| **Path**      | `/profile` or `/settings/profile` | URL path, use kebab-case segments                          |
+| **Layout**    | `main`                            | One of: `none`, `landing`, `main`, `auth`, `authenticated` |
+| **Nav label** | `"Profile"`                       | Display text in navbar, or `none` to skip                  |
 
 ## Layout Reference
 
-| Layout | Wrapper | Use case |
-|--------|---------|----------|
-| `none` | No layout, just MetadataUpdater + LazyPage | Login, OTP, standalone pages |
-| `landing` | LandingLayout as parent, page as index child | Home, About, public marketing pages |
-| `main` | MainLayout as parent, page as index child | Components, general app pages |
-| `auth` | AuthLayout as parent, page as index child | Register, auth-related pages |
-| `authenticated` | ProtectedRoute + AuthenticatedLayout | Dashboard, pages requiring login |
+| Layout          | Wrapper                                      | Use case                            |
+| --------------- | -------------------------------------------- | ----------------------------------- |
+| `none`          | No layout, just MetadataUpdater + LazyPage   | Login, OTP, standalone pages        |
+| `landing`       | LandingLayout as parent, page as index child | Home, About, public marketing pages |
+| `main`          | MainLayout as parent, page as index child    | Components, general app pages       |
+| `auth`          | AuthLayout as parent, page as index child    | Register, auth-related pages        |
+| `authenticated` | ProtectedRoute + AuthenticatedLayout         | Dashboard, pages requiring login    |
 
 ## Step 1: Create Page Component
 
@@ -181,6 +181,7 @@ Append to the `ROUTES` object in `src/config/constants.ts`:
 ```
 
 Derive the key from the page name in SCREAMING_SNAKE_CASE:
+
 - `Profile` → `PROFILE`
 - `Settings` → `SETTINGS`
 - `UserProfile` → `USER_PROFILE`
@@ -215,6 +216,7 @@ Insert alphabetically by path among the flat items. Use user's label as display 
 ## Provider Tag
 
 Convert the PascalCase name for the route key:
+
 ```
 Profile      → PROFILE
 UserProfile  → USER_PROFILE
@@ -222,6 +224,7 @@ Settings     → SETTINGS
 ```
 
 Convert the PascalCase name to kebab-case for the URL path (if user doesn't specify):
+
 ```
 Profile      → /profile
 UserProfile  → /user-profile

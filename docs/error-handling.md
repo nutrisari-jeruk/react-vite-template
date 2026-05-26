@@ -107,11 +107,7 @@ ApiError (base)
 ### Using Error Classes
 
 ```typescript
-import {
-  ValidationError,
-  UnauthorizedError,
-  isRetryableError,
-} from "@/libs";
+import { ValidationError, UnauthorizedError, isRetryableError } from "@/libs";
 
 try {
   await api.post("/users", data);

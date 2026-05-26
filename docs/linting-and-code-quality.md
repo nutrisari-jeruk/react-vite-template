@@ -46,6 +46,7 @@ Imports are automatically sorted and grouped:
 5. Type imports
 
 **Example**:
+
 ```tsx
 import { useState } from "react"; // External - React first
 import { Button } from "@/components/ui"; // Internal
@@ -100,6 +101,7 @@ eslint --fix
 ### Type-Aware Linting
 
 TypeScript rules are configured to:
+
 - Allow unused variables prefixed with `_` (common pattern for intentionally unused params)
 - Allow type annotations in import statements
 - Not require explicit return types (balance between strictness and developer experience)
@@ -108,6 +110,7 @@ TypeScript rules are configured to:
 ### Import Resolution
 
 The `eslint-plugin-import` is configured with TypeScript resolver to properly handle:
+
 - Path aliases (`@/`)
 - Type-only imports
 - Module resolution in monorepo-style projects
@@ -160,6 +163,7 @@ const email = user && user.contact && user.contact.email;
 ### Import Errors
 
 If you see import-related errors:
+
 1. Ensure the file exists at the specified path
 2. Check `tsconfig.json` for path aliases
 3. Try running `npm run lint:fix` to auto-resolve
@@ -167,6 +171,7 @@ If you see import-related errors:
 ### Type Errors
 
 For type-related warnings:
+
 1. Verify types are properly imported
 2. Check if type-only imports are used correctly
 3. Consider if `any` is truly necessary or if a proper type can be defined
@@ -174,6 +179,7 @@ For type-related warnings:
 ### Accessibility Warnings
 
 Accessibility warnings are intentionally set to "warn" level. They're meant to:
+
 - Raise awareness during development
 - Educate team members about a11y best practices
 - Not block feature development

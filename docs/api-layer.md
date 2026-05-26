@@ -124,16 +124,16 @@ const mutation = useMutation({
 
 ```typescript
 import {
-  ApiError,           // Base error class
-  NetworkError,       // Network/connection errors
-  TimeoutError,       // Request timeout
-  ValidationError,    // 400, 422 - Invalid data
-  UnauthorizedError,  // 401 - Not authenticated
-  ForbiddenError,     // 403 - Not authorized
-  NotFoundError,      // 404 - Resource not found
-  ConflictError,      // 409 - Resource conflict
-  RateLimitError,     // 429 - Too many requests
-  ServerError,        // 500, 502, 504 - Server errors
+  ApiError, // Base error class
+  NetworkError, // Network/connection errors
+  TimeoutError, // Request timeout
+  ValidationError, // 400, 422 - Invalid data
+  UnauthorizedError, // 401 - Not authenticated
+  ForbiddenError, // 403 - Not authorized
+  NotFoundError, // 404 - Resource not found
+  ConflictError, // 409 - Resource conflict
+  RateLimitError, // 429 - Too many requests
+  ServerError, // 500, 502, 504 - Server errors
   ServiceUnavailableError, // 503 - Service unavailable
 } from "@/libs";
 ```
@@ -194,17 +194,17 @@ function MyComponent() {
 
 ## Error Handling Matrix
 
-| Error Type | Status | Retryable | Action |
-|------------|--------|-----------|--------|
-| NetworkError | - | ✓ | Retry with backoff |
-| TimeoutError | 408 | ✓ | Retry with backoff |
-| ValidationError | 400, 422 | ✗ | Show field errors |
-| UnauthorizedError | 401 | ✗ | Clear token, redirect |
-| ForbiddenError | 403 | ✗ | Show access denied |
-| NotFoundError | 404 | ✗ | Show not found |
-| ConflictError | 409 | ✗ | Show conflict message |
-| RateLimitError | 429 | ✓ | Retry after delay |
-| ServerError | 5xx | ✓ | Retry with backoff |
+| Error Type        | Status   | Retryable | Action                |
+| ----------------- | -------- | --------- | --------------------- |
+| NetworkError      | -        | ✓         | Retry with backoff    |
+| TimeoutError      | 408      | ✓         | Retry with backoff    |
+| ValidationError   | 400, 422 | ✗         | Show field errors     |
+| UnauthorizedError | 401      | ✗         | Clear token, redirect |
+| ForbiddenError    | 403      | ✗         | Show access denied    |
+| NotFoundError     | 404      | ✗         | Show not found        |
+| ConflictError     | 409      | ✗         | Show conflict message |
+| RateLimitError    | 429      | ✓         | Retry after delay     |
+| ServerError       | 5xx      | ✓         | Retry with backoff    |
 
 ## Retry Logic
 

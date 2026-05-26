@@ -43,10 +43,7 @@ export async function markInstalled(
   await writeConfig(cwd, config);
 }
 
-export async function isInstalled(
-  cwd: string,
-  name: string
-): Promise<boolean> {
+export async function isInstalled(cwd: string, name: string): Promise<boolean> {
   const config = await readConfig(cwd);
   return config.installed.includes(name);
 }

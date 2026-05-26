@@ -18,11 +18,11 @@ Scaffold a new UI component following SOP Coding Standard 2.0 conventions.
 
 Given a PascalCase `[Name]`, derive the lowercase folder name by converting PascalCase to kebab-case:
 
-| PascalCase | Folder |
-|-----------|--------|
-| `Button` | `button` |
+| PascalCase     | Folder          |
+| -------------- | --------------- |
+| `Button`       | `button`        |
 | `DropdownMenu` | `dropdown-menu` |
-| `DataTable` | `data-table` |
+| `DataTable`    | `data-table`    |
 
 This creates:
 

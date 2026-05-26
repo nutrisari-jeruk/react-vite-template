@@ -103,6 +103,7 @@ src/
 The project includes a comprehensive set of **custom-built UI components** with TypeScript support, accessibility features, and consistent styling:
 
 **Form Components:**
+
 - `Input` - Text input with icons, validation states, and error handling
 - `Textarea` - Multi-line text input with auto-resize support
 - `Select` - Dropdown select with custom styling (Base UI powered)
@@ -113,6 +114,7 @@ The project includes a comprehensive set of **custom-built UI components** with 
 - `Form` - React Hook Form integration components (Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription)
 
 **Display Components:**
+
 - `Button` - Multiple variants (primary, secondary, danger, outline variants, link variants), sizes, and loading states
 - `Card` - Container component with header, body, and footer slots
 - `Badge` - Status badges and labels with Tailwind UI styling
@@ -122,18 +124,22 @@ The project includes a comprehensive set of **custom-built UI components** with 
 - `Skeleton` - Loading placeholders with pulse and wave animations
 
 **Feedback Components:**
+
 - `Alert` - Dismissible alerts with floating positions and animations
 - `Tooltip` - Contextual tooltips with dark and light variants, multiple placements
 - `Toast` - Global notification system with multiple variants and positions
 
 **Overlay Components:**
+
 - `Dialog` - Accessible modal dialogs with animations and multiple sizes
 - `DropdownMenu` - Accessible dropdown menus with items, checkbox items, and radio groups
 
 **Navigation Components:**
+
 - `Pagination` - Standalone pagination with intelligent page generation
 
 **Usage:**
+
 ```typescript
 import {
   Button, Input, Card, Alert, Switch, Toggle, Tooltip,
@@ -155,7 +161,7 @@ function MyComponent() {
       <Button variant="link" onClick={onCancel}>Cancel</Button>
       <Button variant="link-primary" onClick={onDetails}>Learn more</Button>
       <Button variant="link-muted" onClick={onDismiss}>Dismiss</Button>
-      
+
       {/* Dialog/Modal */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger><Button>Open Dialog</Button></DialogTrigger>
@@ -167,7 +173,7 @@ function MyComponent() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       {/* Toast Notification */}
       <Button onClick={() => toast({
         title: 'Success!',
@@ -176,17 +182,17 @@ function MyComponent() {
       })}>
         Show Toast
       </Button>
-      
+
       {/* Loading Skeleton */}
       <Skeleton className="h-20 w-full" variant="rectangular" />
-      
+
       {/* Pagination */}
       <Pagination
         currentPage={1}
         totalPages={10}
         onPageChange={(page) => console.log(page)}
       />
-      
+
       {/* Segmented control switch */}
       <Switch
         label="Theme"
@@ -216,6 +222,7 @@ function MyComponent() {
 
 **Switch Component (Segmented Control):**
 The `Switch` component is a segmented control for choosing between two options. It supports:
+
 - Labels with or without icons
 - Icons only
 - Controlled and uncontrolled modes
@@ -227,6 +234,7 @@ The `Toggle` component is a traditional toggle switch for boolean values.
 
 **Tooltip Component:**
 The `Tooltip` component provides contextual information on hover or focus. It supports:
+
 - Two variants: `dark` (dark background with white text) and `light` (white background with dark text)
 - Four placements: `top`, `bottom`, `left`, `right`
 - Customizable offset and styling
@@ -234,6 +242,7 @@ The `Tooltip` component provides contextual information on hover or focus. It su
 - Accessible with Base UI primitives
 
 **Usage:**
+
 ```typescript
 import { Tooltip } from '@/components/ui'
 
@@ -275,12 +284,14 @@ import { Button, Link } from '@/components/ui'
 ```
 
 **Why use Button link variants:**
+
 - Proper semantic HTML (`<button>` for actions, `<a>` for navigation)
 - Native `disabled` state (links don't have disabled attribute)
 - Correct keyboard behavior (Enter/Space for buttons, Enter only for links)
 - Better accessibility with screen readers
 
 All components include:
+
 - ✅ Full TypeScript support with JSDoc documentation
 - ✅ ARIA attributes for accessibility
 - ✅ Consistent design tokens (Tailwind CSS v4)
@@ -297,6 +308,7 @@ All components include:
 The `DataTable` component provides a full-featured data table with server-side pagination, sorting, filtering, and row selection capabilities.
 
 **Features:**
+
 - Server-side pagination with customizable page sizes (10, 25, 50, 100)
 - Server-side sorting with visual indicators
 - Real-time filtering/search
@@ -309,6 +321,7 @@ The `DataTable` component provides a full-featured data table with server-side p
 - Custom cell rendering (Badges, Avatars, etc.)
 
 **Usage:**
+
 ```typescript
 import { DataTable, type Column } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge/badge'
@@ -396,6 +409,7 @@ function MyTable() {
 ```
 
 **Props:**
+
 - `data` - Array of data to display
 - `columns` - Column definitions (id, header, accessorKey, cell, sortable)
 - `pagination` - Enable pagination (default: true)
@@ -419,6 +433,7 @@ function MyTable() {
 
 **Example:**
 Navigate to `/examples/data-table` to see a fully functional example with:
+
 - 150 mock users
 - Server-side pagination
 - Sortable columns
@@ -429,6 +444,7 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 **Note:** TanStack Table is NOT required for server-side functionality. This custom implementation provides all the essential features while maintaining simplicity and bundle size efficiency.
 
 ### React Router
+
 - Client-side routing with clean URLs
 - Lazy loading for all route components
 - Nested routes support
@@ -436,6 +452,7 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 - Dropdown menu for example pages
 
 **Available Routes:**
+
 - `/` - Home page
 - `/about` - About page
 - `/components` - UI components showcase with sticky table of contents, scroll tracking, and alphabetical organization
@@ -446,6 +463,7 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 - `*` - Custom 404 page
 
 ### TanStack Query
+
 - Automatic caching and background updates
 - Optimistic updates
 - DevTools for debugging
@@ -454,6 +472,7 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 > **See [docs/state-management.md](./docs/state-management.md)** for queries, mutations, optimistic updates, and URL/form state patterns.
 
 ### Axios
+
 - Centralized HTTP client
 - Request/response interceptors
 - Automatic auth token handling
@@ -463,6 +482,7 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 - Exponential backoff retry
 
 ### Error Handling
+
 - Custom API error classes
 - Type-safe error handling
 - Automatic retry logic
@@ -471,6 +491,7 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 - Request/response error classification
 
 ### Tailwind CSS
+
 - Utility-first CSS
 - Responsive design
 - Custom theme support
@@ -485,6 +506,7 @@ Navigate to `/examples/data-table` to see a fully functional example with:
 The project uses Vitest with React Testing Library for comprehensive component testing.
 
 **Tools:**
+
 - Vitest - Fast test runner with native ESM support
 - React Testing Library - DOM testing utilities
 - @testing-library/user-event - Realistic user interaction simulation
@@ -492,15 +514,16 @@ The project uses Vitest with React Testing Library for comprehensive component t
 
 **Test Coverage Areas:**
 
-| Priority | Area | Examples |
-|----------|------|----------|
-| 1 | Critical paths | Login, checkout, form submissions |
-| 2 | Complex logic | State machines, data transformations |
-| 3 | Error handling | Network failures, validation, edge cases |
-| 4 | Accessibility | ARIA labels, keyboard navigation |
-| 5 | User interactions | Clicks, inputs, state changes |
+| Priority | Area              | Examples                                 |
+| -------- | ----------------- | ---------------------------------------- |
+| 1        | Critical paths    | Login, checkout, form submissions        |
+| 2        | Complex logic     | State machines, data transformations     |
+| 3        | Error handling    | Network failures, validation, edge cases |
+| 4        | Accessibility     | ARIA labels, keyboard navigation         |
+| 5        | User interactions | Clicks, inputs, state changes            |
 
 **Coverage Checklist:**
+
 - Rendering with props, loading/empty states
 - Accessibility (ARIA, keyboard nav, alt text)
 - Form validation and error display
@@ -508,6 +531,7 @@ The project uses Vitest with React Testing Library for comprehensive component t
 - User interactions and state updates
 
 **Running Tests:**
+
 ```bash
 npm run test            # Run all tests
 npm run test:ui         # Run Vitest UI
@@ -517,6 +541,7 @@ npm run test:coverage   # Run with coverage report
 > **See [docs/testing.md](./docs/testing.md)** for detailed testing patterns and best practices.
 
 ### Accessibility
+
 - ARIA attributes throughout all UI components
 - Keyboard navigation support for interactive elements
 - Screen reader-friendly labels and roles
@@ -527,6 +552,7 @@ npm run test:coverage   # Run with coverage report
 - Icon-only buttons include `aria-label`
 
 ### Code Quality
+
 - ESLint for code linting
 - Prettier for code formatting
 - Husky git hooks
@@ -535,6 +561,7 @@ npm run test:coverage   # Run with coverage report
 > **See [docs/linting-and-code-quality.md](./docs/linting-and-code-quality.md)** for ESLint rules, import ordering, and type-aware linting.
 
 ### Authentication
+
 - Secure token storage with cookies/localStorage
 - Environment-based storage strategy
 - JWT token parsing and validation
@@ -543,6 +570,7 @@ npm run test:coverage   # Run with coverage report
 - Type-safe auth management
 
 ### Error Handling
+
 - Global Error Boundary for React error catching
 - Comprehensive error logging
 - User-friendly error fallback UI
@@ -553,47 +581,47 @@ npm run test:coverage   # Run with coverage report
 ### Using TanStack Query
 
 ```typescript
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { api } from '@/lib'
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { api } from "@/lib";
 
 // Fetch data
 const { data, isLoading, error } = useQuery({
-  queryKey: ['users'],
+  queryKey: ["users"],
   queryFn: async () => {
-    const { data } = await api.get('/users')
-    return data
+    const { data } = await api.get("/users");
+    return data;
   },
-})
+});
 
 // Mutate data
 const mutation = useMutation({
   mutationFn: async (userData) => {
-    const { data } = await api.post('/users', userData)
-    return data
+    const { data } = await api.post("/users", userData);
+    return data;
   },
   onSuccess: () => {
     // Invalidate cache
-    queryClient.invalidateQueries({ queryKey: ['users'] })
+    queryClient.invalidateQueries({ queryKey: ["users"] });
   },
-})
+});
 ```
 
 ### Using Axios Directly
 
 ```typescript
-import { api } from '@/lib'
+import { api } from "@/lib";
 
 // GET request
-const response = await api.get('/users')
+const response = await api.get("/users");
 
 // POST request
-const response = await api.post('/users', { name: 'John' })
+const response = await api.post("/users", { name: "John" });
 
 // PUT request
-const response = await api.put('/users/1', { name: 'Jane' })
+const response = await api.put("/users/1", { name: "Jane" });
 
 // DELETE request
-const response = await api.delete('/users/1')
+const response = await api.delete("/users/1");
 ```
 
 > **See [docs/api-layer.md](./docs/api-layer.md)** for the full API client architecture, interceptors, and error classes.
@@ -619,7 +647,7 @@ import {
   RateLimitError,
   ServerError,
   ServiceUnavailableError,
-} from '@/lib'
+} from "@/lib";
 ```
 
 ### Using useApiError Hook
@@ -660,18 +688,18 @@ function MyComponent() {
 
 The API client automatically handles different error types:
 
-| Error Type | Status Code | Retryable | Action |
-|------------|-------------|-----------|---------|
-| Network Error | - | ✓ Yes | Retry with backoff |
-| Timeout Error | 408 | ✓ Yes | Retry with backoff |
-| Validation Error | 400, 422 | ✗ No | Show field errors |
-| Unauthorized | 401 | ✗ No | Clear token, redirect to login |
-| Forbidden | 403 | ✗ No | Show access denied message |
-| Not Found | 404 | ✗ No | Show 404 message |
-| Conflict | 409 | ✗ No | Show conflict message |
-| Rate Limit | 429 | ✓ Yes | Retry after delay |
-| Server Error | 500, 502, 504 | ✓ Yes | Retry with backoff |
-| Service Unavailable | 503 | ✓ Yes | Retry with backoff |
+| Error Type          | Status Code   | Retryable | Action                         |
+| ------------------- | ------------- | --------- | ------------------------------ |
+| Network Error       | -             | ✓ Yes     | Retry with backoff             |
+| Timeout Error       | 408           | ✓ Yes     | Retry with backoff             |
+| Validation Error    | 400, 422      | ✗ No      | Show field errors              |
+| Unauthorized        | 401           | ✗ No      | Clear token, redirect to login |
+| Forbidden           | 403           | ✗ No      | Show access denied message     |
+| Not Found           | 404           | ✗ No      | Show 404 message               |
+| Conflict            | 409           | ✗ No      | Show conflict message          |
+| Rate Limit          | 429           | ✓ Yes     | Retry after delay              |
+| Server Error        | 500, 502, 504 | ✓ Yes     | Retry with backoff             |
+| Service Unavailable | 503           | ✓ Yes     | Retry with backoff             |
 
 ### Automatic Retry Logic
 
@@ -728,18 +756,18 @@ import {
   clearAuthTokens,
   parseJWT,
   isTokenExpired,
-} from '@/features/auth'
+} from "@/features/auth";
 
 // Get token
-const token = getAccessToken()
+const token = getAccessToken();
 
 // Set token with options
 setAccessToken(token, {
   expires: 7, // days
   secure: true,
   httpOnly: true,
-  sameSite: 'strict',
-})
+  sameSite: "strict",
+});
 
 // Check authentication
 if (isAuthenticated()) {
@@ -747,8 +775,8 @@ if (isAuthenticated()) {
 }
 
 // Parse JWT payload
-const payload = parseJWT(token)
-console.log(payload.sub, payload.exp)
+const payload = parseJWT(token);
+console.log(payload.sub, payload.exp);
 
 // Check expiration
 if (isTokenExpired(token)) {
@@ -761,16 +789,16 @@ if (isTokenExpired(token)) {
 Use the `useTokenRefresh` hook to manage token refresh:
 
 ```typescript
-import { useTokenRefresh } from '@/features/auth'
+import { useTokenRefresh } from "@/features/auth";
 
 function App() {
-  const { shouldRefresh, refresh } = useTokenRefresh()
+  const { shouldRefresh, refresh } = useTokenRefresh();
 
   useEffect(() => {
     if (shouldRefresh) {
-      refresh()
+      refresh();
     }
-  }, [shouldRefresh, refresh])
+  }, [shouldRefresh, refresh]);
 }
 ```
 
@@ -785,14 +813,14 @@ import { Dialog, DialogTrigger, DialogContent, DialogFooter } from '@/components
 
 function MyDialog() {
   const [isOpen, setIsOpen] = useState(false)
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger>
         <Button>Open Dialog</Button>
       </DialogTrigger>
-      <DialogContent 
-        title="Confirm Action" 
+      <DialogContent
+        title="Confirm Action"
         description="This action cannot be undone"
         size="md"
       >
@@ -810,6 +838,7 @@ function MyDialog() {
 ```
 
 **Features:**
+
 - Built on Base UI for accessibility
 - Multiple sizes (sm, md, lg, xl, full)
 - Animated entry/exit with Framer Motion
@@ -835,7 +864,7 @@ function App() {
 // Use in components
 function MyComponent() {
   const { toast } = useToast()
-  
+
   const handleSuccess = () => {
     toast({
       title: 'Success!',
@@ -844,12 +873,13 @@ function MyComponent() {
       duration: 3000
     })
   }
-  
+
   return <Button onClick={handleSuccess}>Save</Button>
 }
 ```
 
 **Features:**
+
 - Four variants (info, success, warning, error)
 - Auto-dismiss with configurable duration
 - Multiple positions (top/bottom, left/center/right)
@@ -885,7 +915,7 @@ function MyForm() {
     resolver: zodResolver(schema),
     defaultValues: { email: '', password: '' }
   })
-  
+
   return (
     <Form form={form} onSubmit={(data) => console.log(data)}>
       <FormField
@@ -909,6 +939,7 @@ function MyForm() {
 ```
 
 **Features:**
+
 - Proper label-input association
 - Automatic error display
 - Field-level descriptions
@@ -924,10 +955,10 @@ import { useMediaQuery, useBreakpoint } from '@/hooks'
 function MyComponent() {
   // Media query hook
   const isMobile = useMediaQuery('(max-width: 768px)')
-  
+
   // Tailwind breakpoint hook
   const { isAboveMd, isAboveLg, currentBreakpoint } = useBreakpoint()
-  
+
   return (
     <div>
       {isMobile ? <MobileView /> : <DesktopView />}
@@ -938,6 +969,7 @@ function MyComponent() {
 ```
 
 **Features:**
+
 - SSR-safe implementations
 - Proper cleanup on unmount
 - Tailwind breakpoint detection
@@ -946,6 +978,7 @@ function MyComponent() {
 ### Example: Try It Out
 
 Navigate to `/examples/auth` to see authentication in action:
+
 - Login form with secure token storage
 - Authenticated state display
 - Token expiration tracking
@@ -963,13 +996,13 @@ import {
   getFieldErrors,
   isRetryableError,
   isAxiosError,
-} from '@/lib'
+} from "@/lib";
 
 // Get user-friendly error message
-const message = getErrorMessage(error)
+const message = getErrorMessage(error);
 
 // Extract field errors for forms
-const errors = getFieldErrors(error)
+const errors = getFieldErrors(error);
 
 // Check if error is retryable
 if (isRetryableError(error)) {
@@ -985,6 +1018,7 @@ if (isAxiosError(error)) {
 ### Example: Try the Error Handling
 
 Navigate to `/examples/error-handling` to see the error handling in action with:
+
 - Form validation with field errors
 - Different error type simulations
 - Automatic retry behavior
@@ -993,6 +1027,7 @@ Navigate to `/examples/error-handling` to see the error handling in action with:
 ### Example: Try Form Validation
 
 Navigate to `/form-validation` to see a comprehensive form validation example with:
+
 - Username validation (length, regex pattern)
 - Email validation
 - Age validation (number, integer, min/max)
@@ -1073,11 +1108,11 @@ function CustomErrorFallback({
 #### Higher-Order Component
 
 ```typescript
-import { withErrorBoundary } from '@/components'
+import { withErrorBoundary } from "@/components";
 
 const ProtectedComponent = withErrorBoundary(MyComponent, {
   fallback: CustomErrorFallback,
-})
+});
 ```
 
 #### Testing the Error Boundary
@@ -1086,11 +1121,13 @@ The Error Boundary is already integrated into the application. To test it, you c
 
 1. Navigate to any page and intentionally throw an error in a component
 2. Add a test button that triggers an error:
+
 ```typescript
 <button onClick={() => { throw new Error('Test error') }}>
   Trigger Error
 </button>
 ```
+
 3. The Error Boundary will catch it and display the fallback UI
 
 ## Form Validation
@@ -1160,29 +1197,33 @@ function MyForm() {
 ### useLocalStorage
 
 ```typescript
-import { useLocalStorage } from '@/hooks'
+import { useLocalStorage } from "@/hooks";
 
-const [value, setValue] = useLocalStorage('key', defaultValue)
+const [value, setValue] = useLocalStorage("key", defaultValue);
 ```
 
 ### useMediaQuery
 
 ```typescript
-import { useMediaQuery } from '@/hooks'
+import { useMediaQuery } from "@/hooks";
 
-const isMobile = useMediaQuery('(max-width: 768px)')
-const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+const isMobile = useMediaQuery("(max-width: 768px)");
+const isDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 ```
 
 ### useBreakpoint
 
 ```typescript
-import { useBreakpoint } from '@/hooks'
+import { useBreakpoint } from "@/hooks";
 
-const { 
-  isAboveSm, isAboveMd, isAboveLg, isAboveXl, isAbove2xl,
-  currentBreakpoint 
-} = useBreakpoint()
+const {
+  isAboveSm,
+  isAboveMd,
+  isAboveLg,
+  isAboveXl,
+  isAbove2xl,
+  currentBreakpoint,
+} = useBreakpoint();
 ```
 
 ## Environment Variables
@@ -1249,12 +1290,12 @@ The project includes a type-safe environment configuration system at `src/config
 ### Usage
 
 ```typescript
-import { env, isProduction, isDevelopment } from '@/config'
+import { env, isProduction, isDevelopment } from "@/config";
 
 // Access configuration
-console.log(env.apiUrl)
-console.log(env.appName)
-console.log(env.defaultPageSize)
+console.log(env.apiUrl);
+console.log(env.appName);
+console.log(env.defaultPageSize);
 
 // Check environment
 if (isProduction) {
@@ -1289,6 +1330,7 @@ git config --global core.eol lf
 ```
 
 **What this does:**
+
 - `core.autocrlf input` - Converts CRLF to LF when committing, keeps LF when checking out
 - `core.eol lf` - Uses LF as the default line ending for text files
 
@@ -1322,6 +1364,38 @@ npx frontier-fe add --all --type ui  # Add all items of a type
 npx frontier-fe list                 # List available items
 ```
 
+### Blocks & Sections
+
+Blocks are pre-built page compositions (full layouts) and sections are smaller reusable parts — inspired by shadcn blocks. They compose existing UI components rather than creating new ones.
+
+```bash
+# Add a login page block (full page layout variant)
+npx frontier-fe add block:login-split      # Split screen with illustration
+npx frontier-fe add block:login-centered   # Centered card on gradient
+npx frontier-fe add block:login-minimal    # Minimal with branding sidebar
+
+# Add individual sections to compose your own layouts
+npx frontier-fe add auth-branding          # Logo + title + subtitle
+npx frontier-fe add auth-illustration      # Side illustration with fallback
+```
+
+**Available login block variants:**
+
+| Block            | Layout                                          |
+| ---------------- | ----------------------------------------------- |
+| `login-split`    | Illustration left, form right (blue background) |
+| `login-centered` | Centered card on gradient background            |
+| `login-minimal`  | Branding sidebar left, form right               |
+
+**Available auth sections:**
+
+| Section             | Purpose                                    |
+| ------------------- | ------------------------------------------ |
+| `auth-branding`     | Title + subtitle display                   |
+| `auth-illustration` | Side illustration with `ImageWithFallback` |
+
+Blocks use only existing components (`LoginForm`, `AuthBranding`, `ImageWithFallback`) — no inline UI. You can also install sections independently and compose your own page layouts.
+
 > **See [docs/cli-development.md](./docs/cli-development.md)** for the full CLI reference: commands, registry format, route wiring, sync workflow, and npm publishing.
 
 ## Development
@@ -1335,6 +1409,7 @@ npx frontier-fe list                 # List available items
 5. Update navigation in `src/components/layouts/navbar.tsx` or `sidebar.tsx`
 
 **Example:**
+
 ```typescript
 // src/app/routes/MyPage.tsx
 export default function MyPage() {
@@ -1361,6 +1436,7 @@ const MyPage = lazy(() => import("@/app/routes/MyPage"))
 6. Add co-located test `[Name].test.tsx`
 
 **Example:**
+
 ```typescript
 // src/components/ui/my-component/MyComponent.tsx
 export interface MyComponentProps {
@@ -1423,6 +1499,7 @@ npm run build:analyze
 ```
 
 This will:
+
 - Build the application
 - Generate an interactive visualization in `dist/stats.html`
 - Show gzip and brotli sizes
@@ -1455,6 +1532,7 @@ Key optimizations in `vite.config.ts`:
 ### Development Server
 
 The dev server includes:
+
 - Hot Module Replacement (HMR)
 - API proxy support (via `VITE_API_URL`)
 - Fast refresh with SWC compiler

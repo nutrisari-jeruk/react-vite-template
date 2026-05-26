@@ -16,10 +16,7 @@
           "target": "src/utils/index.ts"
         }
       ],
-      "npmDependencies": [
-        "clsx",
-        "tailwind-merge"
-      ],
+      "npmDependencies": ["clsx", "tailwind-merge"],
       "registryDependencies": []
     },
     {
@@ -40,9 +37,7 @@
           "target": "src/lib/index.ts"
         }
       ],
-      "npmDependencies": [
-        "axios"
-      ],
+      "npmDependencies": ["axios"],
       "registryDependencies": []
     },
     {
@@ -73,14 +68,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Button } from \"./button\";"
-        ]
+        "exports": ["export { Button } from \"./button\";"]
       }
     },
     {
@@ -98,14 +89,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Input } from \"./input\";"
-        ]
+        "exports": ["export { Input } from \"./input\";"]
       }
     },
     {
@@ -123,14 +110,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Textarea } from \"./textarea\";"
-        ]
+        "exports": ["export { Textarea } from \"./textarea\";"]
       }
     },
     {
@@ -147,17 +130,11 @@
           "target": "src/components/ui/select/index.ts"
         }
       ],
-      "npmDependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "cn"
-      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Select } from \"./select\";"
-        ]
+        "exports": ["export { Select } from \"./select\";"]
       }
     },
     {
@@ -174,12 +151,8 @@
           "target": "src/components/ui/combobox/index.ts"
         }
       ],
-      "npmDependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "cn"
-      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": [
@@ -203,14 +176,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Checkbox } from \"./checkbox\";"
-        ]
+        "exports": ["export { Checkbox } from \"./checkbox\";"]
       }
     },
     {
@@ -227,17 +196,11 @@
           "target": "src/components/ui/switch/index.ts"
         }
       ],
-      "npmDependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "cn"
-      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Switch } from \"./switch\";"
-        ]
+        "exports": ["export { Switch } from \"./switch\";"]
       }
     },
     {
@@ -255,14 +218,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Toggle } from \"./toggle\";"
-        ]
+        "exports": ["export { Toggle } from \"./toggle\";"]
       }
     },
     {
@@ -279,17 +238,11 @@
           "target": "src/components/ui/alert/index.ts"
         }
       ],
-      "npmDependencies": [
-        "motion"
-      ],
-      "registryDependencies": [
-        "cn"
-      ],
+      "npmDependencies": ["motion"],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Alert } from \"./alert\";"
-        ]
+        "exports": ["export { Alert } from \"./alert\";"]
       }
     },
     {
@@ -307,14 +260,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Badge } from \"./badge\";"
-        ]
+        "exports": ["export { Badge } from \"./badge\";"]
       }
     },
     {
@@ -332,14 +281,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Card } from \"./card\";"
-        ]
+        "exports": ["export { Card } from \"./card\";"]
       }
     },
     {
@@ -357,14 +302,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Avatar, AvatarGroup } from \"./avatar\";"
-        ]
+        "exports": ["export { Avatar, AvatarGroup } from \"./avatar\";"]
       }
     },
     {
@@ -382,9 +323,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": [
@@ -407,9 +346,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": [
@@ -432,14 +369,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Pagination } from \"./pagination\";"
-        ]
+        "exports": ["export { Pagination } from \"./pagination\";"]
       }
     },
     {
@@ -456,17 +389,11 @@
           "target": "src/components/ui/tooltip/index.ts"
         }
       ],
-      "npmDependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "cn"
-      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Tooltip } from \"./tooltip\";"
-        ]
+        "exports": ["export { Tooltip } from \"./tooltip\";"]
       }
     },
     {
@@ -483,13 +410,8 @@
           "target": "src/components/ui/dialog/index.ts"
         }
       ],
-      "npmDependencies": [
-        "@base-ui/react",
-        "motion"
-      ],
-      "registryDependencies": [
-        "cn"
-      ],
+      "npmDependencies": ["@base-ui/react", "motion"],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": [
@@ -511,12 +433,8 @@
           "target": "src/components/ui/dropdown-menu/index.ts"
         }
       ],
-      "npmDependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "cn"
-      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": [
@@ -538,17 +456,11 @@
           "target": "src/components/ui/link/index.ts"
         }
       ],
-      "npmDependencies": [
-        "react-router-dom"
-      ],
-      "registryDependencies": [
-        "cn"
-      ],
+      "npmDependencies": ["react-router-dom"],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
-        "exports": [
-          "export { Link } from \"./link\";"
-        ]
+        "exports": ["export { Link } from \"./link\";"]
       }
     },
     {
@@ -566,9 +478,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": [
@@ -587,14 +497,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "use-media-query"
-      ],
+      "registryDependencies": ["use-media-query"],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": [
-          "export { useBreakpoint } from \"./use-breakpoint\";"
-        ]
+        "exports": ["export { useBreakpoint } from \"./use-breakpoint\";"]
       }
     },
     {
@@ -611,9 +517,7 @@
       "registryDependencies": [],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": [
-          "export { useMediaQuery } from \"./use-media-query\";"
-        ]
+        "exports": ["export { useMediaQuery } from \"./use-media-query\";"]
       }
     },
     {
@@ -630,9 +534,7 @@
       "registryDependencies": [],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": [
-          "export { useLocalStorage } from \"./use-local-storage\";"
-        ]
+        "exports": ["export { useLocalStorage } from \"./use-local-storage\";"]
       }
     },
     {
@@ -649,9 +551,7 @@
       "registryDependencies": [],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": [
-          "export { useCountdown } from \"./use-countdown\";"
-        ]
+        "exports": ["export { useCountdown } from \"./use-countdown\";"]
       }
     },
     {
@@ -665,14 +565,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "api-client"
-      ],
+      "registryDependencies": ["api-client"],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": [
-          "export { useApiError } from \"./use-api-error\";"
-        ]
+        "exports": ["export { useApiError } from \"./use-api-error\";"]
       }
     },
     {
@@ -748,12 +644,7 @@
         "zod",
         "axios"
       ],
-      "registryDependencies": [
-        "api-client",
-        "cn",
-        "button",
-        "input"
-      ]
+      "registryDependencies": ["api-client", "cn", "button", "input"]
     },
     {
       "name": "main-layout",
@@ -766,14 +657,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": [
-          "export { MainLayout } from \"./main-layout\";"
-        ]
+        "exports": ["export { MainLayout } from \"./main-layout\";"]
       }
     },
     {
@@ -787,14 +674,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": [
-          "export { LandingLayout } from \"./landing-layout\";"
-        ]
+        "exports": ["export { LandingLayout } from \"./landing-layout\";"]
       }
     },
     {
@@ -808,14 +691,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": [
-          "export { AuthLayout } from \"./auth-layout\";"
-        ]
+        "exports": ["export { AuthLayout } from \"./auth-layout\";"]
       }
     },
     {
@@ -829,10 +708,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn",
-        "auth"
-      ],
+      "registryDependencies": ["cn", "auth"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
         "exports": [
@@ -850,19 +726,11 @@
           "target": "src/components/layouts/Navbar.tsx"
         }
       ],
-      "npmDependencies": [
-        "react-router-dom",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "cn",
-        "button"
-      ],
+      "npmDependencies": ["react-router-dom", "lucide-react"],
+      "registryDependencies": ["cn", "button"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": [
-          "export { Navbar } from \"./navbar\";"
-        ]
+        "exports": ["export { Navbar } from \"./navbar\";"]
       }
     },
     {
@@ -876,15 +744,92 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn"
-      ],
+      "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": [
-          "export { Footer } from \"./footer\";"
-        ]
+        "exports": ["export { Footer } from \"./footer\";"]
       }
+    },
+    {
+      "name": "auth-branding",
+      "type": "section",
+      "description": "Auth page branding section with title and subtitle",
+      "files": [
+        {
+          "source": "templates/sections/auth/auth-branding/AuthBranding.tsx",
+          "target": "src/components/ui/auth-branding/AuthBranding.tsx"
+        },
+        {
+          "source": "templates/sections/auth/auth-branding/index.ts",
+          "target": "src/components/ui/auth-branding/index.ts"
+        }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { AuthBranding } from \"./auth-branding\";"]
+      }
+    },
+    {
+      "name": "auth-illustration",
+      "type": "section",
+      "description": "Auth page illustration section with image fallback",
+      "files": [
+        {
+          "source": "templates/sections/auth/auth-illustration/AuthIllustration.tsx",
+          "target": "src/components/ui/auth-illustration/AuthIllustration.tsx"
+        },
+        {
+          "source": "templates/sections/auth/auth-illustration/index.ts",
+          "target": "src/components/ui/auth-illustration/index.ts"
+        }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["cn", "image-with-fallback"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": ["export { AuthIllustration } from \"./auth-illustration\";"]
+      }
+    },
+    {
+      "name": "login-split",
+      "type": "block",
+      "description": "Login page — split screen with illustration and form side by side",
+      "files": [
+        {
+          "source": "templates/blocks/auth/login-split.tsx",
+          "target": "src/app/routes/Login.tsx"
+        }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["auth", "auth-branding", "auth-illustration"]
+    },
+    {
+      "name": "login-centered",
+      "type": "block",
+      "description": "Login page — centered card on gradient background",
+      "files": [
+        {
+          "source": "templates/blocks/auth/login-centered.tsx",
+          "target": "src/app/routes/Login.tsx"
+        }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["auth", "auth-branding"]
+    },
+    {
+      "name": "login-minimal",
+      "type": "block",
+      "description": "Login page — minimal with branding sidebar",
+      "files": [
+        {
+          "source": "templates/blocks/auth/login-minimal.tsx",
+          "target": "src/app/routes/Login.tsx"
+        }
+      ],
+      "npmDependencies": [],
+      "registryDependencies": ["auth", "auth-branding"]
     },
     {
       "name": "home",
@@ -897,11 +842,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn",
-        "button",
-        "landing-layout"
-      ],
+      "registryDependencies": ["cn", "button", "landing-layout"],
       "route": {
         "path": "/",
         "constantKey": "HOME",
@@ -928,10 +869,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "cn",
-        "landing-layout"
-      ],
+      "registryDependencies": ["cn", "landing-layout"],
       "route": {
         "path": "/about",
         "constantKey": "ABOUT",
@@ -958,9 +896,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "auth"
-      ],
+      "registryDependencies": ["auth"],
       "route": {
         "path": "/login",
         "constantKey": "LOGIN",
@@ -984,10 +920,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "auth",
-        "auth-layout"
-      ],
+      "registryDependencies": ["auth", "auth-layout"],
       "route": {
         "path": "/register",
         "constantKey": "REGISTER",
@@ -1011,10 +944,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "auth",
-        "authenticated-layout"
-      ],
+      "registryDependencies": ["auth", "authenticated-layout"],
       "route": {
         "path": "/dashboard",
         "constantKey": "DASHBOARD",
@@ -1043,9 +973,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "auth"
-      ],
+      "registryDependencies": ["auth"],
       "route": {
         "path": "/forget-password",
         "constantKey": "FORGET_PASSWORD",
@@ -1069,9 +997,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "auth"
-      ],
+      "registryDependencies": ["auth"],
       "route": {
         "path": "/reset-password",
         "constantKey": "RESET_PASSWORD",
@@ -1095,9 +1021,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": [
-        "auth"
-      ],
+      "registryDependencies": ["auth"],
       "route": {
         "path": "/otp",
         "constantKey": "OTP",

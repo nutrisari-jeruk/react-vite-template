@@ -55,10 +55,7 @@ export async function wireRoute(
 /**
  * Add lazy import and route config to router.tsx
  */
-async function wireRouterFile(
-  cwd: string,
-  route: RouteConfig
-): Promise<void> {
+async function wireRouterFile(cwd: string, route: RouteConfig): Promise<void> {
   const routerPath = path.resolve(cwd, "src/app/router.tsx");
   if (!(await fs.pathExists(routerPath))) {
     logger.warn("router.tsx not found, skipping route wiring.");
@@ -69,7 +66,9 @@ async function wireRouterFile(
 
   // Skip if this component is already imported
   if (content.includes(`import("${route.importPath}")`)) {
-    logger.dim(`  Route for ${route.componentName} already wired in router.tsx`);
+    logger.dim(
+      `  Route for ${route.componentName} already wired in router.tsx`
+    );
     return;
   }
 
@@ -260,10 +259,7 @@ function buildRouteEntry(route: RouteConfig): string {
 /**
  * Add route constant to constants.ts
  */
-async function wireConstants(
-  cwd: string,
-  route: RouteConfig
-): Promise<void> {
+async function wireConstants(cwd: string, route: RouteConfig): Promise<void> {
   const constantsPath = path.resolve(cwd, "src/config/constants.ts");
   if (!(await fs.pathExists(constantsPath))) {
     logger.warn("constants.ts not found, skipping route constant.");
@@ -291,13 +287,9 @@ async function wireConstants(
       /(export const ROUTES = \{[\s\S]*?)(} as const;)/
     );
     if (routesClose && routesClose.index !== undefined) {
-      const insertPos =
-        routesClose.index + routesClose[1].length;
+      const insertPos = routesClose.index + routesClose[1].length;
       content =
-        content.slice(0, insertPos) +
-        entry +
-        "\n" +
-        content.slice(insertPos);
+        content.slice(0, insertPos) + entry + "\n" + content.slice(insertPos);
     }
   }
 
@@ -308,10 +300,7 @@ async function wireConstants(
 /**
  * Add navigation link to navbar.tsx
  */
-async function wireNavbar(
-  cwd: string,
-  route: RouteConfig
-): Promise<void> {
+async function wireNavbar(cwd: string, route: RouteConfig): Promise<void> {
   if (!route.navLink) return;
 
   const navbarPath = path.resolve(cwd, "src/components/layouts/navbar.tsx");
@@ -343,10 +332,7 @@ async function wireNavbar(
     if (menuClose && menuClose.index !== undefined) {
       const insertPos = menuClose.index + menuClose[1].length;
       content =
-        content.slice(0, insertPos) +
-        entry +
-        "\n" +
-        content.slice(insertPos);
+        content.slice(0, insertPos) + entry + "\n" + content.slice(insertPos);
     }
   }
 
@@ -395,10 +381,7 @@ async function wireRouteMetadata(
     if (metadataClose && metadataClose.index !== undefined) {
       const insertPos = metadataClose.index + metadataClose[1].length;
       content =
-        content.slice(0, insertPos) +
-        entry +
-        "\n" +
-        content.slice(insertPos);
+        content.slice(0, insertPos) + entry + "\n" + content.slice(insertPos);
     }
   }
 

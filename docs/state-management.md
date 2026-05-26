@@ -4,14 +4,14 @@
 
 This application uses a combination of state management approaches based on the type of state:
 
-| State Type | Solution |
-|------------|----------|
-| Server State | TanStack Query |
-| URL State | React Router |
-| Form State | React Hook Form |
-| UI State | React useState/useReducer |
-| Local UI State | React useState |
-| Global UI State | Zustand (`src/stores/`) |
+| State Type      | Solution                  |
+| --------------- | ------------------------- |
+| Server State    | TanStack Query            |
+| URL State       | React Router              |
+| Form State      | React Hook Form           |
+| UI State        | React useState/useReducer |
+| Local UI State  | React useState            |
+| Global UI State | Zustand (`src/stores/`)   |
 
 ## Server State with TanStack Query
 

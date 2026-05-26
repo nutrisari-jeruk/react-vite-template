@@ -38,20 +38,26 @@ async function syncFile(srcPath, templatePath) {
 
   if (CHECK_MODE) {
     if (!(await pathExists(templatePath))) {
-      console.error(`MISS  Template missing: ${path.relative(ROOT, templatePath)}`);
+      console.error(
+        `MISS  Template missing: ${path.relative(ROOT, templatePath)}`
+      );
       return { status: "missing_template" };
     }
     const srcContent = await fs.readFile(srcPath, "utf-8");
     const tplContent = await fs.readFile(templatePath, "utf-8");
     if (srcContent !== tplContent) {
-      console.error(`DIFF  ${path.relative(ROOT, srcPath)} ≠ ${path.relative(ROOT, templatePath)}`);
+      console.error(
+        `DIFF  ${path.relative(ROOT, srcPath)} ≠ ${path.relative(ROOT, templatePath)}`
+      );
       return { status: "differ" };
     }
     return { status: "ok" };
   }
 
   await fs.copyFile(srcPath, templatePath);
-  console.log(`COPY  ${path.relative(ROOT, srcPath)} → ${path.relative(ROOT, templatePath)}`);
+  console.log(
+    `COPY  ${path.relative(ROOT, srcPath)} → ${path.relative(ROOT, templatePath)}`
+  );
   return { status: "copied" };
 }
 
@@ -94,7 +100,9 @@ async function syncBaseFiles() {
     return { errors, synced };
   }
 
-  const entries = [...match[1].matchAll(/\{\s*source:\s*"([^"]+)",\s*target:\s*"([^"]+)"/g)];
+  const entries = [
+    ...match[1].matchAll(/\{\s*source:\s*"([^"]+)",\s*target:\s*"([^"]+)"/g),
+  ];
 
   for (const [, source, target] of entries) {
     // Skip src/ files in base template — they're intentionally minimal,
@@ -128,8 +136,12 @@ async function main() {
   const totalErrors = registryResult.errors + baseResult.errors;
   const totalSynced = registryResult.synced + baseResult.synced;
 
-  console.log(`\nRegistry: ${registryResult.synced} files, ${registryResult.errors} errors`);
-  console.log(`Base:     ${baseResult.synced} files, ${baseResult.errors} errors`);
+  console.log(
+    `\nRegistry: ${registryResult.synced} files, ${registryResult.errors} errors`
+  );
+  console.log(
+    `Base:     ${baseResult.synced} files, ${baseResult.errors} errors`
+  );
 
   if (CHECK_MODE) {
     if (totalErrors > 0) {

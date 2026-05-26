@@ -1,0 +1,1 @@
+export { AuthIllustration } from "./AuthIllustration";

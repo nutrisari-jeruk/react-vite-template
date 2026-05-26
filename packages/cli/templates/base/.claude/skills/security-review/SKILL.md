@@ -9,6 +9,7 @@ disable-model-invocation: false
 ## Activation
 
 Invoke this skill when:
+
 - Modifying `src/libs/api-client.ts` or `src/libs/api-error.ts`
 - Changing auth logic (login, token refresh, session management)
 - Adding new form inputs or API endpoints
@@ -18,29 +19,34 @@ Invoke this skill when:
 ## Review Checklist
 
 ### Auth Token Security
+
 - [ ] Tokens stored in memory/sessionStorage, NOT localStorage (XSS risk)
 - [ ] Refresh token rotation implemented correctly
 - [ ] 401 response clears tokens and redirects to `/login`
 - [ ] No tokens logged or exposed in error messages
 
 ### Input Validation
+
 - [ ] All user inputs validated with Zod schemas
 - [ ] SQL/command injection vectors checked
 - [ ] File upload types and sizes validated
 - [ ] No `dangerouslySetInnerHTML` without sanitization
 
 ### API Client
+
 - [ ] No new Axios instances created (use centralized `api` client)
 - [ ] `X-Request-ID` header present for tracing
 - [ ] Timeout configured for all requests
 - [ ] axios version remains exactly `1.14.0` (no caret/tilde added)
 
 ### Environment & Secrets
+
 - [ ] No secrets in `VITE_*` variables (they're public)
 - [ ] API keys not hardcoded
 - [ ] `.env.example` updated but contains no real values
 
 ### CSP & Headers
+
 - [ ] Content-Security-Policy headers configured
 - [ ] CORS settings restricted to known origins
 - [ ] HTTPS enforced in production
@@ -48,6 +54,7 @@ Invoke this skill when:
 ## Output
 
 Report only HIGH and MEDIUM confidence findings. For each:
+
 - Severity (High/Medium)
 - File and line
 - What the vulnerability is

@@ -69,6 +69,7 @@ components/
 ```
 
 **Rules**:
+
 - UI component folders use lowercase (`button/`), component files use PascalCase (`Button.tsx`)
 - Tests are co-located (`Button.test.tsx` next to `Button.tsx`)
 - Each UI component has its own folder with barrel export
@@ -86,6 +87,7 @@ config/
 ```
 
 **Usage**:
+
 ```typescript
 import { env, ROUTES, API_ENDPOINTS, QUERY_KEYS } from "@/config";
 ```
@@ -112,6 +114,7 @@ features/
 ```
 
 **Rules**:
+
 - Features are self-contained
 - Only export public API through `index.ts`
 - Features can import from shared modules (`@/components`, `@/libs`)
@@ -174,13 +177,13 @@ utils/
 
 ## File Naming Conventions
 
-| Type | Convention | Example |
-|------|------------|---------|
-| UI components | PascalCase | `Button.tsx`, `LoginForm.tsx` |
-| Page routes | PascalCase | `Home.tsx`, `DataTable.tsx` |
-| Hooks | camelCase with `use` prefix | `useAuth.ts`, `useLocalStorage.ts` |
-| Utilities | kebab-case | `cn.ts`, `api-client.ts` |
-| Tests | Co-located, `[Name].test.tsx` | `Button.test.tsx` next to `Button.tsx` |
+| Type          | Convention                    | Example                                |
+| ------------- | ----------------------------- | -------------------------------------- |
+| UI components | PascalCase                    | `Button.tsx`, `LoginForm.tsx`          |
+| Page routes   | PascalCase                    | `Home.tsx`, `DataTable.tsx`            |
+| Hooks         | camelCase with `use` prefix   | `useAuth.ts`, `useLocalStorage.ts`     |
+| Utilities     | kebab-case                    | `cn.ts`, `api-client.ts`               |
+| Tests         | Co-located, `[Name].test.tsx` | `Button.test.tsx` next to `Button.tsx` |
 
 ## Import Aliases
 

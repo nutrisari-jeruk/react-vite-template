@@ -4,17 +4,17 @@ This folder contains detailed documentation for the React Vite application archi
 
 ## Quick Links
 
-| Document | Description |
-|----------|-------------|
-| [Application Overview](./application-overview.md) | Tech stack, architecture, and getting started |
-| [Project Structure](./project-structure.md) | Directory structure and organization |
-| [Components and Styling](./components-and-styling.md) | UI components and Tailwind patterns |
-| [API Layer](./api-layer.md) | HTTP client, error handling, TanStack Query |
-| [State Management](./state-management.md) | Server state, URL state, form state |
-| [Error Handling](./error-handling.md) | Error boundaries, API errors, validation |
-| [Testing](./testing.md) | Vitest, Testing Library, patterns |
-| [Security](./security.md) | Authentication, XSS, CSRF, best practices |
-| [Project Configuration](./project-configuration.md) | Environment, TypeScript, Vite, tooling |
+| Document                                              | Description                                   |
+| ----------------------------------------------------- | --------------------------------------------- |
+| [Application Overview](./application-overview.md)     | Tech stack, architecture, and getting started |
+| [Project Structure](./project-structure.md)           | Directory structure and organization          |
+| [Components and Styling](./components-and-styling.md) | UI components and Tailwind patterns           |
+| [API Layer](./api-layer.md)                           | HTTP client, error handling, TanStack Query   |
+| [State Management](./state-management.md)             | Server state, URL state, form state           |
+| [Error Handling](./error-handling.md)                 | Error boundaries, API errors, validation      |
+| [Testing](./testing.md)                               | Vitest, Testing Library, patterns             |
+| [Security](./security.md)                             | Authentication, XSS, CSRF, best practices     |
+| [Project Configuration](./project-configuration.md)   | Environment, TypeScript, Vite, tooling        |
 
 ## For AI Assistants
 

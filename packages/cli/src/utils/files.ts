@@ -15,7 +15,10 @@ export async function copyItemFiles(
   const copiedFiles: string[] = [];
 
   for (const file of item.files) {
-    const sourcePath = path.resolve(templatesDir, file.source.replace("templates/", ""));
+    const sourcePath = path.resolve(
+      templatesDir,
+      file.source.replace("templates/", "")
+    );
     const targetPath = path.resolve(targetDir, file.target);
 
     // Ensure target directory exists

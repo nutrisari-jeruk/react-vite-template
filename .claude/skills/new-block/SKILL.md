@@ -1,6 +1,6 @@
 ---
 name: new-block
-description: Scaffolds complete page blocks (Login, Register, Dashboard, DataTable, Form, etc.) — opinionated compositions of components, features, and layouts
+description: 'Scaffolds complete page blocks (Login, Register, Dashboard, DataTable, Form, etc.) with router wiring, route constants, metadata, and navbar integration. Also registers the block in the CLI registry so users can install it via `frontier-fe add block:<name>`. Use when the user says "create a block", "add a block", "/new-block", or wants a pre-built page composition using existing components.'
 disable-model-invocation: true
 ---
 
@@ -18,27 +18,28 @@ Scaffold complete, production-ready page blocks. Like shadcn/ui blocks, these ar
 
 ## Available Blocks
 
-| Block | Description | Depends on |
-|-------|-------------|------------|
-| `login` | SSO login page with illustration + LoginForm | `auth` feature |
-| `register` | Registration page with card layout + RegisterForm | `auth` feature |
-| `dashboard` | Protected dashboard with auth status display | `auth` feature, `authenticated-layout` |
-| `forgot-password` | Password reset request form | `auth` feature |
-| `reset-password` | New password form after reset link | `auth` feature |
-| `otp` | OTP code verification page | `auth` feature |
-| `data-table` | Full server-side data table with TanStack Query | `data-table` component |
-| `form` | Generic form page with Zod + React Hook Form | `form` component |
-| `error` | Custom 404/error page | none |
-| `landing` | Hero + features + CTA landing sections | `button` component |
+| Block             | Description                                       | Depends on                             |
+| ----------------- | ------------------------------------------------- | -------------------------------------- |
+| `login`           | SSO login page with illustration + LoginForm      | `auth` feature                         |
+| `register`        | Registration page with card layout + RegisterForm | `auth` feature                         |
+| `dashboard`       | Protected dashboard with auth status display      | `auth` feature, `authenticated-layout` |
+| `forgot-password` | Password reset request form                       | `auth` feature                         |
+| `reset-password`  | New password form after reset link                | `auth` feature                         |
+| `otp`             | OTP code verification page                        | `auth` feature                         |
+| `data-table`      | Full server-side data table with TanStack Query   | `data-table` component                 |
+| `form`            | Generic form page with Zod + React Hook Form      | `form` component                       |
+| `error`           | Custom 404/error page                             | none                                   |
+| `landing`         | Hero + features + CTA landing sections            | `button` component                     |
 
 ## Required Parameters
 
-| Param | Example | Notes |
-|-------|---------|-------|
-| **Block** | `login` | Block type from the list above |
-| **Path** | `/login` or `/app/users` | URL path (defaults to block convention) |
+| Param     | Example                  | Notes                                   |
+| --------- | ------------------------ | --------------------------------------- |
+| **Block** | `login`                  | Block type from the list above          |
+| **Path**  | `/login` or `/app/users` | URL path (defaults to block convention) |
 
 Default paths if not specified:
+
 - `login` → `/login`
 - `register` → `/register`
 - `dashboard` → `/dashboard`
@@ -93,6 +94,7 @@ export default function LoginPage() {
 **Route layout:** `none` (standalone page, no layout wrapper)
 
 **Router:**
+
 ```tsx
 {
   path: "/login",
@@ -212,6 +214,7 @@ export default function DashboardPage() {
 Full data table page with server-side pagination, sorting, and filtering. Composes `DataTable` with TanStack Query.
 
 Ask the user for:
+
 - Resource name (e.g., "Users") — used for types, query keys, API endpoint
 - Columns definition (or generate reasonable defaults)
 
@@ -304,6 +307,7 @@ export default function [Resource]Page() {
 A generic form page with Zod schema, React Hook Form, and the Form integration components.
 
 Ask the user for:
+
 - Form name (e.g., "ContactForm") — used for component name, schema name
 - Fields (name + type + validation)
 
@@ -487,14 +491,35 @@ export default function LandingPage() {
         </h2>
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { title: "Components", desc: "40+ accessible UI components with TypeScript support." },
-            { title: "API Layer", desc: "Centralized HTTP client with interceptors and error handling." },
-            { title: "State Management", desc: "TanStack Query for server state, Zustand for UI state." },
-            { title: "Form Validation", desc: "Zod schemas with React Hook Form integration." },
-            { title: "Testing", desc: "Co-located tests with Vitest and React Testing Library." },
-            { title: "CLI Tools", desc: "Scaffold projects and add components with frontier-fe CLI." },
+            {
+              title: "Components",
+              desc: "40+ accessible UI components with TypeScript support.",
+            },
+            {
+              title: "API Layer",
+              desc: "Centralized HTTP client with interceptors and error handling.",
+            },
+            {
+              title: "State Management",
+              desc: "TanStack Query for server state, Zustand for UI state.",
+            },
+            {
+              title: "Form Validation",
+              desc: "Zod schemas with React Hook Form integration.",
+            },
+            {
+              title: "Testing",
+              desc: "Co-located tests with Vitest and React Testing Library.",
+            },
+            {
+              title: "CLI Tools",
+              desc: "Scaffold projects and add components with frontier-fe CLI.",
+            },
           ].map((feature) => (
-            <div key={feature.title} className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+            <div
+              key={feature.title}
+              className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800"
+            >
               <h3 className="font-semibold text-gray-900 dark:text-white">
                 {feature.title}
               </h3>
@@ -530,6 +555,7 @@ export default function LandingPage() {
 ## Wiring Steps (after creating the page file)
 
 For each block, also wire the route into the app by following the `new-page` skill steps 2–6:
+
 1. Add lazy import in `src/app/router.tsx`
 2. Add route definition with the layout wrapper from the template notes
 3. Add route constant in `src/config/constants.ts`
@@ -545,3 +571,33 @@ For each block, also wire the route into the app by following the `new-page` ski
 3. Replace `/api/[resource]` with your actual API endpoint
 4. Customize the UI to match your brand
 5. Run `/run-tests [PageName].tsx` to verify
+
+## Register in CLI Registry
+
+To make the block installable via `frontier-fe add block:<name>`, add an entry to `packages/cli/registry/registry.json`:
+
+```json
+{
+  "name": "<block-name>",
+  "type": "block",
+  "description": "<short description of the block>",
+  "files": [
+    {
+      "source": "templates/blocks/<category>/<block-name>.tsx",
+      "target": "src/app/routes/<PageName>.tsx"
+    }
+  ],
+  "npmDependencies": [],
+  "registryDependencies": [
+    "<list of required features, sections, and components>"
+  ]
+}
+```
+
+Then copy the page file to the templates directory:
+
+```bash
+cp src/app/routes/<PageName>.tsx packages/cli/templates/blocks/<category>/<block-name>.tsx
+```
+
+Also update `packages/cli/src/types.ts` to ensure `block` is in the `ItemType` union if not already there.

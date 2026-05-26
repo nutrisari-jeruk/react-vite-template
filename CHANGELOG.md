@@ -11,6 +11,7 @@ This release includes a complete overhaul of the UI component library with numer
 ### ✨ Added
 
 #### New Essential Components
+
 - **Dialog Component** (`src/components/ui/dialog/`)
   - Modal dialog with animations
   - Multiple sizes (sm, md, lg, xl, full)
@@ -31,6 +32,7 @@ This release includes a complete overhaul of the UI component library with numer
   - Destructive item variant
 
 #### New Utility Components
+
 - **Skeleton Component** (`src/components/ui/skeleton/`)
   - Loading placeholders with shimmer animation
   - Multiple variants (default, text, circular, rectangular)
@@ -43,15 +45,16 @@ This release includes a complete overhaul of the UI component library with numer
   - Fully keyboard accessible
 
 #### New Hooks
+
 - **`useMediaQuery`** (`src/hooks/use-media-query.ts`)
   - Track media query matches
   - SSR-safe implementation
-  
 - **`useBreakpoint`** (`src/hooks/use-breakpoint.ts`)
   - Track current Tailwind breakpoint
   - Convenience flags (isMobile, isTablet, isDesktop)
 
 #### Form System
+
 - **React Hook Form Integration** (`src/components/form/`)
   - `Form`, `FormField`, `FormItem` components
   - `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`
@@ -62,6 +65,7 @@ This release includes a complete overhaul of the UI component library with numer
 ### 🔧 Changed
 
 #### Component API Improvements
+
 - **Input Component**: Removed redundant `variant="error"` - `error` prop automatically applies error styling
 - **All Form Components**: Standardized prop names and error handling patterns
 - **DataTable Component**:
@@ -71,6 +75,7 @@ This release includes a complete overhaul of the UI component library with numer
   - Fixed colspan calculations for selection column
 
 #### Type Safety Improvements
+
 - **Combobox Component**: Removed type assertions, added proper type guards
 - All components now have explicit return types
 - Better null/undefined handling throughout
@@ -86,6 +91,7 @@ This release includes a complete overhaul of the UI component library with numer
 ### 🧪 Testing
 
 #### New Test Files
+
 - `Dialog.test.tsx` - Dialog component tests
 - `Toast.test.tsx` - Toast notification tests
 - `DropdownMenu.test.tsx` - Dropdown menu tests
@@ -96,6 +102,7 @@ This release includes a complete overhaul of the UI component library with numer
 - `use-breakpoint.test.ts` - Breakpoint hook tests
 
 #### Integration Tests
+
 - `Button.integration.test.tsx` - Async operations, form submission, keyboard navigation
 - `Form.integration.test.tsx` - Complete form workflows with validation
 
@@ -109,6 +116,7 @@ This release includes a complete overhaul of the UI component library with numer
 ### 📦 Exports
 
 Updated barrel exports in:
+
 - `src/components/ui/index.ts` - Organized by category (Form Controls, Feedback, Data Display, Overlays, Navigation)
 - `src/components/index.ts` - Added all new components
 - `src/hooks/index.ts` - Added new hooks
@@ -148,16 +156,18 @@ Updated barrel exports in:
 ### From 1.x to 2.0
 
 #### 1. Add Toast Provider (if using toasts)
+
 ```tsx
 // In app root
-import { ToastProvider } from '@/components';
+import { ToastProvider } from "@/components";
 
 <ToastProvider>
   <App />
-</ToastProvider>
+</ToastProvider>;
 ```
 
 #### 2. Update DataTable Usage
+
 ```tsx
 // Add getRowId for proper keys
 <DataTable
@@ -178,9 +188,16 @@ import { ToastProvider } from '@/components';
 ```
 
 #### 3. Use New Form Components (Optional)
+
 ```tsx
 // Instead of FormInput
-import { Form, FormField, FormItem, FormLabel, FormControl } from '@/components';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+} from "@/components";
 
 // Full React Hook Form integration
 <Form form={form} onSubmit={handleSubmit}>
@@ -196,10 +213,11 @@ import { Form, FormField, FormItem, FormLabel, FormControl } from '@/components'
       </FormItem>
     )}
   />
-</Form>
+</Form>;
 ```
 
 #### 4. Update Input Variant Usage
+
 ```tsx
 // Before
 <Input variant="error" />

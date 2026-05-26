@@ -249,20 +249,20 @@ function MyForm() {
 
 ## Available Components
 
-| Component | Location | Description |
-|-----------|----------|-------------|
-| Button | `ui/button` | Action buttons with variants |
-| Input | `ui/input` | Text input with validation |
-| Select | `ui/select` | Custom dropdown select |
-| Checkbox | `ui/checkbox` | Checkbox with label |
-| Switch | `ui/switch` | Toggle switch |
-| Toggle | `ui/toggle` | Toggle with dual labels |
-| Textarea | `ui/textarea` | Multi-line input |
-| Alert | `ui/alert` | Notification alerts |
-| Badge | `ui/badge` | Status badges |
-| Card | `ui/card` | Content cards |
-| Avatar | `ui/avatar` | User avatars |
-| AvatarGroup | `ui/avatar` | Grouped avatars |
+| Component   | Location      | Description                  |
+| ----------- | ------------- | ---------------------------- |
+| Button      | `ui/button`   | Action buttons with variants |
+| Input       | `ui/input`    | Text input with validation   |
+| Select      | `ui/select`   | Custom dropdown select       |
+| Checkbox    | `ui/checkbox` | Checkbox with label          |
+| Switch      | `ui/switch`   | Toggle switch                |
+| Toggle      | `ui/toggle`   | Toggle with dual labels      |
+| Textarea    | `ui/textarea` | Multi-line input             |
+| Alert       | `ui/alert`    | Notification alerts          |
+| Badge       | `ui/badge`    | Status badges                |
+| Card        | `ui/card`     | Content cards                |
+| Avatar      | `ui/avatar`   | User avatars                 |
+| AvatarGroup | `ui/avatar`   | Grouped avatars              |
 
 ## Related Documentation
 

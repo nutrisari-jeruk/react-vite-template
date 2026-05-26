@@ -69,9 +69,12 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
     process.exit(1);
   }
 
+  // Normalize names: strip block: prefix and resolve block items
+  const normalizedNames = names.map((n) => n.replace(/^block:/, ""));
+
   // Validate all requested items exist
   const requestedItems: RegistryItem[] = [];
-  for (const name of names) {
+  for (const name of normalizedNames) {
     const item = await getItem(name);
     if (!item) {
       logger.error(`Item "${name}" not found in registry.`);
@@ -84,12 +87,43 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
   }
 
   // Resolve all dependencies
-  const allItems = await resolveDependencies(names);
+  const allItems = await resolveDependencies(normalizedNames);
 
   // Check what's already installed
   const config = await readConfig(cwd);
   const alreadyInstalled = new Set(config.installed);
   const newItems = allItems.filter((item) => !alreadyInstalled.has(item.name));
+
+  // For blocks, check if target route file already exists and warn
+  const blockItems = requestedItems.filter((i) => i.type === "block");
+  if (blockItems.length > 0 && !options.overwrite && !options.yes) {
+    for (const block of blockItems) {
+      for (const file of block.files) {
+        const targetPath = `${cwd}/${file.target}`;
+        if (existsSync(targetPath)) {
+          logger.warn(
+            `Block ${pc.bold(block.name)} will overwrite ${pc.dim(file.target)}`
+          );
+          const { confirmOverwrite } = await prompts({
+            type: "confirm",
+            name: "confirmOverwrite",
+            message: `Overwrite ${file.target}?`,
+            initial: false,
+          });
+          if (!confirmOverwrite) {
+            logger.info(`Skipped block "${block.name}".`);
+            // Remove from requested and allItems
+            const idx = requestedItems.indexOf(block);
+            if (idx > -1) requestedItems.splice(idx, 1);
+            const allIdx = allItems.findIndex((i) => i.name === block.name);
+            if (allIdx > -1) allItems.splice(allIdx, 1);
+            const newIdx = newItems.findIndex((i) => i.name === block.name);
+            if (newIdx > -1) newItems.splice(newIdx, 1);
+          }
+        }
+      }
+    }
+  }
 
   if (newItems.length === 0) {
     logger.info("All requested items are already installed.");
@@ -152,7 +186,7 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
       installedNames.push(item.name);
       logger.success(`Added ${pc.bold(item.name)} (${files.length} files)`);
 
-      // Track pages that need route wiring
+      // Track pages and blocks that need route wiring
       if (item.type === "page" && item.route) {
         pagesWithRoutes.push(item);
       }
@@ -222,6 +256,10 @@ function getTypeColor(type: string): (s: string) => string {
       return pc.cyan;
     case "lib":
       return pc.gray;
+    case "block":
+      return pc.red;
+    case "section":
+      return pc.blue;
     default:
       return pc.white;
   }

@@ -25,6 +25,7 @@ Follow the shadcn model: publish the CLI to npm, store templates in this repo's 
 3. **Config file** (`frontier-fe.json` in user's project) — tracks installed items and registry URL.
 
 **User flow:**
+
 ```
 npx frontier-fe init my-app        # Minimal project with SOP stack, zero UI components
 cd my-app
@@ -86,6 +87,7 @@ my-app/
 ```
 
 **NPM dependencies installed by `init`:**
+
 - React 19, React DOM, React Router DOM
 - TanStack Query + DevTools
 - Axios 1.14.0 (pinned exact — security)
@@ -96,6 +98,7 @@ my-app/
 - Dev: TypeScript, Vite, @vitejs/plugin-react-swc, Vitest, Testing Library, ESLint, Prettier, Husky, lint-staged, MSW, jsdom
 
 **NOT included** (added via `add`):
+
 - All 20 UI components
 - All 5 hooks
 - Auth feature
@@ -109,11 +112,13 @@ my-app/
 Templates are fetched from this repo's GitHub at runtime, not bundled in the npm package.
 
 **Registry URL format:**
+
 ```
 https://raw.githubusercontent.com/{owner}/{repo}/{tag}/packages/cli
 ```
 
 **`add` flow step by step:**
+
 1. Fetch `registry.json` from `{registry}/registry/registry.json`
 2. Resolve item + recursive dependencies
 3. Fetch each template file from `{registry}/templates/{source path}`
@@ -124,12 +129,14 @@ https://raw.githubusercontent.com/{owner}/{repo}/{tag}/packages/cli
 8. Update `frontier-fe.json` installed list
 
 **Versioning via git tags:**
+
 - Tags: `frontier-fe@0.2.0`, `frontier-fe@0.3.0`, etc.
 - `npx frontier-fe@latest` resolves to the latest tag
 - `npx frontier-fe@0.2.0` fetches from that specific tag
 - Fallback to `main` branch if tag not found
 
 **Offline handling:**
+
 - Cache in `node_modules/.frontier-fe/cache/`
 - Warn on network failure, offer cached version
 
@@ -142,6 +149,7 @@ https://raw.githubusercontent.com/{owner}/{repo}/{tag}/packages/cli
 ### `npx frontier-fe init [project-name]`
 
 **Interactive flow:**
+
 1. Prompt for project name (if not provided)
 2. Prompt for package manager (npm / yarn / pnpm)
 3. Create project directory
@@ -156,6 +164,7 @@ https://raw.githubusercontent.com/{owner}/{repo}/{tag}/packages/cli
 ### `npx frontier-fe add [items...]`
 
 **Examples:**
+
 ```
 npx frontier-fe add button
 npx frontier-fe add button input dialog
@@ -167,6 +176,7 @@ npx frontier-fe add --all --type ui
 **Flags:** `--yes`, `--overwrite`, `--all`, `--type <ui|hook|feature|layout|page|lib>`
 
 **Flow:**
+
 1. Load `frontier-fe.json` — verify frontier-fe project
 2. Fetch registry (or use cache)
 3. Resolve items + dependencies
@@ -182,6 +192,7 @@ npx frontier-fe add --all --type ui
 ### `npx frontier-fe list`
 
 Shows items grouped by type with installed status:
+
 ```
 UI Components (2/20 installed):
   ✓ button         Button with 11 variants and 3 sizes
@@ -215,11 +226,13 @@ This repo is both the template source and a showcase app.
 **Showcase app (`src/`)** — demonstrates the full template. Equivalent to running `init` + `add --all`.
 
 **Staying in sync:**
+
 - A sync script (`npm run sync:showcase`) copies all templates into `src/` at correct target paths
 - CI runs this script to verify `src/` matches templates
 - Development workflow: edit template → run sync → verify in showcase
 
 **What moves to templates:**
+
 - All 20 UI components → `packages/cli/templates/ui/`
 - All 5 hooks → `packages/cli/templates/hooks/`
 - Auth feature → `packages/cli/templates/features/`
@@ -232,16 +245,19 @@ This repo is both the template source and a showcase app.
 ## 6. npm Publishing & Development
 
 **Package changes:**
+
 - Remove bundled templates from npm package
 - Ship only CLI logic (commands, utils, registry schema)
 - Build with `tsup` to single `dist/index.js` with shebang
 
 **Versioning:**
+
 - Single version for CLI + registry
 - Git tag per release: `frontier-fe@0.2.0`
 - Release steps: bump version → commit → tag → push tag → `npm publish`
 
 **Local development:**
+
 - Override registry URL for local testing:
   ```json
   { "registry": "./packages/cli" }
@@ -249,6 +265,7 @@ This repo is both the template source and a showcase app.
 - Or env var: `FRONTIER_FE_REGISTRY=./packages/cli`
 
 **CI checks:**
+
 - `npm run sync:showcase` — verify `src/` matches templates
 - `npm run build` — verify CLI builds
 - `npm run test` — CLI + showcase tests
@@ -258,14 +275,14 @@ This repo is both the template source and a showcase app.
 
 ## Registry Inventory
 
-| Type | Count | Items |
-|------|-------|-------|
-| UI | 20 | button, input, textarea, select, combobox, checkbox, switch, toggle, alert, badge, card, avatar, skeleton, table, pagination, tooltip, dialog, dropdown-menu, link, image-with-fallback |
-| Hook | 5 | use-breakpoint, use-media-query, use-local-storage, use-countdown, use-api-error |
-| Feature | 1 | auth |
-| Layout | 6 | main-layout, landing-layout, auth-layout, authenticated-layout, navbar, footer |
-| Page | 8 | home, about, login, register, dashboard, forget-password, reset-password, otp |
-| Lib | 3 | cn, api-client, env |
+| Type    | Count | Items                                                                                                                                                                                   |
+| ------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UI      | 20    | button, input, textarea, select, combobox, checkbox, switch, toggle, alert, badge, card, avatar, skeleton, table, pagination, tooltip, dialog, dropdown-menu, link, image-with-fallback |
+| Hook    | 5     | use-breakpoint, use-media-query, use-local-storage, use-countdown, use-api-error                                                                                                        |
+| Feature | 1     | auth                                                                                                                                                                                    |
+| Layout  | 6     | main-layout, landing-layout, auth-layout, authenticated-layout, navbar, footer                                                                                                          |
+| Page    | 8     | home, about, login, register, dashboard, forget-password, reset-password, otp                                                                                                           |
+| Lib     | 3     | cn, api-client, env                                                                                                                                                                     |
 
 Total: 43 items in the registry.
 

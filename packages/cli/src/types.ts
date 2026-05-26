@@ -1,4 +1,12 @@
-export type ItemType = "ui" | "feature" | "hook" | "page" | "layout" | "lib";
+export type ItemType =
+  | "ui"
+  | "feature"
+  | "hook"
+  | "page"
+  | "layout"
+  | "lib"
+  | "block"
+  | "section";
 
 export interface RegistryFile {
   source: string;

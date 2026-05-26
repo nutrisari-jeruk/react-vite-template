@@ -35,9 +35,7 @@ export async function getItem(name: string): Promise<RegistryItem | undefined> {
   return registry.items.find((item) => item.name === name);
 }
 
-export async function getItemsByType(
-  type: string
-): Promise<RegistryItem[]> {
+export async function getItemsByType(type: string): Promise<RegistryItem[]> {
   const registry = await loadRegistry();
   return registry.items.filter((item) => item.type === type);
 }

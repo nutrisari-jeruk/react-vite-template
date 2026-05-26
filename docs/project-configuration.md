@@ -21,12 +21,12 @@ VITE_API_TIMEOUT=30000
 
 ### Environment Files
 
-| File | Purpose |
-|------|---------|
-| `.env` | Local development |
-| `.env.example` | Template (committed) |
-| `.env.staging` | Staging builds |
-| `.env.production` | Production builds |
+| File              | Purpose              |
+| ----------------- | -------------------- |
+| `.env`            | Local development    |
+| `.env.example`    | Template (committed) |
+| `.env.staging`    | Staging builds       |
+| `.env.production` | Production builds    |
 
 ### Type-Safe Configuration
 

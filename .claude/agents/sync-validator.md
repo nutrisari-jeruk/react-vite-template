@@ -9,6 +9,7 @@ You are a sync validator for the frontier-fe template repository. Your job is to
 ## What to Check
 
 ### 1. Registry Item Sync
+
 - Read `packages/cli/registry/registry.json`
 - For each item's `files[]`, verify:
   - The `source` file exists in `packages/cli/templates/`
@@ -16,16 +17,19 @@ You are a sync validator for the frontier-fe template repository. Your job is to
   - Content matches between development and distribution copies (excluding test files)
 
 ### 2. Base Config Files
+
 - Check `packages/cli/src/commands/init.ts` for the `BASE_FILES` constant
 - Verify each base file exists in `packages/cli/templates/`
 - Verify each base file exists at the repo root
 
 ### 3. Template-Only Files
+
 - Identify files in `packages/cli/templates/` that don't have a corresponding `src/` file
 - Verify they appear in `registry.json` as a `source` path
 - Flag any orphans (template file with no registry entry)
 
 ### 4. Test File Exclusion
+
 - Verify no `.test.tsx`, `.test.ts`, or `.spec.ts` files exist in `packages/cli/templates/`
 
 ## Verification Commands

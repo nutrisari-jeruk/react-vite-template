@@ -9,7 +9,16 @@ interface ListOptions {
   type?: string;
 }
 
-const TYPE_ORDER: ItemType[] = ["ui", "hook", "lib", "layout", "feature", "page"];
+const TYPE_ORDER: ItemType[] = [
+  "ui",
+  "hook",
+  "lib",
+  "layout",
+  "feature",
+  "page",
+  "block",
+  "section",
+];
 
 const TYPE_LABELS: Record<ItemType, string> = {
   ui: "UI Components",
@@ -18,6 +27,8 @@ const TYPE_LABELS: Record<ItemType, string> = {
   layout: "Layouts",
   feature: "Features",
   page: "Pages",
+  block: "Blocks",
+  section: "Sections",
 };
 
 export async function list(options: ListOptions): Promise<void> {

@@ -5,6 +5,7 @@
 The `frontier-fe` CLI is a shadcn-style project scaffolder published to npm. It lets developers bootstrap SOP-compliant React projects and install components, features, hooks, and pages on demand — without cloning this repo.
 
 This repository has a dual role:
+
 - **Showcase app** — the `src/` directory is a fully functional dev app with a dev server, tests, and all 43 components
 - **CLI source** — the `packages/cli/` directory is the npm-published tool that scaffolds new projects
 
@@ -26,6 +27,7 @@ npx frontier-fe init my-app --yes --pm pnpm
 ```
 
 **What it does:**
+
 1. Creates the project directory with the full `src/` structure
 2. Copies base config files (vite.config.ts, tsconfig, eslint, tailwind, etc.)
 3. Scaffolds empty barrel exports and placeholder files with route wiring markers
@@ -34,11 +36,11 @@ npx frontier-fe init my-app --yes --pm pnpm
 
 **Flags:**
 
-| Flag | Description |
-|------|-------------|
-| `[project-name]` | Target directory name (positional, optional) |
+| Flag                     | Description                                              |
+| ------------------------ | -------------------------------------------------------- |
+| `[project-name]`         | Target directory name (positional, optional)             |
 | `--pm <npm\|yarn\|pnpm>` | Package manager override (auto-detected from lock files) |
-| `--yes` | Skip all prompts, use defaults |
+| `--yes`                  | Skip all prompts, use defaults                           |
 
 ### `add` — Install Components
 
@@ -56,6 +58,7 @@ npx frontier-fe add login-form --yes --overwrite
 ```
 
 **What it does:**
+
 1. Validates items exist in the registry
 2. Resolves and displays all dependencies (direct items + their dependencies)
 3. Copies template files to the correct target paths
@@ -66,12 +69,12 @@ npx frontier-fe add login-form --yes --overwrite
 
 **Flags:**
 
-| Flag | Description |
-|------|-------------|
-| `--all` | Install all items (requires `--type`) |
+| Flag                | Description                                                      |
+| ------------------- | ---------------------------------------------------------------- |
+| `--all`             | Install all items (requires `--type`)                            |
 | `-t, --type <type>` | Filter by type: `ui`, `feature`, `hook`, `page`, `layout`, `lib` |
-| `--yes` | Skip confirmation prompt |
-| `--overwrite` | Overwrite existing files without prompting |
+| `--yes`             | Skip confirmation prompt                                         |
+| `--overwrite`       | Overwrite existing files without prompting                       |
 
 ### `list` — Show Available Items
 
@@ -168,14 +171,17 @@ The sync script (`scripts/sync-templates.mjs`) does two things:
 2. **Base files** — parses the `BASE_FILES` constant from `init.ts`, copies repo-level config files (vite.config.ts, eslint config, tsconfig, etc.) to the templates directory
 
 **What sync covers:**
+
 - All 43 registry items (UI components, hooks, features, layouts, pages, lib)
 - Repo root config files (vite.config.ts, eslint.config.js, tsconfig, etc.)
 
 **What sync skips:**
+
 - Test files (`.test.tsx`, `.test.ts`, `.spec.ts`) — excluded from template copies
 - Base template `src/` files — intentionally minimal, not synced from the showcase app
 
 **Template-only files** are maintained directly in `packages/cli/templates/` (not in `src/`):
+
 - `lib/api-client.ts`, `lib/api-error.ts` — scaffolded by `init` into a new project
 - Any file that appears as a registry `source` but lacks a corresponding `src/` file
 
@@ -205,17 +211,17 @@ The sync script (`scripts/sync-templates.mjs`) does two things:
 }
 ```
 
-| Field | Description |
-|-------|-------------|
-| `name` | Unique identifier (e.g., `button`, `data-table`) |
-| `type` | Category: `ui`, `feature`, `hook`, `page`, `layout`, `lib` |
-| `description` | Short description shown in `list` command |
-| `files[].source` | Path within `packages/cli/templates/` |
-| `files[].target` | Destination path in the user's project |
-| `npmDependencies` | npm packages to install when this item is added |
+| Field                  | Description                                                    |
+| ---------------------- | -------------------------------------------------------------- |
+| `name`                 | Unique identifier (e.g., `button`, `data-table`)               |
+| `type`                 | Category: `ui`, `feature`, `hook`, `page`, `layout`, `lib`     |
+| `description`          | Short description shown in `list` command                      |
+| `files[].source`       | Path within `packages/cli/templates/`                          |
+| `files[].target`       | Destination path in the user's project                         |
+| `npmDependencies`      | npm packages to install when this item is added                |
 | `registryDependencies` | Other registry items this depends on (installed automatically) |
-| `route` | (page-type only) Route path and layout configuration |
-| `exports` | Barrel export statements to append |
+| `route`                | (page-type only) Route path and layout configuration           |
+| `exports`              | Barrel export statements to append                             |
 
 ### Adding a New Item
 
@@ -227,6 +233,7 @@ The sync script (`scripts/sync-templates.mjs`) does two things:
 ### Naming in Templates
 
 Template files follow the same SOP conventions as `src/`:
+
 - Component files: PascalCase (`Button.tsx`)
 - Hook files: camelCase (`useBreakpoint.ts`)
 - Utility files: kebab-case (`api-client.ts`)
@@ -246,6 +253,7 @@ npm publish
 ```
 
 **Pre-publish checklist:**
+
 - [ ] `npm run sync:templates:check` passes
 - [ ] `npm run cli:build` succeeds
 - [ ] `npm test` in root passes

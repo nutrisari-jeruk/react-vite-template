@@ -1,6 +1,6 @@
 ---
 name: new-page
-description: Scaffolds a new page route with component, router wiring, constants, metadata, and navigation
+description: 'Scaffolds a new page route with component, router wiring (lazy import + route definition), constants, metadata, and navbar integration. Supports 5 layout types: none (standalone), landing (public marketing), main (general app), auth (login/register), and authenticated (protected dashboard pages). Use when the user says "add a page", "create a route", "/new-page", or wants a new page with proper wiring.'
 disable-model-invocation: true
 ---
 

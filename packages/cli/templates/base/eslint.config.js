@@ -9,7 +9,9 @@ import tseslint from "typescript-eslint";
 import prettierPlugin from "eslint-plugin-prettier/recommended";
 
 export default [
-  { ignores: ["dist", "node_modules", "coverage", "*.config.js"] },
+  {
+    ignores: ["**/dist", "node_modules", "coverage", "scripts", "*.config.js"],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

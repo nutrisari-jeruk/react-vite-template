@@ -249,20 +249,138 @@ function MyForm() {
 
 ## Available Components
 
-| Component   | Location      | Description                  |
-| ----------- | ------------- | ---------------------------- |
-| Button      | `ui/button`   | Action buttons with variants |
-| Input       | `ui/input`    | Text input with validation   |
-| Select      | `ui/select`   | Custom dropdown select       |
-| Checkbox    | `ui/checkbox` | Checkbox with label          |
-| Switch      | `ui/switch`   | Toggle switch                |
-| Toggle      | `ui/toggle`   | Toggle with dual labels      |
-| Textarea    | `ui/textarea` | Multi-line input             |
-| Alert       | `ui/alert`    | Notification alerts          |
-| Badge       | `ui/badge`    | Status badges                |
-| Card        | `ui/card`     | Content cards                |
-| Avatar      | `ui/avatar`   | User avatars                 |
-| AvatarGroup | `ui/avatar`   | Grouped avatars              |
+| Component         | Location                 | Description                     |
+| ----------------- | ------------------------ | ------------------------------- |
+| Alert             | `ui/alert`               | Notification alerts             |
+| Avatar            | `ui/avatar`              | User avatars with size variants |
+| Badge             | `ui/badge`               | Status badges                   |
+| Button            | `ui/button`              | Action buttons with variants    |
+| Card              | `ui/card`                | Content cards with variants     |
+| Checkbox          | `ui/checkbox`            | Checkbox with label             |
+| Combobox          | `ui/combobox`            | Searchable dropdown select      |
+| Dialog            | `ui/dialog`              | Modal dialogs                   |
+| DropdownMenu      | `ui/dropdown-menu`       | Context/action menus            |
+| ImageWithFallback | `ui/image-with-fallback` | Image with error fallback       |
+| Input             | `ui/input`               | Text input with validation      |
+| Link              | `ui/link`                | Styled navigation links         |
+| Pagination        | `ui/pagination`          | Page navigation                 |
+| Select            | `ui/select`              | Custom dropdown select          |
+| Skeleton          | `ui/skeleton`            | Loading placeholders            |
+| Switch            | `ui/switch`              | Toggle switch                   |
+| Table             | `ui/table`               | Data table compound component   |
+| Textarea          | `ui/textarea`            | Multi-line input                |
+| Toggle            | `ui/toggle`              | Toggle with dual labels         |
+| Tooltip           | `ui/tooltip`             | Hover tooltips                  |
+
+## Component Props Reference
+
+### Button
+
+| Prop      | Values                                                                                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `variant` | `primary`, `secondary`, `danger`, `outline-primary`, `outline-secondary`, `outline-danger`, `white`, `outline-white`, `link`, `link-primary`, `link-muted` |
+| `size`    | `sm`, `md`, `lg`                                                                                                                                           |
+
+### Badge
+
+| Prop      | Values                                                       |
+| --------- | ------------------------------------------------------------ |
+| `variant` | `default`, `primary`, `success`, `warning`, `danger`, `info` |
+| `size`    | `sm`, `md`, `lg`                                             |
+| `pill`    | boolean                                                      |
+| `dot`     | boolean                                                      |
+
+### Alert
+
+| Prop      | Values                                 |
+| --------- | -------------------------------------- |
+| `variant` | `info`, `success`, `warning`, `danger` |
+
+### Card
+
+| Prop      | Values                                    |
+| --------- | ----------------------------------------- |
+| `variant` | `default`, `outlined`, `elevated`, `flat` |
+
+### Input
+
+| Prop      | Values                          |
+| --------- | ------------------------------- |
+| `size`    | `sm`, `md`, `lg`                |
+| `variant` | `default`, `filled`, `outlined` |
+
+### Textarea
+
+| Prop           | Values           |
+| -------------- | ---------------- |
+| `textareaSize` | `sm`, `md`, `lg` |
+
+### Select
+
+| Prop      | Values                          |
+| --------- | ------------------------------- |
+| `size`    | `sm`, `md`, `lg`                |
+| `variant` | `default`, `filled`, `outlined` |
+
+### Combobox
+
+| Prop           | Values                        |
+| -------------- | ----------------------------- |
+| `comboboxSize` | `sm`, `md`, `lg`              |
+| `options`      | `ComboboxOption[]` (required) |
+
+### Dialog
+
+| Prop   | Values                         |
+| ------ | ------------------------------ |
+| `size` | `sm`, `md`, `lg`, `xl`, `full` |
+
+### Tooltip
+
+| Prop        | Values                           |
+| ----------- | -------------------------------- |
+| `variant`   | `dark`, `light`                  |
+| `placement` | `top`, `bottom`, `left`, `right` |
+
+### Avatar
+
+| Prop   | Values                              |
+| ------ | ----------------------------------- |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl`, `2xl` |
+
+### Skeleton
+
+| Prop      | Values                                       |
+| --------- | -------------------------------------------- |
+| `variant` | `default`, `text`, `circular`, `rectangular` |
+
+### Link
+
+| Prop      | Values                        |
+| --------- | ----------------------------- |
+| `variant` | `default`, `primary`, `muted` |
+
+### Pagination
+
+| Prop            | Values                              |
+| --------------- | ----------------------------------- |
+| `currentPage`   | number (required)                   |
+| `totalPages`    | number (required)                   |
+| `onPageChange`  | `(page: number) => void` (required) |
+| `maxVisible`    | number                              |
+| `showFirstLast` | boolean                             |
+
+### DropdownMenu
+
+Compound component — no variant/size props. Uses `align`, `side`, `destructive` on sub-components.
+
+### Simple components (no variant/size props)
+
+- **Checkbox** — extends `InputHTMLAttributes`
+- **Switch** — `label`, `checked`, `onCheckedChange`, `disabled`
+- **Toggle** — `label`, `leftLabel`
+- **Table** — compound component, no variant props
+- **ImageWithFallback** — `fallback` node
 
 ## Related Documentation
 

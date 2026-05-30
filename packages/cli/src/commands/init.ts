@@ -108,6 +108,12 @@ const BASE_FILES = [
     source: "base/src/components/index.ts",
     target: "src/components/index.ts",
   },
+  // Docker configuration
+  { source: "base/Dockerfile", target: "Dockerfile" },
+  { source: "base/docker-compose.yml", target: "docker-compose.yml" },
+  { source: "base/.dockerignore", target: ".dockerignore" },
+  { source: "base/docker/nginx.conf", target: "docker/nginx.conf" },
+  { source: "base/deploy.sh", target: "deploy.sh" },
 ];
 
 const BASE_NPM_DEPS: Record<string, string> = {

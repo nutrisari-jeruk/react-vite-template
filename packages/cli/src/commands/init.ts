@@ -86,6 +86,10 @@ const BASE_FILES = [
   { source: "base/src/testing/index.ts", target: "src/testing/index.ts" },
   // Route pages
   {
+    source: "base/src/app/routes/Home.tsx",
+    target: "src/app/routes/Home.tsx",
+  },
+  {
     source: "base/src/app/routes/not-found.tsx",
     target: "src/app/routes/not-found.tsx",
   },

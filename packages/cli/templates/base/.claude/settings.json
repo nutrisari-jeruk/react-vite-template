@@ -38,6 +38,7 @@
     "playwright@claude-plugins-official": true,
     "github@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
-    "remember@claude-plugins-official": true
+    "remember@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true
   }
 }

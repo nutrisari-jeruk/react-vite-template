@@ -35,10 +35,13 @@ RUN npm ci --legacy-peer-deps --prefer-offline --no-audit
 # ============================================
 # Stage 3: Development - Hot reload enabled
 # ============================================
-FROM dependencies AS development
+FROM base AS development
 
 # Copy source code for hot reload
 COPY . .
+
+# Install dependencies (dev mode: use npm install for flexibility)
+RUN npm install --legacy-peer-deps --no-audit
 
 # Expose Vite dev server port
 EXPOSE 5173

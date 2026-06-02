@@ -19,6 +19,16 @@ This file provides guidance to Claude Code (claude.ai/code) and AI agents workin
   - [linting-and-code-quality.md](./docs/linting-and-code-quality.md) - ESLint rules, import ordering, type-aware linting
   - [cli-development.md](./docs/cli-development.md) - CLI architecture, commands, registry format, route wiring, publishing
 
+## Quick Start
+
+```bash
+npm install              # Install dependencies
+npm run dev              # Start development server (http://localhost:5173)
+npm run build            # Build for production
+npm run lint             # Run ESLint
+npm test                 # Run tests
+```
+
 ## SOP Standard
 
 This template follows **SOP Coding Standard 2.0 (React Vite SPA)**. Do NOT apply Next.js patterns (Server Components, Server Actions, Route Handlers).
@@ -26,6 +36,8 @@ This template follows **SOP Coding Standard 2.0 (React Vite SPA)**. Do NOT apply
 ## Architecture
 
 **Pattern:** Bulletproof React - feature-based modular structure
+
+**Error Handling:** App wrapped with `react-error-boundary` in `src/app/provider.tsx` with fallback UI and reload button
 
 ```
 src/
@@ -91,6 +103,7 @@ Use `h-dvh` (not `h-screen`), `text-balance` for headings, `tabular-nums` for da
 - Prefer interfaces for component props
 - Use `type` keyword for type-only imports: `import type { User }`
 - **`any` is prohibited** — ESLint errors on `@typescript-eslint/no-explicit-any`
+- `.remember/tmp` is ignored by ESLint for temp files
 
 ### Environment Variables
 

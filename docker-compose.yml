@@ -23,8 +23,6 @@ services:
       - ./src:/app/src:rw
       - ./public:/app/public:rw
       - ./index.html:/app/index.html:rw
-      # Share node_modules to avoid reinstalling
-      - dev_node_modules:/app/node_modules
     develop:
       watch:
         # Sync source files on change
@@ -97,10 +95,7 @@ services:
 # ============================================
 # Volumes
 # ============================================
-volumes:
-  dev_node_modules:
-    name: ${PROJECT_NAME:-frontier-fe}-node_modules
-    driver: local
+volumes: {}
 
 # ============================================
 # Networks

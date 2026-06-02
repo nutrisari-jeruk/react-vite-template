@@ -89,6 +89,24 @@ import type { User } from "@/types";
 
 **NEVER store server state in Zustand. NEVER fetch data with useEffect + useState.**
 
+### useEffect Guidelines
+
+**Avoid useEffect for:**
+
+- **Derived state** — Calculate during render: `const fullName = firstName + ' ' + lastName`
+- **Expensive calculations** — Use `useMemo`: `const visible = useMemo(() => filter(todos), [todos])`
+- **User events** — Handle in event handlers, not Effects
+- **Chaining state updates** — Calculate all next state in the event handler
+- **Notifying parent components** — Update both states during the event
+
+**Use useEffect for:**
+
+- Synchronizing with external systems (browser APIs, network, non-React widgets)
+- Subscribing to external stores (prefer `useSyncExternalStore` for browser APIs)
+- Analytics/page tracking (fires when component is displayed)
+
+**See:** [React: You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect)
+
 ### Styling
 
 ```typescript

@@ -249,6 +249,21 @@ export async function init(options: InitOptions): Promise<void> {
   }
   logger.success(`Copied ${copiedCount} base files.`);
 
+  // Copy docs separately — NOT in BASE_FILES to prevent sync from
+  // overwriting them with the showcase repo's own versions.
+  const DOCS_FILES = [
+    { source: "base/CLAUDE.md", target: "CLAUDE.md" },
+    { source: "base/README.md", target: "README.md" },
+  ];
+
+  for (const file of DOCS_FILES) {
+    const sourcePath = path.resolve(templatesDir, file.source);
+    const targetPath = path.resolve(cwd, file.target);
+    if (await fs.pathExists(sourcePath)) {
+      await fs.copy(sourcePath, targetPath, { overwrite: false });
+    }
+  }
+
   // Generate package.json if it doesn't exist
   const pkgPath = path.resolve(cwd, "package.json");
   if (!(await fs.pathExists(pkgPath))) {

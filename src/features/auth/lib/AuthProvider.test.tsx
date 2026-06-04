@@ -9,7 +9,7 @@ import {
   AuthLoader,
   loginInputSchema,
   registerInputSchema,
-} from "../AuthProvider";
+} from "./AuthProvider";
 
 const mockGetUser = vi.fn();
 const mockLogin = vi.fn();

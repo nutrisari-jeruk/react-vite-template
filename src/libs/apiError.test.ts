@@ -16,7 +16,7 @@ import {
   getErrorMessage,
   getFieldErrors,
   isRetryableError,
-} from "../apiError";
+} from "./apiError.ts";
 
 describe("API Error Classes", () => {
   describe("ApiError", () => {

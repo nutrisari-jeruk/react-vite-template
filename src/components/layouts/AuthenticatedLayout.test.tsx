@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { AuthenticatedLayout } from "../AuthenticatedLayout";
+import { AuthenticatedLayout } from "./AuthenticatedLayout";
 
 vi.mock("@/features/auth", () => ({
   AuthGuard: ({ children }: { children: React.ReactNode }) => (

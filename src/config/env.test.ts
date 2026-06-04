@@ -354,7 +354,7 @@ describe("Environment Configuration", () => {
       (import.meta.env as Record<string, unknown>).DEV = true;
       (import.meta.env as Record<string, string>).VITE_APP_URL = "://invalid";
       vi.resetModules();
-      await expect(import("../env")).rejects.toThrow();
+      await expect(import("./env")).rejects.toThrow();
       expect(mockConsoleError).toHaveBeenCalledWith(
         "Environment configuration error:",
         expect.any(Error)

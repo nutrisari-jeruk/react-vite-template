@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@/tests";
 import userEvent from "@testing-library/user-event";
-import { RegisterForm } from "../register-form";
+import { RegisterForm } from "./RegisterForm";
 
 const mockNavigate = vi.fn();
 const mockRegisterWithEmailAndPassword = vi.fn();

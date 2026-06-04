@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, waitFor } from "@/tests";
 import userEvent from "@testing-library/user-event";
-import { ForgetPasswordForm } from "../forget-password-form";
+import { ForgetPasswordForm } from "./ForgetPasswordForm";
 import { ROUTES } from "@/config/constants";
 import { TEST_CREDENTIALS } from "./test-utils";
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, waitFor } from "@/tests";
 import userEvent from "@testing-library/user-event";
-import { LoginForm } from "../login-form";
+import { LoginForm } from "./LoginForm";
 import { ROUTES } from "@/config/constants";
 import { TEST_CREDENTIALS, TEST_USER } from "./test-utils";
 

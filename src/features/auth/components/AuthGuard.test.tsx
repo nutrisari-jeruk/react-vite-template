@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { AuthGuard } from "../auth-guard";
+import { AuthGuard } from "./AuthGuard";
 
 const mockUseUser = vi.fn();
 const mockGetAccessToken = vi.fn();
 const mockNavigate = vi.fn();
 
-vi.mock("../../lib/auth-provider", () => ({
+vi.mock("../../lib/AuthProvider", () => ({
   useUser: () => mockUseUser(),
 }));
 

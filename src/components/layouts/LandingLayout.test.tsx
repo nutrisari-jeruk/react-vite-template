@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { LandingLayout } from "../LandingLayout";
+import { LandingLayout } from "./LandingLayout";
 
 describe("LandingLayout", () => {
   it("renders outlet without navbar", () => {

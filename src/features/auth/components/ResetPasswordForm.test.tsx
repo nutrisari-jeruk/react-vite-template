@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, waitFor } from "@/tests";
 import userEvent from "@testing-library/user-event";
-import { ResetPasswordForm } from "../reset-password-form";
+import { ResetPasswordForm } from "./ResetPasswordForm";
 import { ROUTES } from "@/config/constants";
 
 // Mock navigate function - must be defined before vi.mock()

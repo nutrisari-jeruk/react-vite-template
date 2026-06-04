@@ -11,7 +11,7 @@ import {
   resendOtp,
   resendResetPasswordOtp,
   validateResetPasswordOtp,
-} from "../authApi";
+} from "./authApi.ts";
 
 const mockApiGet = vi.fn();
 const mockApiPost = vi.fn();

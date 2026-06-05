@@ -7,7 +7,7 @@ import { Navbar } from "./Navbar";
 const mockUseUser = vi.fn();
 const mockLogout = vi.fn();
 
-vi.mock("@/features/auth/lib/auth-provider", () => ({
+vi.mock("@/features/auth/lib/AuthProvider", () => ({
   useUser: () => mockUseUser(),
   useLogout: () => ({ mutate: mockLogout }),
 }));

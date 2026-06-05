@@ -19,10 +19,10 @@ vi.mock("@/features/auth/api/authApi", async () => {
 });
 
 // Mock token storage
-vi.mock("@/features/auth/lib/token-storage", async () => {
+vi.mock("@/features/auth/lib/tokenStorage", async () => {
   const actual = await vi.importActual<
-    typeof import("@/features/auth/lib/token-storage")
-  >("@/features/auth/lib/token-storage");
+    typeof import("@/features/auth/lib/tokenStorage")
+  >("@/features/auth/lib/tokenStorage");
   return {
     ...actual,
     setAccessToken: vi.fn(),

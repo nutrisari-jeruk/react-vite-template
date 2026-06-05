@@ -7,11 +7,11 @@ const mockUseUser = vi.fn();
 const mockGetAccessToken = vi.fn();
 const mockNavigate = vi.fn();
 
-vi.mock("../../lib/AuthProvider", () => ({
+vi.mock("../lib/AuthProvider", () => ({
   useUser: () => mockUseUser(),
 }));
 
-vi.mock("../../lib/token-storage", () => ({
+vi.mock("../lib/tokenStorage", () => ({
   getAccessToken: () => mockGetAccessToken(),
 }));
 

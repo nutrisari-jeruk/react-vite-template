@@ -9,7 +9,7 @@ vi.mock("@/features/auth", () => ({
   ),
 }));
 
-vi.mock("../navbar", () => ({
+vi.mock("./Navbar", () => ({
   Navbar: () => <nav data-testid="navbar">Navbar</nav>,
 }));
 

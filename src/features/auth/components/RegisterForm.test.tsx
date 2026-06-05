@@ -17,26 +17,26 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-vi.mock("../../api/auth-api", () => ({
+vi.mock("../api/authApi", () => ({
   registerWithEmailAndPassword: (...args: unknown[]) =>
     mockRegisterWithEmailAndPassword(...args),
 }));
 
-vi.mock("../../lib/token-storage", async () => {
-  const actual = await vi.importActual<
-    typeof import("../../lib/token-storage")
-  >("../../lib/token-storage");
+vi.mock("../lib/tokenStorage", async () => {
+  const actual = await vi.importActual<typeof import("../lib/tokenStorage")>(
+    "../lib/tokenStorage"
+  );
   return {
     ...actual,
     setAccessToken: vi.fn(),
   };
 });
 
-vi.mock("../../lib/auth-provider", async () => {
+vi.mock("../lib/AuthProvider", async () => {
   const { z } = await import("zod");
-  const actual = await vi.importActual<
-    typeof import("../../lib/auth-provider")
-  >("../../lib/auth-provider");
+  const actual = await vi.importActual<typeof import("../lib/AuthProvider")>(
+    "../lib/AuthProvider"
+  );
 
   const testRegisterSchema = z.object({
     email: z.string().min(1, "Email is required").email("Invalid email"),

@@ -9,7 +9,7 @@ import {
   AuthLoader,
   loginInputSchema,
   registerInputSchema,
-} from "../AuthProvider";
+} from "./AuthProvider";
 
 const mockGetUser = vi.fn();
 const mockLogin = vi.fn();
@@ -18,14 +18,14 @@ const mockLogout = vi.fn();
 const mockSetAccessToken = vi.fn();
 const mockClearAuthTokens = vi.fn();
 
-vi.mock("../../api/auth-api", () => ({
+vi.mock("../api/authApi", () => ({
   getUser: (...args: unknown[]) => mockGetUser(...args),
   loginWithEmailAndPassword: (...args: unknown[]) => mockLogin(...args),
   registerWithEmailAndPassword: (...args: unknown[]) => mockRegister(...args),
   logout: (...args: unknown[]) => mockLogout(...args),
 }));
 
-vi.mock("../token-storage", () => ({
+vi.mock("./tokenStorage", () => ({
   setAccessToken: (...args: unknown[]) => mockSetAccessToken(...args),
   clearAuthTokens: () => mockClearAuthTokens(),
 }));

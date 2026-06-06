@@ -36,7 +36,7 @@ vi.mock("@/features/auth", async () => {
 });
 
 // Mock OtpForm component - accepts onSuccess and exposes trigger for tests
-vi.mock("@/features/auth/components/otp-form", () => ({
+vi.mock("@/features/auth/components/OtpForm", () => ({
   OtpForm: ({
     onSuccess,
   }: {

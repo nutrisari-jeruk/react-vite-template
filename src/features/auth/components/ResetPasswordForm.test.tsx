@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, waitFor } from "@/tests";
 import userEvent from "@testing-library/user-event";
-import { ResetPasswordForm } from "../reset-password-form";
+import { ResetPasswordForm } from "./ResetPasswordForm";
 import { ROUTES } from "@/config/constants";
 
 // Mock navigate function - must be defined before vi.mock()
@@ -29,10 +29,10 @@ vi.mock("react-router-dom", async () => {
 });
 
 // Mock auth API
-vi.mock("@/features/auth/api/auth-api", async () => {
+vi.mock("@/features/auth/api/authApi", async () => {
   const actual = await vi.importActual<
-    typeof import("@/features/auth/api/auth-api")
-  >("@/features/auth/api/auth-api");
+    typeof import("@/features/auth/api/authApi")
+  >("@/features/auth/api/authApi");
   return {
     ...actual,
     setNewPassword: (...args: unknown[]) => mockSetNewPassword(...args),

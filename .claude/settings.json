@@ -25,8 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "case \"$CLAUDE_TOOL_INPUT_FILE_PATH\" in *.env|*.env.*|\".env\") exit 1;; *) exit 0;; esac",
-            "message": "Editing .env files requires confirmation. These files may contain secrets."
+            "command": "case \"$CLAUDE_TOOL_INPUT_FILE_PATH\" in *.env|*.env.*|\".env\") exit 1;; *) exit 0;; esac"
           }
         ]
       }
@@ -35,6 +34,11 @@
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "remember@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true
   }
 }

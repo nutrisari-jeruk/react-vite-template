@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { FormSelect } from "../FormSelect";
+import { FormSelect } from "./FormSelect";
 
 describe("FormSelect Component", () => {
   const mockOptions = [

@@ -53,14 +53,8 @@ function LazyPage({ children }: { children: React.ReactNode }) {
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const hasToken = !!getAccessToken();
 
-  useEffect(() => {
-    if (!hasToken) {
-      window.location.href = "/login";
-    }
-  }, [hasToken]);
-
   if (!hasToken) {
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;

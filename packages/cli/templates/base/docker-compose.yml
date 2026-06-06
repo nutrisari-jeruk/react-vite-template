@@ -1,0 +1,106 @@
+# ============================================
+# Docker Compose configuration
+# ============================================
+# Development: docker compose --profile dev up
+# Production:  docker compose --profile prod up --build
+
+services:
+  # ============================================
+  # Development Service
+  # ============================================
+  app-dev:
+    build:
+      context: .
+      target: development
+    container_name: ${PROJECT_NAME:-frontier-fe}-dev
+    ports:
+      - "${DEV_PORT:-5173}:5173"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true # Enable hot reload in Docker
+    volumes:
+      # Mount source code for hot reload
+      - ./src:/app/src:rw
+      - ./public:/app/public:rw
+      - ./index.html:/app/index.html:rw
+    develop:
+      watch:
+        # Sync source files on change
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - "**/*.test.*"
+            - "**/__tests__/**"
+        # Rebuild on package.json change
+        - action: rebuild
+          path: ./package.json
+        # Sync config files
+        - action: sync
+          path: ./vite.config.ts
+          target: /app/vite.config.ts
+        - action: sync
+          path: ./tailwind.config.js
+          target: /app/tailwind.config.js
+        - action: sync
+          path: ./postcss.config.js
+          target: /app/postcss.config.js
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    profiles:
+      - dev
+    networks:
+      - app-network
+
+  # ============================================
+  # Production Service
+  # ============================================
+  app-prod:
+    build:
+      context: .
+      target: production
+      args:
+        - NODE_VERSION=22.22.0
+        - NODE_ENV=production
+    container_name: ${PROJECT_NAME:-frontier-fe}-prod
+    ports:
+      - "${PROD_PORT:-80}:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    # Resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: ${PROD_MEMORY_LIMIT:-512M}
+          cpus: ${PROD_CPU_LIMIT:-1.0}
+        reservations:
+          memory: ${PROD_MEMORY_RESERVATION:-128M}
+          cpus: ${PROD_CPU_RESERVATION:-0.25}
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    # Read-only root filesystem
+    read_only: true
+    # Temporary filesystems
+    tmpfs:
+      - /var/cache/nginx:rw,size=10M
+      - /var/run:rw,size=5M
+    profiles:
+      - prod
+    networks:
+      - app-network
+
+# ============================================
+# Volumes
+# ============================================
+volumes: {}
+
+# ============================================
+# Networks
+# ============================================
+networks:
+  app-network:
+    name: ${PROJECT_NAME:-frontier-fe}-network
+    driver: bridge

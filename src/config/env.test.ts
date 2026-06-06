@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { env, isDevelopment, isProduction, isStaging } from "../env";
+import { env, isDevelopment, isProduction, isStaging } from "./env";
 
 // Mock import.meta.env
 const mockEnv = {
@@ -312,7 +312,7 @@ describe("Environment Configuration", () => {
     it("warns and falls back to development when VITE_APP_ENV is invalid", async () => {
       (import.meta.env as Record<string, string>).VITE_APP_ENV = "invalid";
       vi.resetModules();
-      const { env: reloadedEnv } = await import("../env");
+      const { env: reloadedEnv } = await import("./env");
       expect(reloadedEnv.appEnv).toBe("development");
       expect(mockConsoleWarn).toHaveBeenCalledWith(
         "Invalid VITE_APP_ENV: invalid, using 'development'"
@@ -323,7 +323,7 @@ describe("Environment Configuration", () => {
       (import.meta.env as Record<string, string>).VITE_APP_URL =
         "not-a-valid-url";
       vi.resetModules();
-      await expect(import("../env")).rejects.toThrow("Invalid URL format");
+      await expect(import("./env")).rejects.toThrow("Invalid URL format");
       expect(mockConsoleError).toHaveBeenCalledWith(
         "Environment configuration error:",
         expect.any(Error)
@@ -333,7 +333,7 @@ describe("Environment Configuration", () => {
     it("warns and uses default when toNumber value is below min", async () => {
       (import.meta.env as Record<string, string>).VITE_API_TIMEOUT = "500";
       vi.resetModules();
-      const { env: reloadedEnv } = await import("../env");
+      const { env: reloadedEnv } = await import("./env");
       expect(reloadedEnv.apiTimeout).toBe(10000);
       expect(mockConsoleWarn).toHaveBeenCalledWith(
         "Value 500 is below minimum 1000, using 10000"
@@ -343,7 +343,7 @@ describe("Environment Configuration", () => {
     it("warns and uses default when toNumber value exceeds max", async () => {
       (import.meta.env as Record<string, string>).VITE_QUERY_RETRY_TIMES = "10";
       vi.resetModules();
-      const { env: reloadedEnv } = await import("../env");
+      const { env: reloadedEnv } = await import("./env");
       expect(reloadedEnv.queryRetryTimes).toBe(3);
       expect(mockConsoleWarn).toHaveBeenCalledWith(
         "Value 10 exceeds maximum 5, using 3"
@@ -354,7 +354,7 @@ describe("Environment Configuration", () => {
       (import.meta.env as Record<string, unknown>).DEV = true;
       (import.meta.env as Record<string, string>).VITE_APP_URL = "://invalid";
       vi.resetModules();
-      await expect(import("../env")).rejects.toThrow();
+      await expect(import("./env")).rejects.toThrow();
       expect(mockConsoleError).toHaveBeenCalledWith(
         "Environment configuration error:",
         expect.any(Error)

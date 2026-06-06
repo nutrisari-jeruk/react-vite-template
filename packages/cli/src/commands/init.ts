@@ -86,6 +86,10 @@ const BASE_FILES = [
   { source: "base/src/testing/index.ts", target: "src/testing/index.ts" },
   // Route pages
   {
+    source: "base/src/app/routes/Home.tsx",
+    target: "src/app/routes/Home.tsx",
+  },
+  {
     source: "base/src/app/routes/not-found.tsx",
     target: "src/app/routes/not-found.tsx",
   },
@@ -108,16 +112,32 @@ const BASE_FILES = [
     source: "base/src/components/index.ts",
     target: "src/components/index.ts",
   },
+  // Docker configuration
+  { source: "base/Dockerfile", target: "Dockerfile" },
+  { source: "base/docker-compose.yml", target: "docker-compose.yml" },
+  { source: "base/.dockerignore", target: ".dockerignore" },
+  { source: "base/docker/nginx.conf", target: "docker/nginx.conf" },
+  { source: "base/deploy.sh", target: "deploy.sh" },
 ];
 
 const BASE_NPM_DEPS: Record<string, string> = {
+  "@base-ui/react": "^1.1.0",
+  "@hookform/resolvers": "^5.2.2",
   "@tanstack/react-query": "^5.100.14",
+  "@tanstack/react-query-devtools": "^5.96.1",
   axios: "1.14.0",
   clsx: "^2.1.1",
+  "lucide-react": "^0.562.0",
+  motion: "^12.27.0",
   react: "^19.2.6",
   "react-dom": "^19.2.6",
+  "react-error-boundary": "^6.1.1",
+  "react-hook-form": "^7.70.0",
+  "react-query-auth": "^2.4.3",
   "react-router-dom": "^7.15.1",
   "tailwind-merge": "^3.6.0",
+  zod: "^4.3.6",
+  zustand: "^5.0.12",
 };
 
 const BASE_DEV_DEPS: Record<string, string> = {
@@ -144,15 +164,18 @@ const BASE_DEV_DEPS: Record<string, string> = {
   husky: "^9.1.7",
   jsdom: "^27.4.0",
   "lint-staged": "^16.4.0",
+  msw: "^2.12.7",
   postcss: "^8.5.15",
   prettier: "^3.8.3",
   "prettier-plugin-tailwindcss": "^0.7.4",
+  "rollup-plugin-visualizer": "^6.0.5",
   tailwindcss: "^4.3.0",
   terser: "^5.48.0",
   typescript: "~5.9.3",
   "typescript-eslint": "^8.59.4",
   vite: "^8.0.14",
   vitest: "^4.1.7",
+  "@vitest/coverage-v8": "^4.1.2",
 };
 
 export async function init(options: InitOptions): Promise<void> {
@@ -225,6 +248,21 @@ export async function init(options: InitOptions): Promise<void> {
     }
   }
   logger.success(`Copied ${copiedCount} base files.`);
+
+  // Copy docs separately — NOT in BASE_FILES to prevent sync from
+  // overwriting them with the showcase repo's own versions.
+  const DOCS_FILES = [
+    { source: "base/CLAUDE.md", target: "CLAUDE.md" },
+    { source: "base/README.md", target: "README.md" },
+  ];
+
+  for (const file of DOCS_FILES) {
+    const sourcePath = path.resolve(templatesDir, file.source);
+    const targetPath = path.resolve(cwd, file.target);
+    if (await fs.pathExists(sourcePath)) {
+      await fs.copy(sourcePath, targetPath, { overwrite: false });
+    }
+  }
 
   // Generate package.json if it doesn't exist
   const pkgPath = path.resolve(cwd, "package.json");

@@ -2,23 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) and AI agents working with this repository.
 
-## Documentation
-
-- **CLAUDE.md** (this file) - Conventions, patterns, and rules
-- **[README.md](./README.md)** - Detailed component examples, usage patterns, and implementation
-- **[docs/](./docs/)** - In-depth reference:
-  - [project-structure.md](./docs/project-structure.md) - Full directory tree, naming conventions, import rules
-  - [components-and-styling.md](./docs/components-and-styling.md) - Component organization, variant patterns, **props reference**, Tailwind usage
-  - [api-layer.md](./docs/api-layer.md) - API client architecture, interceptors, error classes
-  - [error-handling.md](./docs/error-handling.md) - Error boundary patterns, API error classes, useApiError hook
-  - [state-management.md](./docs/state-management.md) - TanStack Query patterns, URL state, form state
-  - [testing.md](./docs/testing.md) - Test setup, patterns, custom render, best practices
-  - [security.md](./docs/security.md) - Token storage, XSS/CSRF, input validation
-  - [docker.md](./docs/docker.md) - Multi-stage builds, compose profiles, deploy script, nginx config
-  - [project-configuration.md](./docs/project-configuration.md) - TypeScript, Vite, ESLint, Prettier, Vitest config
-  - [linting-and-code-quality.md](./docs/linting-and-code-quality.md) - ESLint rules, import ordering, type-aware linting
-  - [cli-development.md](./docs/cli-development.md) - CLI architecture, commands, registry format, route wiring, publishing
-
 ## Quick Start
 
 ```bash
@@ -31,7 +14,7 @@ npm test                 # Run tests
 
 ## SOP Standard
 
-This template follows **SOP Coding Standard 2.0 (React Vite SPA)**. Do NOT apply Next.js patterns (Server Components, Server Actions, Route Handlers).
+This project follows **SOP Coding Standard 2.0 (React Vite SPA)**. Do NOT apply Next.js patterns (Server Components, Server Actions, Route Handlers).
 
 ## Architecture
 
@@ -44,11 +27,10 @@ src/
 ├── app/                  # Application layer (router, providers, routes)
 ├── components/           # Shared components (ui/, layouts/)
 ├── config/               # Environment variables, constants
-├── features/             # Self-contained feature modules
+├── features/             # Self-contained feature modules (add via frontier-fe add)
 ├── hooks/                # Shared custom hooks
-├── libs/                 # Third-party configs (axios instance, queryClient)
-├── stores/               # Zustand global state stores
-├── tests/                # Test utilities and MSW setup
+├── lib/                  # Third-party configs (axios instance, queryClient)
+├── testing/              # Test utilities and MSW setup
 ├── types/                # Shared TypeScript types
 └── utils/                # Utility functions
 ```
@@ -61,20 +43,20 @@ src/
 // 1. React/external → 2. @/ aliases → 3. type keyword
 import { useState } from "react";
 import { Button } from "@/components/ui";
-import { api } from "@/libs";
+import { api } from "@/lib";
 import type { User } from "@/types";
 ```
 
 - Use barrel exports: `import { Button } from "@/components/ui"`
 - Use `@/` aliases for cross-directory imports
-- API calls via `api` from `@//libs` only
+- API calls via `api` from `@/lib` only
 
 ### Naming
 
 | Type          | Convention                          | Example                                |
 | ------------- | ----------------------------------- | -------------------------------------- |
 | UI components | lowercase folder, PascalCase file   | `button/Button.tsx` → `Button`         |
-| Page routes   | PascalCase, default export          | `Home.tsx`, `DataTable.tsx`            |
+| Page routes   | PascalCase, default export          | `Home.tsx`, `Dashboard.tsx`            |
 | Hooks         | camelCase with `use` prefix         | `useAuth.ts`, `useLocalStorage.ts`     |
 | Tests         | Co-located, same name + `.test.tsx` | `Button.test.tsx` next to `Button.tsx` |
 
@@ -121,7 +103,6 @@ Use `h-dvh` (not `h-screen`), `text-balance` for headings, `tabular-nums` for da
 - Prefer interfaces for component props
 - Use `type` keyword for type-only imports: `import type { User }`
 - **`any` is prohibited** — ESLint errors on `@typescript-eslint/no-explicit-any`
-- `.remember/tmp` is ignored by ESLint for temp files
 
 ### Environment Variables
 
@@ -129,11 +110,13 @@ Access via `env` from `@/config`, not `import.meta.env` directly. All `VITE_*` v
 
 ### API
 
-Always use `api` from `@/libs`. **axios is pinned to exactly `1.17.0`** (no `^` or `~`) — do not upgrade without Tech Lead approval.
+Always use `api` from `@/lib`. **axios is pinned to exactly `1.14.0`** (no `^` or `~`) — do not upgrade without Tech Lead approval.
 
 ## Common Tasks
 
 ### Adding a UI Component
+
+Use the `/new-component` Claude Code skill, or manually:
 
 1. Create `src/components/ui/[name]/[Name].tsx` (PascalCase)
 2. Create barrel `index.ts`
@@ -142,10 +125,12 @@ Always use `api` from `@/libs`. **axios is pinned to exactly `1.17.0`** (no `^` 
 
 ### Adding a Page
 
+Use the `/new-page` Claude Code skill, or manually:
+
 1. Create `src/app/routes/[PageName].tsx` (PascalCase, default export)
 2. Add lazy import in `src/app/router.tsx`
 3. Add to `ROUTES` in `src/config/constants.ts`
-4. Update navigation
+4. Update navigation in `src/components/layouts/navbar.tsx`
 
 ### Adding a Feature
 
@@ -174,7 +159,6 @@ Always use `api` from `@/libs`. **axios is pinned to exactly `1.17.0`** (no `^` 
 - Use `cn()` for conditional classNames
 - Use `type` keyword for type-only imports
 - Use TanStack Query for ALL data fetching
-- **Check [Component Props Reference](./docs/components-and-styling.md#component-props-reference) before using component variants/sizes**
 
 ### Don't
 
@@ -183,12 +167,11 @@ Always use `api` from `@/libs`. **axios is pinned to exactly `1.17.0`** (no `^` 
 - Import from internal feature paths or create circular dependencies
 - Use template literals for className merging
 - Use relative imports for cross-directory imports
-- Guess component props — always verify first
-- Upgrade axios without Tech Lead approval (pinned to 1.17.0)
+- Upgrade axios without Tech Lead approval (pinned to 1.14.0)
 
-## Docker Deployment
+## Docker
 
-Multi-stage setup with `dev`/`prod` profiles. See [docs/docker.md](./docs/docker.md) for full reference.
+Multi-stage setup with `dev`/`prod` profiles.
 
 ```bash
 docker compose --profile dev up        # Development
@@ -196,16 +179,10 @@ docker compose --profile prod up --build  # Production
 ./deploy.sh                            # Deploy script (production only)
 ```
 
-## CLI Development
-
-The `frontier-fe` CLI lives in `packages/cli/` (published to npm). See [docs/cli-development.md](./docs/cli-development.md) for full reference.
+## CLI Commands
 
 ```bash
-npm run sync:templates          # Copy src/ → packages/cli/templates/
-npm run sync:templates:check    # CI mode — exits non-zero if out of sync
-npm run cli:build               # Build CLI (tsup → packages/cli/dist/)
+frontier-fe add button input card       # Add UI components
+frontier-fe add auth                    # Add feature
+frontier-fe list                        # See all available items
 ```
-
-**After editing template source files:** Run `npm run sync:templates` before committing.
-
-**Before changing conventions,** update both this file and the corresponding [docs/](./docs/) files to keep documentation in sync.

@@ -2,12 +2,12 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { Navbar } from "../navbar";
+import { Navbar } from "./Navbar";
 
 const mockUseUser = vi.fn();
 const mockLogout = vi.fn();
 
-vi.mock("@/features/auth/lib/auth-provider", () => ({
+vi.mock("@/features/auth/lib/AuthProvider", () => ({
   useUser: () => mockUseUser(),
   useLogout: () => ({ mutate: mockLogout }),
 }));

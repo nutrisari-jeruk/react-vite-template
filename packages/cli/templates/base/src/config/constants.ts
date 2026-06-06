@@ -4,6 +4,7 @@
 
 export const ROUTES = {
   // --- FRONTIER-FE: ROUTE CONSTANTS ---
+  HOME: "/",
   NOT_FOUND: "*",
 } as const;
 

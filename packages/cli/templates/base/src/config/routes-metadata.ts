@@ -10,6 +10,7 @@ export interface RouteMetadata {
 
 export const ROUTE_METADATA: Record<string, RouteMetadata> = {
   // --- FRONTIER-FE: ROUTE METADATA ---
+  "/": { title: "Home", description: "Welcome" },
 };
 
 /**

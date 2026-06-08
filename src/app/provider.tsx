@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { env } from "@/config/env";
 import { isRetryableError } from "@/libs/apiError";
+import { ToastProvider } from "@/components/ui";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +42,8 @@ interface AppProviderProps {
 
 export function AppProvider({ children }: AppProviderProps) {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <ToastProvider>{children}</ToastProvider>
+    </QueryClientProvider>
   );
 }

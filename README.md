@@ -128,6 +128,10 @@ The project includes a comprehensive set of **custom-built UI components** with 
 - `Alert` - Dismissible alerts with floating positions and animations
 - `Tooltip` - Contextual tooltips with dark and light variants, multiple placements
 - `Toast` - Global notification system with multiple variants and positions
+- `Spinner` - Loading indicators with 3 variants (spinner, dots, bars) and 5 sizes
+- `Progress` - Linear and circular progress indicators with animations
+- `Tabs` - Accessible tab panels with controlled/uncontrolled modes
+- `Accordion` - Collapsible content sections with animations
 
 **Overlay Components:**
 
@@ -144,7 +148,9 @@ The project includes a comprehensive set of **custom-built UI components** with 
 import {
   Button, Input, Card, Alert, Switch, Toggle, Tooltip,
   Dialog, DialogTrigger, DialogContent, DialogFooter,
-  useToast, Skeleton, Pagination
+  useToast, Spinner, Progress, Tabs, TabsList, TabsTrigger, TabsContent,
+  Accordion, AccordionItem, AccordionTrigger, AccordionPanel,
+  Skeleton, Pagination
 } from '@/components/ui'
 
 function MyComponent() {
@@ -215,6 +221,60 @@ function MyComponent() {
       <Alert variant="info" dismissible>
         Information message
       </Alert>
+
+      {/* Spinner - Loading indicator */}
+      <Spinner size="md" variant="spinner" label="Loading data..." />
+      <Spinner size="lg" variant="dots" />
+      <Spinner size="xl" variant="bars" />
+
+      {/* Progress indicators */}
+      {/* Linear progress */}
+      <Progress value={60} max={100} label="Loading..." showValue />
+      {/* Circular progress */}
+      <Progress value={75} max={100} variant="circular" size="lg" showValue />
+
+      {/* Tabs */}
+      <Tabs defaultValue="tab1" onValueChange={(value) => console.log(value)}>
+        <TabsList>
+          <TabsTrigger value="tab1">Overview</TabsTrigger>
+          <TabsTrigger value="tab2">Details</TabsTrigger>
+          <TabsTrigger value="tab3">Settings</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1">
+          <h3>Overview Content</h3>
+          <p>This is the overview panel content.</p>
+        </TabsContent>
+        <TabsContent value="tab2">
+          <h3>Details Content</h3>
+          <p>This is the details panel content.</p>
+        </TabsContent>
+        <TabsContent value="tab3">
+          <h3>Settings Content</h3>
+          <p>This is the settings panel content.</p>
+        </TabsContent>
+      </Tabs>
+
+      {/* Accordion */}
+      <Accordion defaultValue="item-1">
+        <AccordionItem value="item-1">
+          <AccordionTrigger>Section 1</AccordionTrigger>
+          <AccordionPanel>
+            <p>Content for section 1. This panel expands when you click the trigger.</p>
+          </AccordionPanel>
+        </AccordionItem>
+        <AccordionItem value="item-2">
+          <AccordionTrigger>Section 2</AccordionTrigger>
+          <AccordionPanel>
+            <p>Content for section 2. Only one panel can be open at a time.</p>
+          </AccordionPanel>
+        </AccordionItem>
+        <AccordionItem value="item-3">
+          <AccordionTrigger>Section 3</AccordionTrigger>
+          <AccordionPanel>
+            <p>Content for section 3. The panels include smooth animations.</p>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
     </Card>
   )
 }
@@ -265,6 +325,129 @@ import { Tooltip } from '@/components/ui'
 <Tooltip content="This won't show" disabled>
   <Button disabled>Disabled</Button>
 </Tooltip>
+```
+
+**Spinner Component:**
+The `Spinner` component provides loading indicators with multiple variants and sizes. It supports:
+
+- 3 variants: `spinner` (rotating SVG), `dots` (animated pulses), `bars` (animated bars)
+- 5 sizes: `xs`, `sm`, `md`, `lg`, `xl`
+- Optional accessibility labels
+- Respects `prefers-reduced-motion` for accessibility
+
+```typescript
+import { Spinner } from '@/components/ui'
+
+// Rotating spinner (default)
+<Spinner size="md" variant="spinner" label="Loading..." />
+
+// Animated dots
+<Spinner size="lg" variant="dots" />
+
+// Animated bars
+<Spinner size="xl" variant="bars" label="Processing data..." />
+```
+
+**Progress Component:**
+The `Progress` component displays progress indicators with linear and circular variants. It supports:
+
+- Linear progress with size variants (`sm`, `md`, `lg`)
+- Circular progress with size variants (`sm`, `md`, `lg`, `xl`)
+- Optional labels and percentage display
+- Built on @base-ui/react for accessibility
+- Smooth animations with motion/react
+
+```typescript
+import { Progress } from '@/components/ui'
+
+// Linear progress with label
+<Progress value={60} max={100} label="Loading file..." showValue />
+
+// Linear progress (minimal)
+<Progress value={30} max={100} size="lg" />
+
+// Circular progress
+<Progress value={75} max={100} variant="circular" size="lg" showValue />
+```
+
+**Tabs Component:**
+The `Tabs` component provides accessible tab panels using @base-ui/react primitives. It supports:
+
+- Controlled and uncontrolled modes
+- Animated content transitions with AnimatePresence
+- Full keyboard navigation
+- Disabled tab states
+- Compound API: Tabs, TabsList, TabsTrigger, TabsContent
+
+```typescript
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui'
+
+// Uncontrolled mode
+<Tabs defaultValue="overview">
+  <TabsList>
+    <TabsTrigger value="overview">Overview</TabsTrigger>
+    <TabsTrigger value="details">Details</TabsTrigger>
+    <TabsTrigger value="settings">Settings</TabsTrigger>
+  </TabsList>
+  <TabsContent value="overview">
+    <p>Overview content</p>
+  </TabsContent>
+  <TabsContent value="details">
+    <p>Details content</p>
+  </TabsContent>
+  <TabsContent value="settings">
+    <p>Settings content</p>
+  </TabsContent>
+</Tabs>
+
+// Controlled mode
+function MyTabs() {
+  const [value, setValue] = useState('overview')
+  return (
+    <Tabs value={value} onValueChange={setValue}>
+      {/* ... */}
+    </Tabs>
+  )
+}
+```
+
+**Accordion Component:**
+The `Accordion` component provides collapsible content sections using @base-ui/react primitives. It supports:
+
+- Controlled and uncontrolled modes
+- Single or multiple panel expansion modes
+- Animated expand/collapse with motion.div
+- Chevron rotation on expand
+- Compound API: Accordion, AccordionItem, AccordionTrigger, AccordionPanel
+
+```typescript
+import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from '@/components/ui'
+
+// Uncontrolled mode (default: single panel open at a time)
+<Accordion defaultValue="item-1">
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Section 1</AccordionTrigger>
+    <AccordionPanel>
+      <p>Content for section 1</p>
+    </AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="item-2">
+    <AccordionTrigger>Section 2</AccordionTrigger>
+    <AccordionPanel>
+      <p>Content for section 2</p>
+    </AccordionPanel>
+  </AccordionItem>
+</Accordion>
+
+// Controlled mode
+function MyAccordion() {
+  const [value, setValue] = useState<string | string[] | null>(null)
+  return (
+    <Accordion value={value} onValueChange={setValue}>
+      {/* ... */}
+    </Accordion>
+  )
+}
 ```
 
 **Button Link Variants vs Link Component:**

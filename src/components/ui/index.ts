@@ -17,6 +17,12 @@ export { Textarea } from "./textarea";
 // Feedback
 export { Alert } from "./alert";
 export { Skeleton, SkeletonText, SkeletonCard } from "./skeleton";
+export { ToastProvider, useToast } from "./toast";
+export type { ToastVariant, ToastPosition, ToastOptions } from "./toast";
+export { Spinner } from "./spinner";
+export type { SpinnerSize, SpinnerVariant } from "./spinner";
+export { Progress } from "./progress";
+export type { ProgressSize, ProgressVariant } from "./progress";
 
 // Data Display
 export { Badge } from "./badge";
@@ -30,6 +36,12 @@ export {
   TableHeader,
   TableRow,
 } from "./table";
+export {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionPanel,
+} from "./accordion";
 
 // Overlays
 export { Tooltip } from "./tooltip";
@@ -56,3 +68,4 @@ export {
 // Navigation
 export { Link } from "./link";
 export { Pagination } from "./pagination";
+export { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs";

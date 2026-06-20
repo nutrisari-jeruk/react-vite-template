@@ -2,6 +2,39 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { act } from "react";
 import { ToastProvider, useToast } from "./";
 
+// Mock motion/react — animations are not the unit under test here
+vi.mock("motion/react", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const React = require("react");
+
+  const AnimatePresence = ({ children }: { children: React.ReactNode }) =>
+    children;
+
+  const motion = new Proxy(
+    {},
+    {
+      get: (_target: Record<string, unknown>, tag: string) => {
+        return React.forwardRef<
+          HTMLElement,
+          Record<string, unknown> & { children?: React.ReactNode }
+        >((props, ref) => {
+          // Strip animation props that aren't valid HTML attributes
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { initial, animate, exit, transition, variants, ...rest } =
+            props;
+          return React.createElement(tag, { ...rest, ref });
+        });
+      },
+    }
+  );
+
+  return {
+    AnimatePresence,
+    motion,
+    useReducedMotion: () => false,
+  };
+});
+
 // Test component to use toast hook
 function TestComponent({
   onToast,
@@ -17,20 +50,6 @@ function TestComponent({
 }
 
 describe("Toast", () => {
-  beforeEach(() => {
-    // Mock requestAnimationFrame for animation libraries to work with fake timers
-    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
-      return setTimeout(callback, 16);
-    });
-    vi.stubGlobal("cancelAnimationFrame", (id: number) => {
-      clearTimeout(id);
-    });
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   describe("ToastProvider and useToast", () => {
     it("provides toast context", () => {
       render(
@@ -76,7 +95,7 @@ describe("Toast", () => {
       render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) =>
+            onToast={({ toast }) =>
               toast({ title: "Success", message: "Saved successfully" })
             }
           />
@@ -98,7 +117,7 @@ describe("Toast", () => {
       const { container } = render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) =>
+            onToast={({ toast }) =>
               toast({ message: "Success", variant: "success" })
             }
           />
@@ -127,7 +146,7 @@ describe("Toast", () => {
       const { container } = render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) =>
+            onToast={({ toast }) =>
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               toast({ message: "Test", variant: variant as any })
             }
@@ -161,7 +180,7 @@ describe("Toast", () => {
         const { container } = render(
           <ToastProvider>
             <TestComponent
-              onToast={(toast) =>
+              onToast={({ toast }) =>
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 toast({ message: "Test", position: position as any })
               }
@@ -222,9 +241,7 @@ describe("Toast", () => {
         trigger.click();
       });
 
-      await waitFor(() => {
-        expect(screen.getByText("Test toast")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Test toast")).toBeInTheDocument();
 
       const dismissButton = screen.getByLabelText("Dismiss notification");
 
@@ -232,28 +249,25 @@ describe("Toast", () => {
         dismissButton.click();
       });
 
-      // Advance timers for dismiss animation
+      // handleDismiss sets isDismissing then calls onDismiss after 150ms delay
       act(() => {
         vi.advanceTimersByTime(150);
       });
-      act(() => {
-        vi.advanceTimersByTime(100);
-      });
 
-      await waitFor(() => {
-        expect(screen.queryByText("Test toast")).not.toBeInTheDocument();
-      });
+      expect(screen.queryByText("Test toast")).not.toBeInTheDocument();
 
       vi.useRealTimers();
     });
 
     it("dismisses toast programmatically", async () => {
+      vi.useFakeTimers();
+
       render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) => {
+            onToast={({ toast, dismiss }) => {
               const id = toast({ message: "Programmatic dismiss" });
-              setTimeout(() => toast.dismiss(id), 100);
+              setTimeout(() => dismiss(id), 100);
             }}
           />
         </ToastProvider>
@@ -264,52 +278,52 @@ describe("Toast", () => {
         trigger.click();
       });
 
-      await waitFor(() => {
-        expect(screen.getByText("Programmatic dismiss")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Programmatic dismiss")).toBeInTheDocument();
 
-      act(() => {
-        vi.advanceTimersByTime(150);
-      });
-
-      await waitFor(() => {
-        expect(
-          screen.queryByText("Programmatic dismiss")
-        ).not.toBeInTheDocument();
-      });
-    });
-
-    it("dismisses all toasts with dismissAll", async () => {
-      render(
-        <ToastProvider>
-          <TestComponent
-            onToast={(toast) => {
-              toast({ message: "Toast 1" });
-              toast({ message: "Toast 2" });
-              setTimeout(() => toast.dismissAll(), 50);
-            }}
-          />
-        </ToastProvider>
-      );
-
-      const trigger = screen.getByTestId("trigger-toast");
-      act(() => {
-        trigger.click();
-      });
-
-      await waitFor(() => {
-        expect(screen.getByText("Toast 1")).toBeInTheDocument();
-        expect(screen.getByText("Toast 2")).toBeInTheDocument();
-      });
-
+      // Advance past the setTimeout(() => dismiss(id), 100)
       act(() => {
         vi.advanceTimersByTime(100);
       });
 
-      await waitFor(() => {
-        expect(screen.queryByText("Toast 1")).not.toBeInTheDocument();
-        expect(screen.queryByText("Toast 2")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Programmatic dismiss")
+      ).not.toBeInTheDocument();
+
+      vi.useRealTimers();
+    });
+
+    it("dismisses all toasts with dismissAll", async () => {
+      vi.useFakeTimers();
+
+      render(
+        <ToastProvider>
+          <TestComponent
+            onToast={({ toast, dismissAll }) => {
+              toast({ message: "Toast 1" });
+              toast({ message: "Toast 2" });
+              setTimeout(() => dismissAll(), 50);
+            }}
+          />
+        </ToastProvider>
+      );
+
+      const trigger = screen.getByTestId("trigger-toast");
+      act(() => {
+        trigger.click();
       });
+
+      expect(screen.getByText("Toast 1")).toBeInTheDocument();
+      expect(screen.getByText("Toast 2")).toBeInTheDocument();
+
+      // Advance past the setTimeout(() => dismissAll(), 50)
+      act(() => {
+        vi.advanceTimersByTime(50);
+      });
+
+      expect(screen.queryByText("Toast 1")).not.toBeInTheDocument();
+      expect(screen.queryByText("Toast 2")).not.toBeInTheDocument();
+
+      vi.useRealTimers();
     });
   });
 
@@ -319,7 +333,7 @@ describe("Toast", () => {
     });
 
     afterEach(() => {
-      vi.restoreAllMocks();
+      vi.useRealTimers();
     });
 
     it("auto-dismisses after default duration (5000ms)", async () => {
@@ -336,28 +350,22 @@ describe("Toast", () => {
         trigger.click();
       });
 
-      await waitFor(() => {
-        expect(screen.getByText("Auto dismiss")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Auto dismiss")).toBeInTheDocument();
 
+      // Advance past the default 5000ms auto-dismiss
       act(() => {
         vi.advanceTimersByTime(5000);
       });
-      act(() => {
-        vi.advanceTimersByTime(150);
-      });
 
-      await waitFor(() => {
-        expect(screen.queryByText("Auto dismiss")).not.toBeInTheDocument();
-      });
+      expect(screen.queryByText("Auto dismiss")).not.toBeInTheDocument();
     });
 
     it("auto-dismisses after custom duration", async () => {
       render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) =>
-              toast({ message: "Custom duration", duration: 1000 })
+            onToast={(toastObj) =>
+              toastObj.toast({ message: "Custom duration", duration: 1000 })
             }
           />
         </ToastProvider>
@@ -368,28 +376,22 @@ describe("Toast", () => {
         trigger.click();
       });
 
-      await waitFor(() => {
-        expect(screen.getByText("Custom duration")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Custom duration")).toBeInTheDocument();
 
+      // Advance past the custom 1000ms duration
       act(() => {
         vi.advanceTimersByTime(1000);
       });
-      act(() => {
-        vi.advanceTimersByTime(150);
-      });
 
-      await waitFor(() => {
-        expect(screen.queryByText("Custom duration")).not.toBeInTheDocument();
-      });
+      expect(screen.queryByText("Custom duration")).not.toBeInTheDocument();
     });
 
     it("does not auto-dismiss when duration is 0", async () => {
       render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) =>
-              toast({ message: "No auto dismiss", duration: 0 })
+            onToast={(toastObj) =>
+              toastObj.toast({ message: "No auto dismiss", duration: 0 })
             }
           />
         </ToastProvider>
@@ -400,10 +402,9 @@ describe("Toast", () => {
         trigger.click();
       });
 
-      await waitFor(() => {
-        expect(screen.getByText("No auto dismiss")).toBeInTheDocument();
-      });
+      expect(screen.getByText("No auto dismiss")).toBeInTheDocument();
 
+      // Advance time — no auto-dismiss timer was set with duration: 0
       act(() => {
         vi.advanceTimersByTime(10000);
       });
@@ -418,7 +419,7 @@ describe("Toast", () => {
       render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) => {
+            onToast={({ toast }) => {
               toast({ message: "Toast 1", position: "top-right" });
               toast({ message: "Toast 2", position: "top-right" });
               toast({ message: "Toast 3", position: "top-right" });
@@ -435,9 +436,9 @@ describe("Toast", () => {
       });
 
       await waitFor(() => {
-        // Should only have 3 toasts visible at once (latest 3)
+        // Oldest 2 are evicted; only the latest 3 remain
         expect(screen.queryByText("Toast 1")).not.toBeInTheDocument();
-        expect(screen.getByText("Toast 2")).toBeInTheDocument();
+        expect(screen.queryByText("Toast 2")).not.toBeInTheDocument();
         expect(screen.getByText("Toast 3")).toBeInTheDocument();
         expect(screen.getByText("Toast 4")).toBeInTheDocument();
         expect(screen.getByText("Toast 5")).toBeInTheDocument();
@@ -448,7 +449,7 @@ describe("Toast", () => {
       render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) => {
+            onToast={({ toast }) => {
               toast({ message: "Left 1", position: "top-left" });
               toast({ message: "Right 1", position: "top-right" });
               toast({ message: "Left 2", position: "top-left" });
@@ -479,7 +480,7 @@ describe("Toast", () => {
       render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) =>
+            onToast={({ toast }) =>
               toast({
                 message: "Action available",
                 action: { label: "Undo", onClick: actionClick },
@@ -512,7 +513,7 @@ describe("Toast", () => {
       render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) =>
+            onToast={({ toast }) =>
               toast({ title: "Notification", message: "Accessible toast" })
             }
           />
@@ -525,10 +526,14 @@ describe("Toast", () => {
       });
 
       await waitFor(() => {
+        // Each toast has role="alert" (implicit aria-live="assertive")
         const toastElement = screen.getByRole("alert");
         expect(toastElement).toBeInTheDocument();
-        expect(toastElement).toHaveAttribute("aria-live", "polite");
-        expect(toastElement).toHaveAttribute("aria-atomic", "true");
+
+        // The viewport container has aria-live="polite" and aria-atomic="true"
+        const viewport = toastElement.closest("[aria-live]");
+        expect(viewport).toHaveAttribute("aria-live", "polite");
+        expect(viewport).toHaveAttribute("aria-atomic", "true");
       });
     });
 
@@ -536,7 +541,7 @@ describe("Toast", () => {
       render(
         <ToastProvider>
           <TestComponent
-            onToast={(toast) =>
+            onToast={({ toast }) =>
               toast({ title: "Success", message: "Operation completed" })
             }
           />
@@ -571,7 +576,7 @@ describe("Toast", () => {
     });
 
     afterEach(() => {
-      vi.restoreAllMocks();
+      vi.useRealTimers();
     });
 
     it("handles complete toast lifecycle", async () => {
@@ -601,13 +606,11 @@ describe("Toast", () => {
       });
 
       // Verify toast rendered
-      await waitFor(() => {
-        expect(screen.getByText("File Uploaded")).toBeInTheDocument();
-        expect(
-          screen.getByText("Your file has been uploaded successfully")
-        ).toBeInTheDocument();
-        expect(screen.getByText("View")).toBeInTheDocument();
-      });
+      expect(screen.getByText("File Uploaded")).toBeInTheDocument();
+      expect(
+        screen.getByText("Your file has been uploaded successfully")
+      ).toBeInTheDocument();
+      expect(screen.getByText("View")).toBeInTheDocument();
 
       // Click action button
       const actionButton = screen.getByText("View");
@@ -616,17 +619,12 @@ describe("Toast", () => {
       });
       expect(onActionClick).toHaveBeenCalledTimes(1);
 
-      // Verify auto-dismiss
+      // Verify auto-dismiss (dismiss() fires after 3000ms)
       act(() => {
         vi.advanceTimersByTime(3000);
       });
-      act(() => {
-        vi.advanceTimersByTime(150);
-      });
 
-      await waitFor(() => {
-        expect(screen.queryByText("File Uploaded")).not.toBeInTheDocument();
-      });
+      expect(screen.queryByText("File Uploaded")).not.toBeInTheDocument();
     });
   });
 });

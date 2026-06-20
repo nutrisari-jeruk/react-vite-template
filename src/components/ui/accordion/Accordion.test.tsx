@@ -3,6 +3,39 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "./";
 
+// Mock motion/react — AnimatePresence exit animations never resolve in jsdom,
+// causing collapsed panel content to remain mounted.
+vi.mock("motion/react", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const React = require("react");
+
+  const AnimatePresence = ({ children }: { children: React.ReactNode }) =>
+    children;
+
+  const motion = new Proxy(
+    {},
+    {
+      get: (_target: Record<string, unknown>, tag: string) => {
+        return React.forwardRef<
+          HTMLElement,
+          Record<string, unknown> & { children?: React.ReactNode }
+        >((props, ref) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { initial, animate, exit, transition, variants, ...rest } =
+            props;
+          return React.createElement(tag, { ...rest, ref });
+        });
+      },
+    }
+  );
+
+  return {
+    AnimatePresence,
+    motion,
+    useReducedMotion: () => false,
+  };
+});
+
 describe("Accordion", () => {
   describe("Basic Rendering", () => {
     it("renders accordion with items", () => {
@@ -162,7 +195,7 @@ describe("Accordion", () => {
       render(<TestComponent />);
 
       const trigger = screen.getByText("Section 1");
-      const chevron = trigger.nextElementSibling as SVGElement;
+      const chevron = trigger.querySelector("svg") as SVGElement;
 
       expect(chevron).not.toHaveClass("rotate-180");
 

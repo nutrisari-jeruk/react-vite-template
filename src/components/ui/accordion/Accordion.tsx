@@ -58,14 +58,32 @@ export function Accordion({
   defaultValue,
   className = "",
 }: AccordionProps) {
+  // Base UI requires value/defaultValue to always be (any | null)[]
+  // Preserve undefined so Base UI treats missing props as uncontrolled
+  const toArray = (
+    v: string | string[] | null | undefined
+  ): (string | null)[] | undefined => {
+    if (v === undefined) return undefined;
+    if (v === null) return [];
+    return Array.isArray(v) ? v : [v];
+  };
+
+  const handleChange = onValueChange
+    ? (newValue: (string | null)[]) => {
+        const single = newValue.length <= 1 ? (newValue[0] ?? null) : newValue;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onValueChange(single as any);
+      }
+    : undefined;
+
   return (
     <BaseAccordion.Root
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      value={value as any}
+      value={toArray(value) as any}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onValueChange={onValueChange as any}
+      onValueChange={handleChange as any}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      defaultValue={defaultValue as any}
+      defaultValue={toArray(defaultValue) as any}
       className={cn("space-y-2", className)}
     >
       {children}
@@ -104,13 +122,12 @@ export function AccordionTrigger({
 
   return (
     <BaseAccordion.Trigger
-      render={(props) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { open, ...buttonProps } = props as any;
+      render={(props, triggerState) => {
+        const open = triggerState.open;
 
         return (
           <button
-            {...buttonProps}
+            {...props}
             className={cn(
               "flex w-full items-center justify-between rounded-lg px-4 py-3 text-left font-medium transition-colors",
               "hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none",
@@ -168,13 +185,13 @@ export function AccordionPanel({
 
   return (
     <BaseAccordion.Panel
-      render={(props) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { open, id } = props as any;
+      render={(props, panelState) => {
+        const { id } = props;
+        const open = panelState.open;
 
         return (
           <AnimatePresence initial={false}>
-            {open !== false && (
+            {open && (
               <motion.div
                 id={id}
                 initial={animationConfig.initial}

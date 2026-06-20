@@ -27,7 +27,33 @@ npm run dev              # Start development server (http://localhost:5173)
 npm run build            # Build for production
 npm run lint             # Run ESLint
 npm test                 # Run tests
+./init.sh                # Run all verification checks (lint → type-check → test → build)
 ```
+
+## Startup Workflow
+
+Before writing code, read `feature_list.json` to identify the active feature. Read `progress.md` for context from the last session. Run `./init.sh` to confirm a clean baseline.
+
+## Feature State
+
+- **[feature_list.json](./feature_list.json)** — Current features, their status, and done criteria. Check before starting work.
+- **[progress.md](./progress.md)** — Active feature, last verification result, blockers, and next actions. Update at end of session.
+
+## Scope
+
+One feature at a time. Pick one feature from `feature_list.json`, mark it `in-progress` before starting code changes, and mark it `done` only after the Definition of Done is met. Stay in scope — do not start a new feature until the current one is `done` or explicitly blocked.
+
+### Definition of Done
+
+A feature is done when all three are true:
+
+1. Its `done_criteria` in `feature_list.json` are satisfied
+2. `./init.sh` passes (lint, type-check, tests, build)
+3. `progress.md` is updated with passing evidence and any remaining next actions
+
+## End of Session
+
+Before ending a session, update `progress.md` with what was done, the verification result, and recommended next actions. This makes the next session restartable and clean.
 
 ## SOP Standard
 

@@ -234,7 +234,7 @@ function MyComponent() {
       <Progress value={75} max={100} variant="circular" size="lg" showValue />
 
       {/* Tabs */}
-      <Tabs defaultValue="tab1" onValueChange={(value) => console.log(value)}>
+      <Tabs defaultValue="tab1">
         <TabsList>
           <TabsTrigger value="tab1">Overview</TabsTrigger>
           <TabsTrigger value="tab2">Details</TabsTrigger>

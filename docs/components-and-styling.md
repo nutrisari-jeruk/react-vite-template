@@ -374,6 +374,46 @@ function MyForm() {
 
 Compound component — no variant/size props. Uses `align`, `side`, `destructive` on sub-components.
 
+### Toast
+
+| Prop / option | Values                                                                 |
+| ------------- | ---------------------------------------------------------------------- |
+| `variant`     | `info`, `success`, `warning`, `error`                                  |
+| `position`    | `top-left`, `top-center`, `top-right`, `bottom-left`, `bottom-center`, `bottom-right` |
+| `message`     | string (required)                                                      |
+| `title`       | string                                                                 |
+| `duration`    | number (ms; `0` disables auto-dismiss)                                 |
+| `dismissible` | boolean                                                                |
+
+Requires `ToastProvider` at the app root. Use `useToast().toast(options)`.
+
+### Spinner
+
+| Prop      | Values                        |
+| --------- | ----------------------------- |
+| `variant` | `spinner`, `dots`, `bars`     |
+| `size`    | `xs`, `sm`, `md`, `lg`, `xl`  |
+| `label`   | string (sr-only)              |
+
+### Progress
+
+| Prop        | Values                 |
+| ----------- | ---------------------- |
+| `variant`   | `linear`, `circular`   |
+| `size`      | `sm`, `md`, `lg`       |
+| `value`     | number                 |
+| `max`       | number                 |
+| `label`     | string                 |
+| `showValue` | boolean                |
+
+### Tabs
+
+Compound component — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`. Supports controlled (`value` + `onValueChange`) and uncontrolled (`defaultValue`) modes.
+
+### Accordion
+
+Compound component — `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionPanel`. Supports controlled and uncontrolled value modes.
+
 ### Simple components (no variant/size props)
 
 - **Checkbox** — extends `InputHTMLAttributes`

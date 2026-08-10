@@ -568,6 +568,28 @@ describe("Toast", () => {
         expect(message.id).toBe(describedById);
       });
     });
+
+    it("omits aria-labelledby when title is not provided", async () => {
+      render(
+        <ToastProvider>
+          <TestComponent
+            onToast={({ toast }) => toast({ message: "Message only" })}
+          />
+        </ToastProvider>
+      );
+
+      const trigger = screen.getByTestId("trigger-toast");
+      act(() => {
+        trigger.click();
+      });
+
+      await waitFor(() => {
+        const toastElement = screen.getByRole("alert");
+        expect(toastElement).not.toHaveAttribute("aria-labelledby");
+        expect(toastElement).toHaveAttribute("aria-describedby");
+        expect(screen.getByText("Message only")).toBeInTheDocument();
+      });
+    });
   });
 
   describe("Integration", () => {

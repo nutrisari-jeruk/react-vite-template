@@ -27,7 +27,9 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionPanel,
+  useToast,
 } from "@/components";
+import type { ToastVariant } from "@/components";
 import { ROUTES } from "@/config/constants";
 import { cn } from "@/utils/cn";
 
@@ -43,6 +45,7 @@ const COMPONENT_SECTIONS = [
   "select",
   "spinners",
   "progress",
+  "toasts",
   "switch",
   "tabs",
   "accordions",
@@ -55,10 +58,18 @@ function ComponentsPage() {
   const [fruit, setFruit] = useState<string | undefined>();
   const [withError, setWithError] = useState<string | undefined>();
   const [withHelper, setWithHelper] = useState<string | undefined>();
-  const [activeTab, setActiveTab] = useState("overview");
   const [activeSection, setActiveSection] = useState<string>("");
+  const { toast } = useToast();
   const shouldReduceMotion = useReducedMotion();
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const showToast = (variant: ToastVariant) => {
+    toast({
+      title: variant.charAt(0).toUpperCase() + variant.slice(1),
+      message: `This is a ${variant} toast notification.`,
+      variant,
+    });
+  };
 
   useEffect(() => {
     const observerOptions = {
@@ -517,6 +528,50 @@ function ComponentsPage() {
               />
 
               <ComponentDemo
+                title="Toasts"
+                description="Global notifications via useToast (requires ToastProvider)"
+                preview={
+                  <div className="flex flex-wrap gap-3">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => showToast("info")}
+                    >
+                      Info
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => showToast("success")}
+                    >
+                      Success
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => showToast("warning")}
+                    >
+                      Warning
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => showToast("error")}
+                    >
+                      Error
+                    </Button>
+                  </div>
+                }
+                code={`const { toast } = useToast()
+
+toast({
+  title: "Success",
+  message: "Saved successfully",
+  variant: "success",
+})`}
+              />
+
+              <ComponentDemo
                 title="Switch"
                 description="Segmented control switch component"
                 preview={
@@ -620,7 +675,7 @@ function ComponentsPage() {
                 description="Tab panels for organizing content"
                 preview={
                   <div className="max-w-2xl">
-                    <Tabs value={activeTab} onValueChange={setActiveTab}>
+                    <Tabs defaultValue="overview">
                       <TabsList>
                         <TabsTrigger value="overview">Overview</TabsTrigger>
                         <TabsTrigger value="features">Features</TabsTrigger>

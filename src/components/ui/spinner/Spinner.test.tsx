@@ -1,7 +1,18 @@
 import { render, screen } from "@testing-library/react";
 import { Spinner } from "./";
+import type { SpinnerSize } from "./Spinner";
+
+const useReducedMotionMock = vi.fn(() => false);
+
+vi.mock("motion/react", () => ({
+  useReducedMotion: () => useReducedMotionMock(),
+}));
 
 describe("Spinner", () => {
+  beforeEach(() => {
+    useReducedMotionMock.mockReturnValue(false);
+  });
+
   describe("Rendering", () => {
     it("renders spinner variant by default", () => {
       const { container } = render(<Spinner />);
@@ -32,8 +43,7 @@ describe("Spinner", () => {
       ["xl", "h-8 w-8"],
     ] as const)("applies %s size classes", (size, expectedClass) => {
       const { container } = render(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        <Spinner size={size as any} variant="spinner" />
+        <Spinner size={size satisfies SpinnerSize} variant="spinner" />
       );
       const spinner = container.querySelector("svg");
       expect(spinner).toHaveClass(expectedClass);
@@ -64,26 +74,13 @@ describe("Spinner", () => {
   });
 
   describe("Reduced Motion", () => {
-    beforeEach(() => {
-      // Mock prefers-reduced-motion
-      vi.stubGlobal("matchMedia", () => ({
-        matches: true,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-      }));
-    });
-
-    afterEach(() => {
-      vi.unstubAllGlobals();
-    });
-
-    it("respects prefers-reduced-motion", () => {
+    it("omits animate-spin when prefers-reduced-motion is set", () => {
+      useReducedMotionMock.mockReturnValue(true);
       const { container } = render(<Spinner variant="spinner" />);
 
       const spinner = container.querySelector("svg");
-      // When prefers-reduced-motion is true, animation classes might be conditionally applied
-      // The component respects this setting
       expect(spinner).toBeInTheDocument();
+      expect(spinner).not.toHaveClass("animate-spin");
     });
   });
 

@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { Progress } from "./";
+import type { ProgressSize } from "./Progress";
 
 describe("Progress", () => {
   describe("Linear Progress", () => {
@@ -82,8 +83,7 @@ describe("Progress", () => {
       ["lg", "h-3"],
     ] as const)("applies %s size classes for linear", (size, expectedClass) => {
       const { container } = render(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        <Progress value={50} max={100} size={size as any} />
+        <Progress value={50} max={100} size={size satisfies ProgressSize} />
       );
 
       const progressbar = container.querySelector('[role="progressbar"]');
@@ -102,8 +102,7 @@ describe("Progress", () => {
             value={50}
             max={100}
             variant="circular"
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            size={size as any}
+            size={size satisfies ProgressSize}
           />
         );
 

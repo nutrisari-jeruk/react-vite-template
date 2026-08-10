@@ -246,6 +246,124 @@
       }
     },
     {
+      "name": "toast",
+      "type": "ui",
+      "description": "Global toast notifications with ToastProvider and useToast. Wrap your app in ToastProvider after install.",
+      "files": [
+        {
+          "source": "templates/ui/toast/Toast.tsx",
+          "target": "src/components/ui/toast/Toast.tsx"
+        },
+        {
+          "source": "templates/ui/toast/index.ts",
+          "target": "src/components/ui/toast/index.ts"
+        }
+      ],
+      "npmDependencies": ["motion"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": [
+          "export { ToastProvider, useToast } from \"./toast\";",
+          "export type { ToastVariant, ToastPosition, ToastOptions } from \"./toast\";"
+        ]
+      }
+    },
+    {
+      "name": "spinner",
+      "type": "ui",
+      "description": "Loading spinner with spinner/dots/bars variants and 5 sizes",
+      "files": [
+        {
+          "source": "templates/ui/spinner/Spinner.tsx",
+          "target": "src/components/ui/spinner/Spinner.tsx"
+        },
+        {
+          "source": "templates/ui/spinner/index.ts",
+          "target": "src/components/ui/spinner/index.ts"
+        }
+      ],
+      "npmDependencies": ["motion"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": [
+          "export { Spinner } from \"./spinner\";",
+          "export type { SpinnerSize, SpinnerVariant } from \"./spinner\";"
+        ]
+      }
+    },
+    {
+      "name": "progress",
+      "type": "ui",
+      "description": "Linear and circular progress indicators built on Base UI",
+      "files": [
+        {
+          "source": "templates/ui/progress/Progress.tsx",
+          "target": "src/components/ui/progress/Progress.tsx"
+        },
+        {
+          "source": "templates/ui/progress/index.ts",
+          "target": "src/components/ui/progress/index.ts"
+        }
+      ],
+      "npmDependencies": ["@base-ui/react"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": [
+          "export { Progress } from \"./progress\";",
+          "export type { ProgressSize, ProgressVariant } from \"./progress\";"
+        ]
+      }
+    },
+    {
+      "name": "tabs",
+      "type": "ui",
+      "description": "Accessible tabs with TabsList, TabsTrigger, TabsContent built on Base UI",
+      "files": [
+        {
+          "source": "templates/ui/tabs/Tabs.tsx",
+          "target": "src/components/ui/tabs/Tabs.tsx"
+        },
+        {
+          "source": "templates/ui/tabs/index.ts",
+          "target": "src/components/ui/tabs/index.ts"
+        }
+      ],
+      "npmDependencies": ["@base-ui/react", "motion"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": [
+          "export { Tabs, TabsList, TabsTrigger, TabsContent } from \"./tabs\";"
+        ]
+      }
+    },
+    {
+      "name": "accordion",
+      "type": "ui",
+      "description": "Collapsible accordion sections built on Base UI",
+      "files": [
+        {
+          "source": "templates/ui/accordion/Accordion.tsx",
+          "target": "src/components/ui/accordion/Accordion.tsx"
+        },
+        {
+          "source": "templates/ui/accordion/index.ts",
+          "target": "src/components/ui/accordion/index.ts"
+        }
+      ],
+      "npmDependencies": ["@base-ui/react", "motion"],
+      "registryDependencies": ["cn"],
+      "barrel": {
+        "file": "src/components/ui/index.ts",
+        "exports": [
+          "export { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from \"./accordion\";"
+        ]
+      }
+    },
+    {
       "name": "badge",
       "type": "ui",
       "description": "Badge with 6 variants, 3 sizes, pill and dot options",

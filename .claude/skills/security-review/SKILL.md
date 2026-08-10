@@ -27,7 +27,7 @@ disable-model-invocation: false
 - [ ] No new Axios instances created — always use centralized `api` client from `@/libs`
 - [ ] `X-Request-ID` header present for tracing
 - [ ] Timeout configured for all requests
-- [ ] axios version remains exactly `1.14.0` — no caret (`^`) or tilde (`~`) added. This is a security pin after the March 2026 supply chain attack (UNC1069). Never upgrade without Tech Lead approval.
+- [ ] axios version remains exactly `1.19.0` — no caret (`^`) or tilde (`~`) added. This is a security pin (exact version, no ranges). Never upgrade without Tech Lead approval.
 
 ### Environment & Secrets
 

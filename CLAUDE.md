@@ -155,7 +155,7 @@ Access via `env` from `@/config`, not `import.meta.env` directly. All `VITE_*` v
 
 ### API
 
-Always use `api` from `@/libs`. **axios is pinned to exactly `1.17.0`** (no `^` or `~`) — do not upgrade without Tech Lead approval.
+Always use `api` from `@/libs`. **axios is pinned to exactly `1.19.0`** (no `^` or `~`) — do not upgrade without Tech Lead approval.
 
 ## Common Tasks
 
@@ -210,7 +210,7 @@ Always use `api` from `@/libs`. **axios is pinned to exactly `1.17.0`** (no `^` 
 - Use template literals for className merging
 - Use relative imports for cross-directory imports
 - Guess component props — always verify first
-- Upgrade axios without Tech Lead approval (pinned to 1.17.0)
+- Upgrade axios without Tech Lead approval (pinned to 1.19.0)
 
 ## Docker Deployment
 

@@ -2,18 +2,24 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
+import { ToastProvider } from "@/components/ui";
 import ComponentsPage from "./Components";
+import type { ReactElement } from "react";
 
 const mockScrollTo = vi.fn();
 let getElementByIdSpy: ReturnType<typeof vi.spyOn>;
 
+function renderWithProviders(ui: ReactElement) {
+  return render(
+    <BrowserRouter>
+      <ToastProvider>{ui}</ToastProvider>
+    </BrowserRouter>
+  );
+}
+
 describe("Components Page", () => {
   const renderComponentsPage = () => {
-    return render(
-      <BrowserRouter>
-        <ComponentsPage />
-      </BrowserRouter>
-    );
+    return renderWithProviders(<ComponentsPage />);
   };
 
   describe("Page Header", () => {
@@ -411,6 +417,8 @@ describe("Components Page", () => {
       });
       vi.resetModules();
       const { default: ComponentsPageSmooth } = await import("./Components");
+      const { ToastProvider: FreshToastProvider } =
+        await import("@/components/ui");
       const mockElement = {
         getBoundingClientRect: mockGetBoundingClientRect,
       } as unknown as HTMLElement;
@@ -420,7 +428,9 @@ describe("Components Page", () => {
 
       render(
         <BrowserRouter>
-          <ComponentsPageSmooth />
+          <FreshToastProvider>
+            <ComponentsPageSmooth />
+          </FreshToastProvider>
         </BrowserRouter>
       );
 
@@ -441,11 +451,7 @@ describe("Components Page", () => {
         .spyOn(document, "getElementById")
         .mockReturnValue(null);
 
-      render(
-        <BrowserRouter>
-          <ComponentsPage />
-        </BrowserRouter>
-      );
+      renderWithProviders(<ComponentsPage />);
 
       const tocLink = screen.getByRole("link", { name: "Combobox" });
       await user.click(tocLink);
@@ -467,6 +473,8 @@ describe("Components Page", () => {
       vi.resetModules();
       const { default: ComponentsPageWithReducedMotion } =
         await import("./Components");
+      const { ToastProvider: FreshToastProvider } =
+        await import("@/components/ui");
       const mockElement = {
         getBoundingClientRect: mockGetBoundingClientRect,
       } as unknown as HTMLElement;
@@ -476,7 +484,9 @@ describe("Components Page", () => {
 
       render(
         <BrowserRouter>
-          <ComponentsPageWithReducedMotion />
+          <FreshToastProvider>
+            <ComponentsPageWithReducedMotion />
+          </FreshToastProvider>
         </BrowserRouter>
       );
 

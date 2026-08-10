@@ -13,11 +13,23 @@ import {
   ComponentDemo,
   Input,
   Select,
+  Spinner,
+  Progress,
   Switch,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
   Textarea,
   Toggle,
   Tooltip,
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionPanel,
+  useToast,
 } from "@/components";
+import type { ToastVariant } from "@/components";
 import { ROUTES } from "@/config/constants";
 import { cn } from "@/utils/cn";
 
@@ -31,7 +43,12 @@ const COMPONENT_SECTIONS = [
   "combobox",
   "inputs",
   "select",
+  "spinners",
+  "progress",
+  "toasts",
   "switch",
+  "tabs",
+  "accordions",
   "textarea",
   "toggle",
   "tooltips",
@@ -42,8 +59,17 @@ function ComponentsPage() {
   const [withError, setWithError] = useState<string | undefined>();
   const [withHelper, setWithHelper] = useState<string | undefined>();
   const [activeSection, setActiveSection] = useState<string>("");
+  const { toast } = useToast();
   const shouldReduceMotion = useReducedMotion();
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const showToast = (variant: ToastVariant) => {
+    toast({
+      title: variant.charAt(0).toUpperCase() + variant.slice(1),
+      message: `This is a ${variant} toast notification.`,
+      variant,
+    });
+  };
 
   useEffect(() => {
     const observerOptions = {
@@ -392,6 +418,160 @@ function ComponentsPage() {
               />
 
               <ComponentDemo
+                title="Spinners"
+                description="Loading indicators with multiple variants"
+                preview={
+                  <div className="flex flex-wrap items-center gap-6">
+                    <div className="space-y-4">
+                      <p className="text-sm font-medium text-gray-700">
+                        Spinner Variant
+                      </p>
+                      <div className="flex items-center gap-4">
+                        <Spinner size="xs" label="XS" />
+                        <Spinner size="sm" label="SM" />
+                        <Spinner size="md" label="MD" />
+                        <Spinner size="lg" label="LG" />
+                        <Spinner size="xl" label="XL" />
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <p className="text-sm font-medium text-gray-700">
+                        Dots Variant
+                      </p>
+                      <div className="flex items-center gap-4">
+                        <Spinner size="xs" variant="dots" />
+                        <Spinner size="sm" variant="dots" />
+                        <Spinner size="md" variant="dots" />
+                        <Spinner size="lg" variant="dots" />
+                        <Spinner size="xl" variant="dots" />
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <p className="text-sm font-medium text-gray-700">
+                        Bars Variant
+                      </p>
+                      <div className="flex items-center gap-4">
+                        <Spinner size="xs" variant="bars" />
+                        <Spinner size="sm" variant="bars" />
+                        <Spinner size="md" variant="bars" />
+                        <Spinner size="lg" variant="bars" />
+                        <Spinner size="xl" variant="bars" />
+                      </div>
+                    </div>
+                  </div>
+                }
+                code={`<Spinner size="md" variant="spinner" label="Loading..." />
+<Spinner size="lg" variant="dots" />
+<Spinner size="xl" variant="bars" label="Processing..." />`}
+              />
+
+              <ComponentDemo
+                title="Progress"
+                description="Progress indicators for loading states"
+                preview={
+                  <div className="space-y-6">
+                    <div>
+                      <p className="mb-2 text-sm font-medium text-gray-700">
+                        Linear Progress
+                      </p>
+                      <div className="space-y-4">
+                        <Progress value={30} max={100} size="sm" />
+                        <Progress value={50} max={100} size="md" />
+                        <Progress value={70} max={100} size="lg" />
+                        <Progress
+                          value={90}
+                          max={100}
+                          label="Loading file..."
+                          showValue
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="mb-2 text-sm font-medium text-gray-700">
+                        Circular Progress
+                      </p>
+                      <div className="flex items-center gap-6">
+                        <Progress
+                          value={25}
+                          max={100}
+                          variant="circular"
+                          size="sm"
+                        />
+                        <Progress
+                          value={50}
+                          max={100}
+                          variant="circular"
+                          size="md"
+                        />
+                        <Progress
+                          value={75}
+                          max={100}
+                          variant="circular"
+                          size="lg"
+                        />
+                        <Progress
+                          value={100}
+                          max={100}
+                          variant="circular"
+                          size="lg"
+                          showValue
+                        />
+                      </div>
+                    </div>
+                  </div>
+                }
+                code={`// Linear progress
+<Progress value={60} max={100} label="Loading..." showValue />
+
+// Circular progress
+<Progress value={75} max={100} variant="circular" size="lg" showValue />`}
+              />
+
+              <ComponentDemo
+                title="Toasts"
+                description="Global notifications via useToast (requires ToastProvider)"
+                preview={
+                  <div className="flex flex-wrap gap-3">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => showToast("info")}
+                    >
+                      Info
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => showToast("success")}
+                    >
+                      Success
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => showToast("warning")}
+                    >
+                      Warning
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => showToast("error")}
+                    >
+                      Error
+                    </Button>
+                  </div>
+                }
+                code={`const { toast } = useToast()
+
+toast({
+  title: "Success",
+  message: "Saved successfully",
+  variant: "success",
+})`}
+              />
+
+              <ComponentDemo
                 title="Switch"
                 description="Segmented control switch component"
                 preview={
@@ -488,6 +668,127 @@ function ComponentsPage() {
   rightLabel="Dark"
   disabled
 />`}
+              />
+
+              <ComponentDemo
+                title="Tabs"
+                description="Tab panels for organizing content"
+                preview={
+                  <div className="max-w-2xl">
+                    <Tabs defaultValue="overview">
+                      <TabsList>
+                        <TabsTrigger value="overview">Overview</TabsTrigger>
+                        <TabsTrigger value="features">Features</TabsTrigger>
+                        <TabsTrigger value="settings">Settings</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="overview">
+                        <Card className="p-6">
+                          <h3 className="mb-2 text-lg font-semibold">
+                            Overview
+                          </h3>
+                          <p className="text-gray-600">
+                            This is the overview tab content. Click on different
+                            tabs to see the content switch with smooth
+                            animations.
+                          </p>
+                        </Card>
+                      </TabsContent>
+                      <TabsContent value="features">
+                        <Card className="p-6">
+                          <h3 className="mb-2 text-lg font-semibold">
+                            Features
+                          </h3>
+                          <p className="text-gray-600">
+                            This tab shows the features of the product or
+                            component.
+                          </p>
+                        </Card>
+                      </TabsContent>
+                      <TabsContent value="settings">
+                        <Card className="p-6">
+                          <h3 className="mb-2 text-lg font-semibold">
+                            Settings
+                          </h3>
+                          <p className="text-gray-600">
+                            Configure your preferences in this tab.
+                          </p>
+                        </Card>
+                      </TabsContent>
+                    </Tabs>
+                  </div>
+                }
+                code={`<Tabs defaultValue="overview">
+  <TabsList>
+    <TabsTrigger value="overview">Overview</TabsTrigger>
+    <TabsTrigger value="features">Features</TabsTrigger>
+    <TabsTrigger value="settings">Settings</TabsTrigger>
+  </TabsList>
+  <TabsContent value="overview">
+    <p>Overview content</p>
+  </TabsContent>
+  <TabsContent value="features">
+    <p>Features content</p>
+  </TabsContent>
+</Tabs>`}
+              />
+
+              <ComponentDemo
+                title="Accordions"
+                description="Collapsible content sections"
+                preview={
+                  <div className="max-w-2xl">
+                    <Accordion defaultValue="section-1">
+                      <AccordionItem value="section-1">
+                        <AccordionTrigger>Getting Started</AccordionTrigger>
+                        <AccordionPanel>
+                          <Card className="p-6">
+                            <p className="text-gray-600">
+                              Learn the basics of using this component library.
+                              Each section can be expanded independently.
+                            </p>
+                          </Card>
+                        </AccordionPanel>
+                      </AccordionItem>
+                      <AccordionItem value="section-2">
+                        <AccordionTrigger>Advanced Features</AccordionTrigger>
+                        <AccordionPanel>
+                          <Card className="p-6">
+                            <p className="text-gray-600">
+                              Explore more advanced configurations and
+                              customization options available in the components.
+                            </p>
+                          </Card>
+                        </AccordionPanel>
+                      </AccordionItem>
+                      <AccordionItem value="section-3">
+                        <AccordionTrigger>Best Practices</AccordionTrigger>
+                        <AccordionPanel>
+                          <Card className="p-6">
+                            <p className="text-gray-600">
+                              Follow these guidelines to ensure consistent and
+                              accessible user interfaces across your
+                              application.
+                            </p>
+                          </Card>
+                        </AccordionPanel>
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
+                }
+                code={`<Accordion defaultValue="section-1">
+  <AccordionItem value="section-1">
+    <AccordionTrigger>Section 1</AccordionTrigger>
+    <AccordionPanel>
+      <p>Content for section 1</p>
+    </AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="section-2">
+    <AccordionTrigger>Section 2</AccordionTrigger>
+    <AccordionPanel>
+      <p>Content for section 2</p>
+    </AccordionPanel>
+  </AccordionItem>
+</Accordion>`}
               />
 
               <ComponentDemo

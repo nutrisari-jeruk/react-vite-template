@@ -125,7 +125,7 @@ const BASE_NPM_DEPS: Record<string, string> = {
   "@hookform/resolvers": "^5.2.2",
   "@tanstack/react-query": "^5.100.14",
   "@tanstack/react-query-devtools": "^5.96.1",
-  axios: "1.14.0",
+  axios: "1.19.0",
   clsx: "^2.1.1",
   "lucide-react": "^0.562.0",
   motion: "^12.27.0",

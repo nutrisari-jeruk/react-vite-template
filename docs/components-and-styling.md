@@ -376,35 +376,35 @@ Compound component — no variant/size props. Uses `align`, `side`, `destructive
 
 ### Toast
 
-| Prop / option | Values                                                                 |
-| ------------- | ---------------------------------------------------------------------- |
-| `variant`     | `info`, `success`, `warning`, `error`                                  |
+| Prop / option | Values                                                                                |
+| ------------- | ------------------------------------------------------------------------------------- |
+| `variant`     | `info`, `success`, `warning`, `error`                                                 |
 | `position`    | `top-left`, `top-center`, `top-right`, `bottom-left`, `bottom-center`, `bottom-right` |
-| `message`     | string (required)                                                      |
-| `title`       | string                                                                 |
-| `duration`    | number (ms; `0` disables auto-dismiss)                                 |
-| `dismissible` | boolean                                                                |
+| `message`     | string (required)                                                                     |
+| `title`       | string                                                                                |
+| `duration`    | number (ms; `0` disables auto-dismiss)                                                |
+| `dismissible` | boolean                                                                               |
 
 Requires `ToastProvider` at the app root. Use `useToast().toast(options)`.
 
 ### Spinner
 
-| Prop      | Values                        |
-| --------- | ----------------------------- |
-| `variant` | `spinner`, `dots`, `bars`     |
-| `size`    | `xs`, `sm`, `md`, `lg`, `xl`  |
-| `label`   | string (sr-only)              |
+| Prop      | Values                       |
+| --------- | ---------------------------- |
+| `variant` | `spinner`, `dots`, `bars`    |
+| `size`    | `xs`, `sm`, `md`, `lg`, `xl` |
+| `label`   | string (sr-only)             |
 
 ### Progress
 
-| Prop        | Values                 |
-| ----------- | ---------------------- |
-| `variant`   | `linear`, `circular`   |
-| `size`      | `sm`, `md`, `lg`       |
-| `value`     | number                 |
-| `max`       | number                 |
-| `label`     | string                 |
-| `showValue` | boolean                |
+| Prop        | Values               |
+| ----------- | -------------------- |
+| `variant`   | `linear`, `circular` |
+| `size`      | `sm`, `md`, `lg`     |
+| `value`     | number               |
+| `max`       | number               |
+| `label`     | string               |
+| `showValue` | boolean              |
 
 ### Tabs
 

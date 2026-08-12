@@ -1542,10 +1542,13 @@ This repo doubles as the source for the `frontier-fe` CLI — a shadcn-style pro
 
 ```bash
 npx frontier-fe init my-app          # Create a new project
+npx frontier-fe init my-app --pwa    # Create a PWA-ready project (offline + installable)
 npx frontier-fe add button dialog    # Add components
 npx frontier-fe add --all --type ui  # Add all items of a type
 npx frontier-fe list                 # List available items
 ```
+
+> **PWA:** pass `--pwa` to `init` to scaffold an installable, offline-capable app (service worker + web manifest). See [docs/pwa.md](./docs/pwa.md).
 
 ### Blocks & Sections
 

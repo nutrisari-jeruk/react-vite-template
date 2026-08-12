@@ -15,6 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) and AI agents workin
   - [testing.md](./docs/testing.md) - Test setup, patterns, custom render, best practices
   - [security.md](./docs/security.md) - Token storage, XSS/CSRF, input validation
   - [docker.md](./docs/docker.md) - Multi-stage builds, compose profiles, deploy script, nginx config
+  - [pwa.md](./docs/pwa.md) - Optional PWA via `frontier-fe init --pwa` (service worker, manifest, nginx sw.js rule)
   - [project-configuration.md](./docs/project-configuration.md) - TypeScript, Vite, ESLint, Prettier, Vitest config
   - [linting-and-code-quality.md](./docs/linting-and-code-quality.md) - ESLint rules, import ordering, type-aware linting
   - [cli-development.md](./docs/cli-development.md) - CLI architecture, commands, registry format, route wiring, publishing
@@ -233,5 +234,7 @@ npm run cli:build               # Build CLI (tsup → packages/cli/dist/)
 ```
 
 **After editing template source files:** Run `npm run sync:templates` before committing.
+
+**Optional PWA:** `frontier-fe init --pwa` scaffolds a PWA-ready project (service worker + manifest). The PWA config is generated in-memory from the base `vite.config.ts`/`docker/nginx.conf` at scaffold time (no parallel template files). The one PWA template asset (`packages/cli/templates/base/pwa/public/pwa/icon.svg`) is intentionally outside `BASE_FILES`, so `sync:templates` ignores it. See [docs/pwa.md](./docs/pwa.md).
 
 **Before changing conventions,** update both this file and the corresponding [docs/](./docs/) files to keep documentation in sync.

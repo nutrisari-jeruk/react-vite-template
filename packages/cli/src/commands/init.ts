@@ -14,6 +14,7 @@ interface InitOptions {
   projectName?: string;
   yes?: boolean;
   pm?: "npm" | "yarn" | "pnpm";
+  pwa?: boolean;
 }
 
 const BASE_FILES = [
@@ -178,6 +179,12 @@ const BASE_DEV_DEPS: Record<string, string> = {
   "@vitest/coverage-v8": "^4.1.2",
 };
 
+// Extra devDependencies added when the --pwa flag is used.
+// vite-plugin-pwa 1.3.0+ officially supports Vite 8 (no peer-dep override needed).
+const PWA_DEV_DEPS: Record<string, string> = {
+  "vite-plugin-pwa": "^1.3.0",
+};
+
 export async function init(options: InitOptions): Promise<void> {
   // If project name given, create and use a subdirectory
   let cwd = options.cwd;
@@ -290,6 +297,12 @@ export async function init(options: InitOptions): Promise<void> {
     logger.success("Created package.json");
   }
 
+  // Apply PWA configuration if requested (--pwa)
+  if (options.pwa) {
+    await applyPwaConfig(cwd, projectName, templatesDir);
+    config.installed.push("pwa");
+  }
+
   // Write frontier-fe.json
   await writeConfig(cwd, config);
   logger.success("Created frontier-fe.json");
@@ -304,14 +317,14 @@ export async function init(options: InitOptions): Promise<void> {
     });
 
     if (install) {
-      await installDeps(cwd, pm);
+      await installDeps(cwd, pm, options.pwa);
     } else {
       logger.break();
       logger.info("Skip dependency installation. Run manually:");
       logger.dim(`  ${pm} install`);
     }
   } else {
-    await installDeps(cwd, pm);
+    await installDeps(cwd, pm, options.pwa);
   }
 
   // Done
@@ -334,7 +347,8 @@ export async function init(options: InitOptions): Promise<void> {
 
 async function installDeps(
   cwd: string,
-  pm: "npm" | "yarn" | "pnpm"
+  pm: "npm" | "yarn" | "pnpm",
+  pwa?: boolean
 ): Promise<void> {
   logger.info("Installing dependencies...");
 
@@ -349,6 +363,11 @@ async function installDeps(
   }
   for (const [dep, version] of Object.entries(BASE_DEV_DEPS)) {
     pkg.devDependencies[dep] = version;
+  }
+  if (pwa) {
+    for (const [dep, version] of Object.entries(PWA_DEV_DEPS)) {
+      pkg.devDependencies[dep] = version;
+    }
   }
   await fs.writeJSON(pkgPath, pkg, { spaces: 2 });
 
@@ -377,4 +396,120 @@ function detectPackageManager(cwd: string): "npm" | "yarn" | "pnpm" {
     // ignore
   }
   return "npm";
+}
+
+/**
+ * Apply PWA configuration to a freshly-scaffolded project (--pwa flag):
+ * - copy the source app icon to public/pwa/
+ * - inject vite-plugin-pwa into vite.config.ts
+ * - add a no-cache rule for the service worker in docker/nginx.conf
+ *
+ * Edits the base templates in-memory at scaffold time, so there is a single
+ * source of truth (the synced base configs) and no parallel files to maintain.
+ */
+async function applyPwaConfig(
+  cwd: string,
+  projectName: string,
+  templatesDir: string
+): Promise<void> {
+  logger.info("Enabling PWA configuration...");
+  // Strip characters that would break the embedded TS string literal.
+  const appName = (projectName || "My App").replace(/[\\"]/g, "").trim();
+
+  // 1. Copy the PWA source icon
+  const iconSource = path.resolve(templatesDir, "base/pwa/public/pwa/icon.svg");
+  const iconTarget = path.resolve(cwd, "public/pwa/icon.svg");
+  if (await fs.pathExists(iconSource)) {
+    await fs.ensureDir(path.dirname(iconTarget));
+    await fs.copy(iconSource, iconTarget, { overwrite: false });
+  } else {
+    logger.warn(`PWA icon template not found: ${iconSource}`);
+  }
+
+  // Copy the PWA docs into the project. The template copy is kept in sync with
+  // the repo's docs/pwa.md by sync-templates.mjs (single source of truth).
+  const docSource = path.resolve(templatesDir, "base/pwa/docs/pwa.md");
+  const docTarget = path.resolve(cwd, "docs/pwa.md");
+  if (await fs.pathExists(docSource)) {
+    await fs.ensureDir(path.dirname(docTarget));
+    await fs.copy(docSource, docTarget, { overwrite: false });
+  }
+
+  // 2. Inject vite-plugin-pwa into vite.config.ts
+  const viteConfigPath = path.resolve(cwd, "vite.config.ts");
+  if (await fs.pathExists(viteConfigPath)) {
+    let viteConfig = await fs.readFile(viteConfigPath, "utf-8");
+    const importAnchor = 'import react from "@vitejs/plugin-react-swc";';
+    const pluginAnchor = "      react(),";
+
+    if (
+      viteConfig.includes(importAnchor) &&
+      viteConfig.includes(pluginAnchor)
+    ) {
+      viteConfig = viteConfig.replace(
+        importAnchor,
+        `${importAnchor}\nimport { VitePWA } from "vite-plugin-pwa";`
+      );
+      viteConfig = viteConfig.replace(
+        pluginAnchor,
+        `${pluginAnchor}
+      VitePWA({
+        registerType: "autoUpdate",
+        injectRegister: "auto",
+        includeAssets: ["pwa/icon.svg"],
+        manifest: {
+          name: "${appName}",
+          short_name: "${appName}",
+          description: "A React + Vite application",
+          theme_color: "#2563eb",
+          background_color: "#ffffff",
+          display: "standalone",
+          icons: [
+            {
+              src: "/pwa/icon.svg",
+              sizes: "any",
+              type: "image/svg+xml",
+              purpose: "any maskable",
+            },
+          ],
+        },
+        workbox: {
+          globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
+        },
+        devOptions: { enabled: false },
+      }),`
+      );
+      await fs.writeFile(viteConfigPath, viteConfig, "utf-8");
+    } else {
+      logger.warn(
+        "Could not inject PWA into vite.config.ts (anchors not found). " +
+          "Add vite-plugin-pwa manually — see docs/pwa.md."
+      );
+    }
+  }
+
+  // 3. Add a no-cache rule for the service worker in docker/nginx.conf.
+  // The base config caches *.js for 1y immutable, which would freeze sw.js
+  // and silently break service-worker updates.
+  const nginxPath = path.resolve(cwd, "docker/nginx.conf");
+  if (await fs.pathExists(nginxPath)) {
+    let nginx = await fs.readFile(nginxPath, "utf-8");
+    const nginxAnchor = "        # SPA fallback";
+    if (!nginx.includes("location = /sw.js") && nginx.includes(nginxAnchor)) {
+      const swBlock = `        # Service worker MUST NOT be cached, or PWA updates silently break
+        location = /sw.js {
+            add_header Cache-Control "no-cache, no-store, must-revalidate";
+            expires off;
+            access_log off;
+        }
+`;
+      nginx = nginx.replace(nginxAnchor, `${swBlock}${nginxAnchor}`);
+      await fs.writeFile(nginxPath, nginx, "utf-8");
+    }
+  }
+
+  logger.success(
+    "PWA enabled: service worker (autoUpdate), web manifest, app icon, and docs/pwa.md. " +
+      "Customize via the VitePWA() block in vite.config.ts."
+  );
 }

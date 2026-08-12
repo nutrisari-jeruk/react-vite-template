@@ -123,6 +123,28 @@ async function syncBaseFiles() {
   return { errors, synced };
 }
 
+// Docs that ship to scaffolded projects but aren't in BASE_FILES.
+// Synced from the repo so there's a single source of truth.
+const EXTRA_TEMPLATE_DOCS = [
+  { src: "docs/pwa.md", dest: "packages/cli/templates/base/pwa/docs/pwa.md" },
+];
+
+async function syncExtraDocs() {
+  let errors = 0;
+  let synced = 0;
+
+  for (const { src, dest } of EXTRA_TEMPLATE_DOCS) {
+    const result = await syncFile(path.join(ROOT, src), path.join(ROOT, dest));
+    if (result.status === "differ" || result.status === "missing_template") {
+      errors++;
+    } else if (result.status === "copied" || result.status === "ok") {
+      synced++;
+    }
+  }
+
+  return { errors, synced };
+}
+
 async function main() {
   console.log(
     CHECK_MODE
@@ -132,15 +154,21 @@ async function main() {
 
   const registryResult = await syncRegistryItems();
   const baseResult = await syncBaseFiles();
+  const docsResult = await syncExtraDocs();
 
-  const totalErrors = registryResult.errors + baseResult.errors;
-  const totalSynced = registryResult.synced + baseResult.synced;
+  const totalErrors =
+    registryResult.errors + baseResult.errors + docsResult.errors;
+  const totalSynced =
+    registryResult.synced + baseResult.synced + docsResult.synced;
 
   console.log(
     `\nRegistry: ${registryResult.synced} files, ${registryResult.errors} errors`
   );
   console.log(
     `Base:     ${baseResult.synced} files, ${baseResult.errors} errors`
+  );
+  console.log(
+    `Docs:     ${docsResult.synced} files, ${docsResult.errors} errors`
   );
 
   if (CHECK_MODE) {

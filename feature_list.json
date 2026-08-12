@@ -66,6 +66,22 @@
       ],
       "evidence": "Dockerfile, docker-compose.yml, deploy.sh at root",
       "dependencies": []
+    },
+    {
+      "id": "pwa",
+      "name": "PWA Support (optional)",
+      "status": "done",
+      "description": "Optional Progressive Web App setup via `frontier-fe init --pwa` (installable, offline-capable via service worker + web manifest)",
+      "done_criteria": [
+        "`frontier-fe init --pwa` scaffolds a project with vite-plugin-pwa configured in vite.config.ts",
+        "Scaffolded project builds and emits dist/sw.js + manifest",
+        "docker/nginx.conf carries a no-cache rule for sw.js",
+        "npm install succeeds cleanly on Vite 8 (vite-plugin-pwa 1.3.0+)",
+        "Non-PWA scaffold is unaffected (no sw.js, base configs unchanged)",
+        "docs/pwa.md documents usage"
+      ],
+      "evidence": "Smoke test: `init pwa-smoke --pwa --yes` → builds → emits dist/sw.js, dist/manifest.webmanifest, dist/registerSW.js; <link rel=manifest> auto-injected; vite-plugin-pwa@1.3.0 installs clean on Vite 8; nginx sw.js no-cache block present; plain scaffold has zero PWA artifacts. cli:build + sync:templates:check + ./init.sh all green.",
+      "dependencies": ["cli"]
     }
   ]
 }

@@ -22,12 +22,14 @@ program
   .option("-y, --yes", "Skip prompts and use defaults")
   .option("-c, --cwd <path>", "Working directory", process.cwd())
   .option("--pm <packageManager>", "Package manager (npm, yarn, pnpm)")
+  .option("--pwa", "Enable PWA (service worker, manifest, installable app)")
   .action(async (projectName, opts) => {
     await init({
       cwd: path.resolve(opts.cwd),
       projectName,
       yes: opts.yes,
       pm: opts.pm,
+      pwa: opts.pwa,
     });
   });
 

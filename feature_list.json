@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "_comment": "Agent state tracker. Each feature has a status: planned | in-progress | done | blocked.",
+  "features": [
+    {
+      "id": "auth",
+      "name": "Authentication",
+      "status": "done",
+      "description": "Login, register, OTP, password reset with token refresh and auth guards",
+      "done_criteria": [
+        "Login, Register, Otp, ForgetPassword, ResetPassword forms exist",
+        "Auth API layer with token refresh",
+        "AuthGuard route protection on /dashboard",
+        "All auth component tests pass"
+      ],
+      "evidence": "All forms, hooks, API, guards implemented in src/features/auth/; tests pass",
+      "dependencies": []
+    },
+    {
+      "id": "ui-components",
+      "name": "UI Component Library",
+      "status": "in-progress",
+      "description": "Shared UI components with Tailwind + @base-ui/react primitives",
+      "done_criteria": [
+        "All components exported from src/components/ui/index.ts",
+        "Co-located tests pass for every component",
+        "Showcase page at /components renders all components"
+      ],
+      "evidence": "26 components exist; 5 newest (Toast, Spinner, Tabs, Accordion, Progress) on feat/add-new-component branch awaiting merge",
+      "dependencies": []
+    },
+    {
+      "id": "cli",
+      "name": "CLI (frontier-fe)",
+      "status": "done",
+      "description": "npm package for scaffolding new projects from this template",
+      "done_criteria": [
+        "CLI builds and publishes to npm",
+        "Templates stay in sync with src/ via sync:templates:check"
+      ],
+      "evidence": "packages/cli/ with tsup build; sync-templates.mjs; released 0.1.0",
+      "dependencies": []
+    },
+    {
+      "id": "error-handling",
+      "name": "Error Handling Infrastructure",
+      "status": "done",
+      "description": "react-error-boundary wrapper, API error classes, useApiError hook, error examples page",
+      "done_criteria": [
+        "App wrapped with ErrorBoundary in provider.tsx",
+        "ApiError / ApiValidationError classes in libs/",
+        "Error examples page at /examples/error-handling"
+      ],
+      "evidence": "Implemented in src/app/provider.tsx, src/libs/, src/app/routes/ErrorExamples.tsx",
+      "dependencies": []
+    },
+    {
+      "id": "docker",
+      "name": "Docker Deployment",
+      "status": "done",
+      "description": "Multi-stage builds with dev/prod compose profiles and deploy script",
+      "done_criteria": [
+        "Dockerfile with multi-stage build",
+        "docker-compose.yml with dev/prod profiles",
+        "deploy.sh for production"
+      ],
+      "evidence": "Dockerfile, docker-compose.yml, deploy.sh at root",
+      "dependencies": []
+    }
+  ]
+}

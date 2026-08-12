@@ -160,7 +160,9 @@ describe("LoginPage", () => {
         const submitButton = screen.getByRole("button", { name: /login/i });
         await user.click(submitButton);
 
-        expect(screen.getByText("NIP / NIK wajib diisi")).toBeInTheDocument();
+        expect(
+          await screen.findByText("NIP / NIK wajib diisi")
+        ).toBeInTheDocument();
         expect(mockLoginWithEmailAndPassword).not.toHaveBeenCalled();
       });
 
@@ -175,7 +177,9 @@ describe("LoginPage", () => {
         const submitButton = screen.getByRole("button", { name: /login/i });
         await user.click(submitButton);
 
-        expect(screen.getByText("Kata sandi wajib diisi")).toBeInTheDocument();
+        expect(
+          await screen.findByText("Kata sandi wajib diisi")
+        ).toBeInTheDocument();
         expect(mockLoginWithEmailAndPassword).not.toHaveBeenCalled();
       });
     });

@@ -10,7 +10,7 @@
 - **Router:** React Router v7
 - **State Management:** Zustand 5, TanStack Query v5
 - **Forms:** React Hook Form 7 + Zod 4
-- **HTTP Client:** Axios 1.14.0
+- **HTTP Client:** Axios 1.19.0
 - **Testing:** Vitest 4, Testing Library, MSW 2
 - **Icons:** Lucide React
 - **Code Quality:** ESLint 9, Prettier 3, Husky, lint-staged

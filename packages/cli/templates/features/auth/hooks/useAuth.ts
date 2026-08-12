@@ -3,7 +3,7 @@
  * Provides authentication state and methods
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getAccessToken,
@@ -28,17 +28,13 @@ interface UseAuthResult {
 
 export function useAuth(): UseAuthResult {
   const navigate = useNavigate();
-  const [accessToken, setAccessTokenState] = useState<string | null>(null);
-  const [refreshToken, setRefreshTokenState] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const token = getAccessToken();
-    const refresh = getRefreshToken();
-    setAccessTokenState(token);
-    setRefreshTokenState(refresh);
-    setIsLoading(false);
-  }, []);
+  // Lazy initialization: read from localStorage on mount
+  const [accessToken, setAccessTokenState] = useState<string | null>(() =>
+    getAccessToken()
+  );
+  const [refreshToken, setRefreshTokenState] = useState<string | null>(() =>
+    getRefreshToken()
+  );
 
   const login = useCallback(
     (accessTokenValue: string, refreshTokenValue?: string) => {
@@ -68,7 +64,7 @@ export function useAuth(): UseAuthResult {
     isAuthenticated: checkIsAuthenticated(),
     accessToken,
     refreshToken,
-    isLoading,
+    isLoading: false, // localStorage is synchronous, no loading state needed
     login,
     logout,
     tokenExpiresIn,
@@ -81,25 +77,22 @@ export function useTokenRefresh(): {
   refresh: () => Promise<void>;
 } {
   const { accessToken } = useAuth();
-  const [shouldRefresh, setShouldRefresh] = useState(false);
 
-  useEffect(() => {
+  // Calculate derived state during render instead of in useEffect
+  const shouldRefresh = useMemo(() => {
     if (!accessToken) {
-      setShouldRefresh(false);
-      return;
+      return false;
     }
 
     const expiresIn = getTimeUntilExpiration(accessToken);
-    if (expiresIn !== null && expiresIn < 5 * 60 * 1000) {
-      setShouldRefresh(true);
-    } else {
-      setShouldRefresh(false);
-    }
+    return expiresIn !== null && expiresIn < 5 * 60 * 1000;
   }, [accessToken]);
 
   const refresh = useCallback(async () => {
     try {
-      setShouldRefresh(false);
+      // Token refresh logic would go here
+      // After successful refresh, shouldRefresh will automatically update
+      // based on the new accessToken expiration time
     } catch (error) {
       console.error("Token refresh failed:", error);
     }

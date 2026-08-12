@@ -8,6 +8,7 @@ import { setPageMetadata, setCanonicalUrl } from "@/utils";
 import { getRouteMetadata } from "@/config/routes-metadata";
 
 // --- FRONTIER-FE: LAZY IMPORTS ---
+const Home = lazy(() => import("@/app/routes/Home"));
 const NotFound = lazy(() => import("@/app/routes/not-found"));
 
 function PageLoader() {
@@ -37,6 +38,17 @@ function MetadataUpdater() {
 
 const router = createBrowserRouter([
   // --- FRONTIER-FE: ROUTES ---
+  {
+    path: "/",
+    element: (
+      <>
+        <MetadataUpdater />
+        <LazyPage>
+          <Home />
+        </LazyPage>
+      </>
+    ),
+  },
   {
     path: "*",
     element: (

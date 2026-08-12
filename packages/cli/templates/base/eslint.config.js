@@ -10,7 +10,14 @@ import prettierPlugin from "eslint-plugin-prettier/recommended";
 
 export default [
   {
-    ignores: ["**/dist", "node_modules", "coverage", "scripts", "*.config.js"],
+    ignores: [
+      "**/dist",
+      "node_modules",
+      "coverage",
+      "scripts",
+      "*.config.js",
+      ".remember/tmp",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

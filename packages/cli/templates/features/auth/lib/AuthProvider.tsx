@@ -1,20 +1,23 @@
-/**
- * Auth Provider using react-query-auth
- *
- * This configures the authentication system using react-query-auth
- * and provides hooks for managing authentication state.
- */
-
 import { configureAuth } from "react-query-auth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
+import { QUERY_KEYS } from "@/config/constants";
+import { UnauthorizedError } from "@/libs/apiError";
+import {
+  getAccessToken,
+  getSessionVersion,
+  setAccessToken,
+  setRefreshToken,
+  clearAuthTokens,
+} from "@/libs/tokenStorage";
 import {
   getUser,
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
   logout,
 } from "../api/authApi";
+import type { AuthResponse } from "../api/authApi";
 import type { User } from "../types/user";
-import { setAccessToken, clearAuthTokens } from "../lib/tokenStorage";
 
 // Validation schemas
 export const loginInputSchema = z.object({
@@ -32,59 +35,103 @@ export const registerInputSchema = z.object({
 export type LoginInput = z.infer<typeof loginInputSchema>;
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 
-// Helper to construct User from auth response
-function userFromAuthResponse(response: {
-  name: string;
-  email: string;
-  username: string;
-}): User {
-  return {
-    id: "1", // ID would come from response in real API
-    name: response.name,
-    email: response.email,
-    username: response.username,
-  };
+export type AuthResult =
+  | { status: "authenticated"; user: User }
+  | { status: "otp-required"; expiresIn: number };
+
+async function loadSessionUser(): Promise<User | null> {
+  if (sessionStorage.getItem("otp_pending")) return null;
+  const version = getSessionVersion();
+  const user = await getUser();
+  return version === getSessionVersion() ? user : null;
 }
 
-// Auth configuration for react-query-auth
-const authConfig = {
-  // Function to get current user
-  // Throws when not authenticated - react-query-auth handles this
-  userFn: async (): Promise<User> => {
-    const user = await getUser();
-    if (!user) {
-      throw new Error("Not authenticated");
-    }
-    return user;
-  },
+const configured = configureAuth<User | null, Error, LoginInput, RegisterInput>(
+  {
+    userKey: QUERY_KEYS.AUTH.USER,
+    userFn: loadSessionUser,
+    loginFn: async (data) => {
+      const version = getSessionVersion();
+      const result = await completeLogin(
+        await loginWithEmailAndPassword(data),
+        version
+      );
+      return result.status === "authenticated" ? result.user : null;
+    },
+    registerFn: async (data) => {
+      const version = getSessionVersion();
+      const result = await completeLogin(
+        await registerWithEmailAndPassword(data),
+        version
+      );
+      return result.status === "authenticated" ? result.user : null;
+    },
+    logoutFn: () => logout(),
+  }
+);
+export const { useUser, AuthLoader } = configured;
 
-  // Login function - stores tokens and returns user
-  loginFn: async (data: LoginInput): Promise<User> => {
-    const response = await loginWithEmailAndPassword(data);
+async function completeLogin(
+  response: AuthResponse,
+  version: number
+): Promise<AuthResult> {
+  if (version !== getSessionVersion())
+    throw new UnauthorizedError("Session changed.");
+  setAccessToken(response.token);
+  if (response.refreshToken) setRefreshToken(response.refreshToken);
+  if (response.otp.isRequired) {
+    sessionStorage.setItem("otp_pending", "true");
+    return { status: "otp-required", expiresIn: response.otp.expiresIn };
+  }
+  sessionStorage.removeItem("otp_pending");
+  const user = await loadSessionUser();
+  if (!user) throw new UnauthorizedError("Unable to load authenticated user.");
+  return { status: "authenticated", user };
+}
 
-    // Store token
-    setAccessToken(response.token);
+function useSessionMutation<Input>(
+  request: (input: Input) => Promise<AuthResponse>
+) {
+  const client = useQueryClient();
+  return useMutation({
+    retry: false,
+    mutationFn: async (input: Input) => {
+      await client.cancelQueries();
+      clearAuthTokens();
+      client.removeQueries();
+      client.setQueryData(QUERY_KEYS.AUTH.USER, null);
+      const version = getSessionVersion();
+      return completeLogin(await request(input), version);
+    },
+    onSuccess: (result: AuthResult) => {
+      client.setQueryData(
+        QUERY_KEYS.AUTH.USER,
+        result.status === "authenticated" ? result.user : null
+      );
+    },
+  });
+}
 
-    return userFromAuthResponse(response);
-  },
+export function useLogin() {
+  return useSessionMutation(loginWithEmailAndPassword);
+}
+export function useRegister() {
+  return useSessionMutation(registerWithEmailAndPassword);
+}
 
-  // Register function - stores tokens and returns user
-  registerFn: async (data: RegisterInput): Promise<User> => {
-    const response = await registerWithEmailAndPassword(data);
-
-    // Store token
-    setAccessToken(response.token);
-
-    return userFromAuthResponse(response);
-  },
-
-  // Logout function - clears tokens
-  logoutFn: async (): Promise<void> => {
-    await logout();
-    clearAuthTokens();
-  },
-};
-
-// Configure and export auth hooks and components
-export const { useUser, useLogin, useLogout, useRegister, AuthLoader } =
-  configureAuth(authConfig);
+export function useLogout() {
+  const client = useQueryClient();
+  return useMutation({
+    retry: false,
+    mutationFn: async (_input: undefined) => {
+      void _input;
+      const token = getAccessToken();
+      // Invalidate refresh immediately, before any asynchronous work.
+      clearAuthTokens();
+      await client.cancelQueries();
+      client.removeQueries();
+      client.setQueryData(QUERY_KEYS.AUTH.USER, null);
+      await logout(token);
+    },
+  });
+}

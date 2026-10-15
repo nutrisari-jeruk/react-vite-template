@@ -10,7 +10,6 @@ const mockEnv = {
   VITE_API_TIMEOUT: "10000",
   VITE_AUTH_TOKEN_KEY: "token",
   VITE_AUTH_REFRESH_TOKEN_KEY: "refreshToken",
-  VITE_AUTH_TOKEN_REFRESH_INTERVAL: "300000",
   VITE_QUERY_CACHE_TIME: "300000",
   VITE_QUERY_STALE_TIME: "60000",
   VITE_QUERY_RETRY_DELAY: "1000",
@@ -115,11 +114,6 @@ describe("Environment Configuration", () => {
       expect(env.authRefreshTokenKey).toBeDefined();
       expect(typeof env.authTokenKey).toBe("string");
       expect(typeof env.authRefreshTokenKey).toBe("string");
-    });
-
-    it("parses token refresh interval as number", () => {
-      expect(env.authTokenRefreshInterval).toBeGreaterThanOrEqual(0);
-      expect(typeof env.authTokenRefreshInterval).toBe("number");
     });
   });
 

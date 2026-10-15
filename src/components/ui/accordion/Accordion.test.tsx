@@ -5,9 +5,8 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "./";
 
 // Mock motion/react — AnimatePresence exit animations never resolve in jsdom,
 // causing collapsed panel content to remain mounted.
-vi.mock("motion/react", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const React = require("react");
+vi.mock("motion/react", async () => {
+  const React = await import("react");
 
   const AnimatePresence = ({ children }: { children: React.ReactNode }) =>
     children;
@@ -40,7 +39,7 @@ describe("Accordion", () => {
   describe("Basic Rendering", () => {
     it("renders accordion with items", () => {
       const TestComponent = () => {
-        const [value, setValue] = useState<string | null>(null);
+        const [value, setValue] = useState<string | string[] | null>(null);
 
         return (
           <Accordion value={value} onValueChange={setValue}>
@@ -64,7 +63,7 @@ describe("Accordion", () => {
 
     it("renders triggers as buttons", () => {
       const TestComponent = () => {
-        const [value, setValue] = useState<string | null>(null);
+        const [value, setValue] = useState<string | string[] | null>(null);
 
         return (
           <Accordion value={value} onValueChange={setValue}>
@@ -143,7 +142,7 @@ describe("Accordion", () => {
       const user = userEvent.setup();
 
       const TestComponent = () => {
-        const [value, setValue] = useState<string | null>(null);
+        const [value, setValue] = useState<string | string[] | null>(null);
 
         return (
           <Accordion value={value} onValueChange={setValue}>
@@ -180,7 +179,7 @@ describe("Accordion", () => {
       const user = userEvent.setup();
 
       const TestComponent = () => {
-        const [value, setValue] = useState<string | null>(null);
+        const [value, setValue] = useState<string | string[] | null>(null);
 
         return (
           <Accordion value={value} onValueChange={setValue}>
@@ -208,7 +207,7 @@ describe("Accordion", () => {
   describe("Accessibility", () => {
     it("renders trigger with correct button attributes", () => {
       const TestComponent = () => {
-        const [value, setValue] = useState<string | null>(null);
+        const [value, setValue] = useState<string | string[] | null>(null);
 
         return (
           <Accordion value={value} onValueChange={setValue}>
@@ -232,7 +231,7 @@ describe("Accordion", () => {
   describe("Custom Class Names", () => {
     it("applies custom className to Accordion", () => {
       const TestComponent = () => {
-        const [value, setValue] = useState<string | null>(null);
+        const [value, setValue] = useState<string | string[] | null>(null);
 
         return (
           <Accordion
@@ -267,7 +266,7 @@ describe("Accordion", () => {
       const user = userEvent.setup();
 
       const TestComponent = () => {
-        const [value, setValue] = useState<string | null>(null);
+        const [value, setValue] = useState<string | string[] | null>(null);
 
         return (
           <Accordion value={value} onValueChange={setValue}>

@@ -17,31 +17,16 @@ This application uses a combination of state management approaches based on the 
 
 ### Setup
 
-```typescript
-// src/app/provider.tsx
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+```tsx
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/libs/queryClient";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: env.queryCacheTime,
-      gcTime: env.queryCacheTime * 2,
-      retry: (failureCount, error) => {
-        if (failureCount >= env.queryRetryTimes) return false;
-        return isRetryableError(error);
-      },
-    },
-  },
-});
-
-export function AppProvider({ children }) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  );
+export function AppProvider({ children }: { children: React.ReactNode }) {
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
 ```
+
+The shared client owns retry policy. Queries retry retryable errors; mutations default to `retry: false`. Authentication uses `useUser` and `QUERY_KEYS.AUTH.USER`; do not mirror user or token state into Zustand.
 
 ### Query Keys
 

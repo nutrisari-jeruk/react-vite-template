@@ -18,39 +18,23 @@ vi.mock("react-router-dom", async () => {
 });
 
 vi.mock("../api/authApi", () => ({
+  getUser: vi.fn().mockResolvedValue({
+    id: "42",
+    name: "John",
+    email: "john@example.com",
+    username: "user",
+  }),
   registerWithEmailAndPassword: (...args: unknown[]) =>
     mockRegisterWithEmailAndPassword(...args),
 }));
 
-vi.mock("../lib/tokenStorage", async () => {
-  const actual = await vi.importActual<typeof import("../lib/tokenStorage")>(
-    "../lib/tokenStorage"
+vi.mock("@/libs/tokenStorage", async () => {
+  const actual = await vi.importActual<typeof import("@/libs/tokenStorage")>(
+    "@/libs/tokenStorage"
   );
   return {
     ...actual,
     setAccessToken: vi.fn(),
-  };
-});
-
-vi.mock("../lib/AuthProvider", async () => {
-  const { z } = await import("zod");
-  const actual = await vi.importActual<typeof import("../lib/AuthProvider")>(
-    "../lib/AuthProvider"
-  );
-
-  const testRegisterSchema = z.object({
-    email: z.string().min(1, "Email is required").email("Invalid email"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    name: z.string().min(1, "Name is required"),
-    username: z
-      .union([z.string().min(11, "Employee Number is required"), z.literal("")])
-      .optional()
-      .default(""),
-  });
-
-  return {
-    ...actual,
-    registerInputSchema: testRegisterSchema,
   };
 });
 
@@ -64,6 +48,9 @@ describe("RegisterForm", () => {
 
     expect(screen.getByLabelText("Full Name")).toBeInTheDocument();
     expect(screen.getByLabelText("Email")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Username / Employee Number")
+    ).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Create account" })
@@ -88,6 +75,10 @@ describe("RegisterForm", () => {
     render(<RegisterForm />);
 
     await user.type(screen.getByLabelText("Full Name"), "John Doe");
+    await user.type(
+      screen.getByLabelText("Username / Employee Number"),
+      "12345678901"
+    );
     await user.type(screen.getByLabelText("Email"), "not-an-email");
     await user.type(screen.getByLabelText("Password"), "password123");
     await user.click(screen.getByRole("button", { name: "Create account" }));
@@ -102,6 +93,10 @@ describe("RegisterForm", () => {
     render(<RegisterForm />);
 
     await user.type(screen.getByLabelText("Full Name"), "John Doe");
+    await user.type(
+      screen.getByLabelText("Username / Employee Number"),
+      "12345678901"
+    );
     await user.type(screen.getByLabelText("Email"), "john@example.com");
     await user.type(screen.getByLabelText("Password"), "12345");
     await user.click(screen.getByRole("button", { name: "Create account" }));
@@ -127,6 +122,10 @@ describe("RegisterForm", () => {
     render(<RegisterForm onSuccess={onSuccess} />);
 
     await user.type(screen.getByLabelText("Full Name"), "John Doe");
+    await user.type(
+      screen.getByLabelText("Username / Employee Number"),
+      "12345678901"
+    );
     await user.type(screen.getByLabelText("Email"), "john@example.com");
     await user.type(screen.getByLabelText("Password"), "password123");
 
@@ -150,6 +149,10 @@ describe("RegisterForm", () => {
     render(<RegisterForm />);
 
     await user.type(screen.getByLabelText("Full Name"), "John Doe");
+    await user.type(
+      screen.getByLabelText("Username / Employee Number"),
+      "12345678901"
+    );
     await user.type(screen.getByLabelText("Email"), "john@example.com");
     await user.type(screen.getByLabelText("Password"), "password123");
 

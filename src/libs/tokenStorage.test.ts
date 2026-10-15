@@ -15,7 +15,7 @@ import {
   getTimeUntilExpiration,
   tokenStorage,
   cookieStorage,
-} from "./tokenStorage.ts";
+} from "@/libs/tokenStorage";
 
 // Mock console methods to avoid noise in tests
 const originalConsoleError = console.error;

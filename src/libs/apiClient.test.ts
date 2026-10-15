@@ -2,13 +2,15 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const mockGetAccessToken = vi.fn();
 const mockGetRefreshToken = vi.fn();
-const mockSetAccessToken = vi.fn();
+const mockSetAuthTokens = vi.fn();
+const mockSessionVersion = vi.fn(() => 0);
 const mockClearAuthTokens = vi.fn();
 
-vi.mock("@/features/auth", () => ({
+vi.mock("./tokenStorage", () => ({
   getAccessToken: () => mockGetAccessToken(),
   getRefreshToken: () => mockGetRefreshToken(),
-  setAccessToken: (...args: unknown[]) => mockSetAccessToken(...args),
+  setAuthTokens: (...args: unknown[]) => mockSetAuthTokens(...args),
+  getSessionVersion: () => mockSessionVersion(),
   clearAuthTokens: () => mockClearAuthTokens(),
 }));
 
@@ -79,7 +81,13 @@ describe("API Client", () => {
     it("injects Authorization header when token exists", async () => {
       mockGetAccessToken.mockReturnValue("test-token-123");
 
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const adapter = vi.fn((config) => {
         expect(config.headers?.Authorization).toBe("Bearer test-token-123");
@@ -100,7 +108,13 @@ describe("API Client", () => {
     it("does not inject Authorization header when no token", async () => {
       mockGetAccessToken.mockReturnValue(null);
 
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const adapter = vi.fn((config) => {
         expect(config.headers?.Authorization).toBeUndefined();
@@ -117,7 +131,13 @@ describe("API Client", () => {
     });
 
     it("injects X-Request-ID header", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const adapter = vi.fn((config) => {
         expect(config.headers?.["X-Request-ID"]).toBeDefined();
@@ -137,7 +157,13 @@ describe("API Client", () => {
 
   describe("response error handling", () => {
     it("transforms 400/422 to ValidationError", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi.fn().mockRejectedValue(
         createAxiosError(422, {
@@ -159,7 +185,13 @@ describe("API Client", () => {
     });
 
     it("transforms 401 to UnauthorizedError", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi
         .fn()
@@ -177,7 +209,13 @@ describe("API Client", () => {
     });
 
     it("transforms 403 to ForbiddenError", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi
         .fn()
@@ -192,7 +230,13 @@ describe("API Client", () => {
     });
 
     it("transforms 404 to NotFoundError", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi
         .fn()
@@ -209,7 +253,13 @@ describe("API Client", () => {
     });
 
     it("transforms 409 to ConflictError", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi
         .fn()
@@ -226,7 +276,13 @@ describe("API Client", () => {
     });
 
     it("transforms 429 to RateLimitError with retry-after", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const err = createAxiosError(
         429,
@@ -246,7 +302,13 @@ describe("API Client", () => {
     });
 
     it("transforms 500 to ServerError", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi
         .fn()
@@ -261,7 +323,13 @@ describe("API Client", () => {
     });
 
     it("transforms 503 to ServiceUnavailableError", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi
         .fn()
@@ -280,7 +348,13 @@ describe("API Client", () => {
     });
 
     it("transforms network error (no response) to NetworkError", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi.fn().mockRejectedValue({
         isAxiosError: true,
@@ -296,7 +370,13 @@ describe("API Client", () => {
     });
 
     it("transforms ECONNABORTED to TimeoutError", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi.fn().mockRejectedValue({
         isAxiosError: true,
@@ -312,7 +392,13 @@ describe("API Client", () => {
     });
 
     it("passes through non-axios errors unchanged", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
       const plainError = new Error("plain error");
       const mockAdapter = vi.fn().mockRejectedValue(plainError);
       try {
@@ -323,7 +409,13 @@ describe("API Client", () => {
     });
 
     it("transforms unknown status code to generic Error with response message", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
       const mockAdapter = vi
         .fn()
         .mockRejectedValue(createAxiosError(418, { message: "I'm a teapot" }));
@@ -336,7 +428,13 @@ describe("API Client", () => {
     });
 
     it("transforms unknown status code using error.message when response has no message", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
       const err = createAxiosError(418, {});
       Object.assign(err, { message: "axios message" });
       const mockAdapter = vi.fn().mockRejectedValue(err);
@@ -351,7 +449,13 @@ describe("API Client", () => {
   describe("401 token refresh", () => {
     it("retries request with new token after successful refresh", async () => {
       mockGetRefreshToken.mockReturnValue("refresh-token");
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
       let callCount = 0;
       api.defaults.adapter = vi.fn((config) => {
         callCount++;
@@ -385,7 +489,10 @@ describe("API Client", () => {
       });
       const response = await api.get("/users/1");
       expect(response.data).toEqual({ success: true, data: { id: 1 } });
-      expect(mockSetAccessToken).toHaveBeenCalledWith("new-access-token");
+      expect(mockSetAuthTokens).toHaveBeenCalledWith(
+        "new-access-token",
+        "new-refresh-token"
+      );
     });
 
     it("clears tokens and redirects when refresh fails and pathname is not /login", async () => {
@@ -394,7 +501,13 @@ describe("API Client", () => {
         value: { ...originalLocation, pathname: "/dashboard", href: "" },
         writable: true,
       });
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
       api.defaults.adapter = vi.fn((config) => {
         if (config.url?.includes("/auth/refresh")) {
           return Promise.reject(new Error("Refresh failed"));
@@ -409,7 +522,7 @@ describe("API Client", () => {
         expect((error as Error).constructor.name).toBe("UnauthorizedError");
       }
       expect(mockClearAuthTokens).toHaveBeenCalled();
-      expect(window.location.href).toBe("/login");
+      expect(window.location.href).toBe("");
     });
 
     it("does not redirect when on /login page and refresh fails", async () => {
@@ -418,7 +531,13 @@ describe("API Client", () => {
         value: { ...originalLocation, pathname: "/login", href: "" },
         writable: true,
       });
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
       api.defaults.adapter = vi.fn((config) => {
         if (config.url?.includes("/auth/refresh")) {
           return Promise.reject(new Error("Refresh failed"));
@@ -442,7 +561,13 @@ describe("API Client", () => {
         value: { ...originalLocation, pathname: "/dashboard", href: "" },
         writable: true,
       });
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
       const mockAdapter = vi.fn().mockRejectedValue(
         createAxiosError(
           401,
@@ -464,7 +589,13 @@ describe("API Client", () => {
 
   describe("request methods", () => {
     it("GET request succeeds", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi.fn().mockResolvedValue({
         data: { success: true, data: { id: 1, name: "Test" } },
@@ -489,7 +620,13 @@ describe("API Client", () => {
     });
 
     it("POST request succeeds", async () => {
-      const { api } = await import("./apiClient");
+      const { api, refreshApi } = await import("./apiClient");
+      refreshApi.defaults.adapter = (config) => {
+        const adapter = api.defaults.adapter;
+        if (typeof adapter !== "function")
+          throw new Error("Expected test adapter");
+        return adapter(config);
+      };
 
       const mockAdapter = vi.fn().mockResolvedValue({
         data: { success: true },

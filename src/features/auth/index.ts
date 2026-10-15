@@ -50,10 +50,7 @@ export {
   isTokenExpired,
   getTimeUntilExpiration,
   tokenStorage,
-} from "./lib/tokenStorage";
-
-// Legacy hooks (deprecated - use useUser, useLogin, useLogout, useRegister instead)
-export { useAuth, useTokenRefresh } from "./hooks/useAuth";
+} from "@/libs/tokenStorage";
 
 // Types
 export type {
@@ -65,3 +62,5 @@ export type {
   UserSession,
   User,
 } from "./types";
+
+export type { AuthResult } from "./lib/AuthProvider";

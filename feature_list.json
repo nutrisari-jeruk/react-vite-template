@@ -80,8 +80,23 @@
         "Non-PWA scaffold is unaffected (no sw.js, base configs unchanged)",
         "docs/pwa.md documents usage"
       ],
-      "evidence": "Smoke test: `init pwa-smoke --pwa --yes` → builds → emits dist/sw.js, dist/manifest.webmanifest, dist/registerSW.js; <link rel=manifest> auto-injected; vite-plugin-pwa@1.3.0 installs clean on Vite 8; nginx sw.js no-cache block present; plain scaffold has zero PWA artifacts. cli:build + sync:templates:check + ./init.sh all green.",
-      "dependencies": ["cli"]
+      "evidence": "Smoke test: `init pwa-smoke --pwa --yes` \u2192 builds \u2192 emits dist/sw.js, dist/manifest.webmanifest, dist/registerSW.js; <link rel=manifest> auto-injected; vite-plugin-pwa@1.3.0 installs clean on Vite 8; nginx sw.js no-cache block present; plain scaffold has zero PWA artifacts. cli:build + sync:templates:check + ./init.sh all green.",
+      "dependencies": [
+        "cli"
+      ]
+    },
+    {
+      "id": "template-reliability",
+      "name": "Template reliability audit fixes",
+      "status": "done",
+      "description": "Fix scaffold, auth lifecycle, quality gates and DataTable defaults",
+      "done_criteria": [
+        "Application and CLI checks pass",
+        "Generated scaffold matrix passes",
+        "Migration guide documents breaking changes"
+      ],
+      "dependencies": [],
+      "evidence": "2026-10-16: ./init.sh passed (lint with zero warnings, real app/node/test type-check, 942 tests, app build). Coverage passed: statements 92.22%, branches 85.71%, functions 90.13%, lines 93.12%. CLI build, sync check, registry validation (53 items), and 8 scaffold scenarios passed, including idempotent add, skipped-install manifests and nonzero install failure. Breaking changes documented in docs/migrations/template-reliability.md."
     }
   ]
 }

@@ -1,101 +1,62 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { beforeEach, expect, it, vi } from "vitest";
+import { clearAuthTokens, setAccessToken } from "@/libs/tokenStorage";
 import { AuthGuard } from "./AuthGuard";
 
-const mockUseUser = vi.fn();
-const mockGetAccessToken = vi.fn();
-const mockNavigate = vi.fn();
-
-vi.mock("../lib/AuthProvider", () => ({
-  useUser: () => mockUseUser(),
+const session = vi.hoisted(() => ({
+  isLoading: false,
+  data: null as { id: string } | null,
 }));
-
-vi.mock("../lib/tokenStorage", () => ({
-  getAccessToken: () => mockGetAccessToken(),
-}));
-
-vi.mock("react-router-dom", async () => {
-  const actual =
-    await vi.importActual<typeof import("react-router-dom")>(
-      "react-router-dom"
-    );
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  };
+vi.mock("../lib/AuthProvider", () => ({ useUser: () => session }));
+function renderGuard() {
+  render(
+    <MemoryRouter initialEntries={["/private"]}>
+      <Routes>
+        <Route
+          path="/private"
+          element={
+            <AuthGuard>
+              <p>Private page</p>
+            </AuthGuard>
+          }
+        />
+        <Route path="/login" element={<p>Login destination</p>} />
+        <Route path="/otp" element={<p>OTP destination</p>} />
+      </Routes>
+    </MemoryRouter>
+  );
+}
+beforeEach(() => {
+  clearAuthTokens();
+  session.isLoading = false;
+  session.data = null;
 });
-
-describe("AuthGuard", () => {
-  const mockLocation = { href: "", assign: vi.fn(), replace: vi.fn() };
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockLocation.href = "";
-    Object.defineProperty(window, "location", {
-      value: mockLocation,
-      writable: true,
-    });
-  });
-
-  it("redirects to /login when no token", () => {
-    mockGetAccessToken.mockReturnValue(null);
-    mockUseUser.mockReturnValue({ isLoading: false, data: null, error: null });
-
-    render(
-      <MemoryRouter>
-        <AuthGuard>
-          <div>Protected Content</div>
-        </AuthGuard>
-      </MemoryRouter>
-    );
-
-    expect(mockLocation.href).toBe("/login");
-    expect(screen.queryByText("Protected Content")).not.toBeInTheDocument();
-  });
-
-  it("renders children when authenticated with token and user data", () => {
-    mockGetAccessToken.mockReturnValue("token");
-    mockUseUser.mockReturnValue({
-      isLoading: false,
-      data: { id: "1", name: "User", email: "u@x.com", username: "user" },
-      error: null,
-      isError: false,
-    });
-
-    render(
-      <MemoryRouter>
-        <AuthGuard>
-          <div>Protected Content</div>
-        </AuthGuard>
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText("Protected Content")).toBeInTheDocument();
-    expect(mockNavigate).not.toHaveBeenCalled();
-  });
-
-  it("redirects via navigate when token exists but user query fails", () => {
-    mockGetAccessToken.mockReturnValue("token");
-    mockUseUser.mockReturnValue({
-      isLoading: false,
-      data: null,
-      error: new Error("Not authenticated"),
-      isError: true,
-    });
-
-    render(
-      <MemoryRouter initialEntries={["/dashboard"]}>
-        <AuthGuard>
-          <div>Protected Content</div>
-        </AuthGuard>
-      </MemoryRouter>
-    );
-
-    expect(mockNavigate).toHaveBeenCalledWith("/login", {
-      state: { from: expect.anything() },
-      replace: true,
-    });
-    expect(screen.queryByText("Protected Content")).not.toBeInTheDocument();
-  });
+it("redirects anonymous visitors", () => {
+  renderGuard();
+  expect(screen.getByText("Login destination")).toBeInTheDocument();
+});
+it("redirects a pending session to OTP after reload", () => {
+  setAccessToken("pending");
+  sessionStorage.setItem("otp_pending", "true");
+  renderGuard();
+  expect(screen.getByText("OTP destination")).toBeInTheDocument();
+});
+it("waits for /me before showing protected content", () => {
+  setAccessToken("token");
+  session.isLoading = true;
+  renderGuard();
+  expect(screen.getByRole("status")).toHaveTextContent("Loading session");
+  expect(screen.queryByText("Private page")).not.toBeInTheDocument();
+});
+it("renders the authenticated page", () => {
+  setAccessToken("token");
+  session.data = { id: "42" };
+  renderGuard();
+  expect(screen.getByText("Private page")).toBeInTheDocument();
+});
+it("redirects an invalid session", () => {
+  setAccessToken("token");
+  renderGuard();
+  expect(screen.getByText("Login destination")).toBeInTheDocument();
 });

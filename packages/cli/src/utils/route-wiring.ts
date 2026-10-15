@@ -72,6 +72,16 @@ async function wireRouterFile(cwd: string, route: RouteConfig): Promise<void> {
     return;
   }
 
+  if (route.layout) {
+    const name = LAYOUT_MAP[route.layout].component;
+    const line = `import { ${name} } from "@/components/layouts/${name}";`;
+    if (!content.includes(line)) content = line + "\n" + content;
+  }
+  if (route.protected && route.layout !== "authenticated") {
+    const line = 'import { AuthGuard } from "@/features/auth";';
+    if (!content.includes(line)) content = line + "\n" + content;
+  }
+
   // 1. Add lazy import
   const lazyImport = `const ${route.componentName} = lazy(() => import("${route.importPath}"));`;
 
@@ -120,139 +130,15 @@ async function wireRouterFile(cwd: string, route: RouteConfig): Promise<void> {
  * Build the JSX route entry for createBrowserRouter
  */
 function buildRouteEntry(route: RouteConfig): string {
-  const { componentName } = route;
-  const isIndex = route.path === "/";
-  const pathProp = isIndex ? `path: "/"` : `path: "${route.path}"`;
-
-  // Standalone page (no layout)
-  if (!route.layout) {
-    if (route.protected) {
-      return `  {
-    ${pathProp},
-    element: (
-      <>
-        <MetadataUpdater />
-        <ProtectedRoute>
-          <LazyPage>
-            <${componentName} />
-          </LazyPage>
-        </ProtectedRoute>
-      </>
-    ),
-  },`;
-    }
-    return `  {
-    ${pathProp},
-    element: (
-      <>
-        <MetadataUpdater />
-        <LazyPage>
-          <${componentName} />
-        </LazyPage>
-      </>
-    ),
-  },`;
-  }
-
-  // Page with layout
-  const layoutInfo = LAYOUT_MAP[route.layout];
-  if (!layoutInfo) {
-    return `  {
-    ${pathProp},
-    element: (
-      <>
-        <MetadataUpdater />
-        <LazyPage>
-          <${componentName} />
-        </LazyPage>
-      </>
-    ),
-  },`;
-  }
-
-  const layoutComponent = layoutInfo.component;
-
-  // Protected + AuthLoader (e.g., dashboard)
-  if (route.protected && route.authLoader) {
-    return `  {
-    ${pathProp},
-    element: (
-      <>
-        <MetadataUpdater />
-        <ProtectedRoute>
-          <AuthLoader
-            renderLoading={() => (
-              <div className="flex min-h-dvh items-center justify-center">
-                <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
-              </div>
-            )}
-            renderError={() => {
-              window.location.href = "/login";
-              return null;
-            }}
-          >
-            <${layoutComponent} />
-          </AuthLoader>
-        </ProtectedRoute>
-      </>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <LazyPage>
-            <${componentName} />
-          </LazyPage>
-        ),
-      },
-    ],
-  },`;
-  }
-
-  // Protected without AuthLoader
-  if (route.protected) {
-    return `  {
-    ${pathProp},
-    element: (
-      <>
-        <MetadataUpdater />
-        <ProtectedRoute>
-          <${layoutComponent} />
-        </ProtectedRoute>
-      </>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <LazyPage>
-            <${componentName} />
-          </LazyPage>
-        ),
-      },
-    ],
-  },`;
-  }
-
-  // Standard layout page
+  const page = `<LazyPage><${route.componentName} /></LazyPage>`;
+  const layout = route.layout ? LAYOUT_MAP[route.layout].component : null;
+  const guard = route.protected && route.layout !== "authenticated";
+  const element = layout ? `<${layout} />` : page;
+  const guarded = guard ? `<AuthGuard>${element}</AuthGuard>` : element;
   return `  {
-    ${pathProp},
-    element: (
-      <>
-        <MetadataUpdater />
-        <${layoutComponent} />
-      </>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <LazyPage>
-            <${componentName} />
-          </LazyPage>
-        ),
-      },
-    ],
+    path: "${route.path}",
+    element: <><MetadataUpdater />${guarded}</>,
+    ${layout ? `children: [{ index: true, element: ${page} }],` : ""}
   },`;
 }
 
@@ -303,7 +189,7 @@ async function wireConstants(cwd: string, route: RouteConfig): Promise<void> {
 async function wireNavbar(cwd: string, route: RouteConfig): Promise<void> {
   if (!route.navLink) return;
 
-  const navbarPath = path.resolve(cwd, "src/components/layouts/navbar.tsx");
+  const navbarPath = path.resolve(cwd, "src/components/layouts/Navbar.tsx");
   if (!(await fs.pathExists(navbarPath))) {
     logger.warn("navbar.tsx not found, skipping nav link.");
     return;

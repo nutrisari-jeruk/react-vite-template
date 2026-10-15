@@ -18,7 +18,7 @@ src/libs/
 ### Configuration
 
 ```typescript
-// src/libs/api-client.ts
+// src/libs/apiClient.ts
 import axios from "axios";
 import { env } from "@/config/env";
 

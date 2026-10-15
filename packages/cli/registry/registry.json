@@ -26,15 +26,15 @@
       "files": [
         {
           "source": "templates/lib/api-client.ts",
-          "target": "src/lib/api-client.ts"
+          "target": "src/libs/apiClient.ts"
         },
         {
           "source": "templates/lib/api-error.ts",
-          "target": "src/lib/api-error.ts"
+          "target": "src/libs/apiError.ts"
         },
         {
           "source": "templates/lib/lib-index.ts",
-          "target": "src/lib/index.ts"
+          "target": "src/libs/index.ts"
         }
       ],
       "npmDependencies": ["axios"],
@@ -417,6 +417,10 @@
         {
           "source": "templates/ui/avatar/index.ts",
           "target": "src/components/ui/avatar/index.ts"
+        },
+        {
+          "source": "templates/ui/avatar/AvatarGroup.tsx",
+          "target": "src/components/ui/avatar/AvatarGroup.tsx"
         }
       ],
       "npmDependencies": [],
@@ -618,7 +622,7 @@
       "registryDependencies": ["use-media-query"],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": ["export { useBreakpoint } from \"./use-breakpoint\";"]
+        "exports": ["export { useBreakpoint } from \"./useBreakpoint\";"]
       }
     },
     {
@@ -635,7 +639,7 @@
       "registryDependencies": [],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": ["export { useMediaQuery } from \"./use-media-query\";"]
+        "exports": ["export { useMediaQuery } from \"./useMediaQuery\";"]
       }
     },
     {
@@ -652,7 +656,7 @@
       "registryDependencies": [],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": ["export { useLocalStorage } from \"./use-local-storage\";"]
+        "exports": ["export { useLocalStorage } from \"./useLocalStorage\";"]
       }
     },
     {
@@ -669,7 +673,7 @@
       "registryDependencies": [],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": ["export { useCountdown } from \"./use-countdown\";"]
+        "exports": ["export { useCountdown } from \"./useCountdown\";"]
       }
     },
     {
@@ -686,7 +690,7 @@
       "registryDependencies": ["api-client"],
       "barrel": {
         "file": "src/hooks/index.ts",
-        "exports": ["export { useApiError } from \"./use-api-error\";"]
+        "exports": ["export { useApiError } from \"./useApiError\";"]
       }
     },
     {
@@ -731,16 +735,8 @@
           "target": "src/features/auth/components/index.ts"
         },
         {
-          "source": "templates/features/auth/hooks/useAuth.ts",
-          "target": "src/features/auth/hooks/useAuth.ts"
-        },
-        {
           "source": "templates/features/auth/lib/AuthProvider.tsx",
           "target": "src/features/auth/lib/AuthProvider.tsx"
-        },
-        {
-          "source": "templates/features/auth/lib/tokenStorage.ts",
-          "target": "src/features/auth/lib/tokenStorage.ts"
         },
         {
           "source": "templates/features/auth/types/user.ts",
@@ -762,7 +758,15 @@
         "zod",
         "axios"
       ],
-      "registryDependencies": ["api-client", "cn", "button", "input"]
+      "registryDependencies": [
+        "api-client",
+        "cn",
+        "button",
+        "input",
+        "alert",
+        "link",
+        "use-countdown"
+      ]
     },
     {
       "name": "main-layout",
@@ -775,10 +779,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["cn"],
+      "registryDependencies": ["cn", "navbar", "footer"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": ["export { MainLayout } from \"./main-layout\";"]
+        "exports": ["export { MainLayout } from \"./MainLayout\";"]
       }
     },
     {
@@ -792,10 +796,10 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["cn"],
+      "registryDependencies": ["cn", "navbar", "footer"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": ["export { LandingLayout } from \"./landing-layout\";"]
+        "exports": ["export { LandingLayout } from \"./LandingLayout\";"]
       }
     },
     {
@@ -812,7 +816,7 @@
       "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": ["export { AuthLayout } from \"./auth-layout\";"]
+        "exports": ["export { AuthLayout } from \"./AuthLayout\";"]
       }
     },
     {
@@ -826,11 +830,11 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["cn", "auth"],
+      "registryDependencies": ["cn", "auth", "navbar", "footer"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
         "exports": [
-          "export { AuthenticatedLayout } from \"./authenticated-layout\";"
+          "export { AuthenticatedLayout } from \"./AuthenticatedLayout\";"
         ]
       }
     },
@@ -845,10 +849,10 @@
         }
       ],
       "npmDependencies": ["react-router-dom", "lucide-react"],
-      "registryDependencies": ["cn", "button"],
+      "registryDependencies": ["cn", "button", "auth"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": ["export { Navbar } from \"./navbar\";"]
+        "exports": ["export { Navbar } from \"./Navbar\";"]
       }
     },
     {
@@ -865,7 +869,7 @@
       "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/layouts/index.ts",
-        "exports": ["export { Footer } from \"./footer\";"]
+        "exports": ["export { Footer } from \"./Footer\";"]
       }
     },
     {
@@ -887,7 +891,8 @@
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": ["export { AuthBranding } from \"./auth-branding\";"]
-      }
+      },
+      "templateOnly": true
     },
     {
       "name": "auth-illustration",
@@ -908,12 +913,13 @@
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": ["export { AuthIllustration } from \"./auth-illustration\";"]
-      }
+      },
+      "templateOnly": true
     },
     {
       "name": "login-split",
       "type": "block",
-      "description": "Login page — split screen with illustration and form side by side",
+      "description": "Login page \u2014 split screen with illustration and form side by side",
       "files": [
         {
           "source": "templates/blocks/auth/login-split.tsx",
@@ -921,12 +927,24 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth", "auth-branding", "auth-illustration"]
+      "registryDependencies": ["auth", "auth-branding", "auth-illustration"],
+      "route": {
+        "path": "/login",
+        "constantKey": "LOGIN",
+        "componentName": "Login",
+        "importPath": "@/app/routes/Login",
+        "layout": null,
+        "metadata": {
+          "title": "Login",
+          "description": "Sign in to your account."
+        }
+      },
+      "templateOnly": true
     },
     {
       "name": "login-centered",
       "type": "block",
-      "description": "Login page — centered card on gradient background",
+      "description": "Login page \u2014 centered card on gradient background",
       "files": [
         {
           "source": "templates/blocks/auth/login-centered.tsx",
@@ -934,12 +952,24 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth", "auth-branding"]
+      "registryDependencies": ["auth", "auth-branding"],
+      "route": {
+        "path": "/login",
+        "constantKey": "LOGIN",
+        "componentName": "Login",
+        "importPath": "@/app/routes/Login",
+        "layout": null,
+        "metadata": {
+          "title": "Login",
+          "description": "Sign in to your account."
+        }
+      },
+      "templateOnly": true
     },
     {
       "name": "login-minimal",
       "type": "block",
-      "description": "Login page — minimal with branding sidebar",
+      "description": "Login page \u2014 minimal with branding sidebar",
       "files": [
         {
           "source": "templates/blocks/auth/login-minimal.tsx",
@@ -947,7 +977,19 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth", "auth-branding"]
+      "registryDependencies": ["auth", "auth-branding"],
+      "route": {
+        "path": "/login",
+        "constantKey": "LOGIN",
+        "componentName": "Login",
+        "importPath": "@/app/routes/Login",
+        "layout": null,
+        "metadata": {
+          "title": "Login",
+          "description": "Sign in to your account."
+        }
+      },
+      "templateOnly": true
     },
     {
       "name": "home",
@@ -960,7 +1002,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["cn", "button", "landing-layout"],
+      "registryDependencies": ["cn", "button", "landing-layout", "card"],
       "route": {
         "path": "/",
         "constantKey": "HOME",
@@ -987,7 +1029,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["cn", "landing-layout"],
+      "registryDependencies": ["cn", "landing-layout", "card"],
       "route": {
         "path": "/about",
         "constantKey": "ABOUT",
@@ -1014,7 +1056,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth"],
+      "registryDependencies": ["auth", "image-with-fallback"],
       "route": {
         "path": "/login",
         "constantKey": "LOGIN",
@@ -1038,7 +1080,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth", "auth-layout"],
+      "registryDependencies": ["auth", "auth-layout", "card"],
       "route": {
         "path": "/register",
         "constantKey": "REGISTER",
@@ -1091,7 +1133,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth"],
+      "registryDependencies": ["auth", "image-with-fallback"],
       "route": {
         "path": "/forget-password",
         "constantKey": "FORGET_PASSWORD",
@@ -1115,7 +1157,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth"],
+      "registryDependencies": ["auth", "image-with-fallback"],
       "route": {
         "path": "/reset-password",
         "constantKey": "RESET_PASSWORD",
@@ -1139,7 +1181,7 @@
         }
       ],
       "npmDependencies": [],
-      "registryDependencies": ["auth"],
+      "registryDependencies": ["auth", "image-with-fallback"],
       "route": {
         "path": "/otp",
         "constantKey": "OTP",

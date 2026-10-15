@@ -22,6 +22,7 @@ program
   .option("-y, --yes", "Skip prompts and use defaults")
   .option("-c, --cwd <path>", "Working directory", process.cwd())
   .option("--pm <packageManager>", "Package manager (npm, yarn, pnpm)")
+  .option("--skip-install", "Write dependency manifest without installing")
   .option("--pwa", "Enable PWA (service worker, manifest, installable app)")
   .action(async (projectName, opts) => {
     await init({
@@ -30,6 +31,7 @@ program
       yes: opts.yes,
       pm: opts.pm,
       pwa: opts.pwa,
+      skipInstall: opts.skipInstall,
     });
   });
 
@@ -43,6 +45,7 @@ program
     "-t, --type <type>",
     "Filter by type (ui, hook, feature, layout, page, lib)"
   )
+  .option("--skip-install", "Record dependencies without installing")
   .option("-o, --overwrite", "Overwrite existing files")
   .option("-c, --cwd <path>", "Working directory", process.cwd())
   .action(async (items, opts) => {
@@ -52,6 +55,7 @@ program
       type: opts.type,
       yes: opts.yes,
       overwrite: opts.overwrite,
+      skipInstall: opts.skipInstall,
     });
   });
 
@@ -70,4 +74,7 @@ program
     });
   });
 
-program.parse();
+program.parseAsync().catch((error: unknown) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exitCode = 1;
+});

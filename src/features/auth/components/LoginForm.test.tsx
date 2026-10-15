@@ -28,23 +28,29 @@ vi.mock("@/features/auth/api/authApi", async () => {
   return {
     ...actual,
     loginWithEmailAndPassword: vi.fn(),
+    getUser: vi.fn().mockResolvedValue({
+      id: "42",
+      name: "User",
+      email: "user@example.com",
+      username: "user",
+    }),
   };
 });
 
 // Mock token storage
-vi.mock("@/features/auth/lib/tokenStorage", async () => {
-  const actual = await vi.importActual<
-    typeof import("@/features/auth/lib/tokenStorage")
-  >("@/features/auth/lib/tokenStorage");
+vi.mock("@/libs/tokenStorage", async () => {
+  const actual = await vi.importActual<typeof import("@/libs/tokenStorage")>(
+    "@/libs/tokenStorage"
+  );
   return {
     ...actual,
-    setAccessToken: vi.fn(),
+    setAccessToken: vi.fn(actual.setAccessToken),
   };
 });
 
 // Import mocked modules
 import { loginWithEmailAndPassword } from "@/features/auth/api/authApi";
-import { setAccessToken } from "@/features/auth/lib/tokenStorage";
+import { setAccessToken } from "@/libs/tokenStorage";
 
 const mockLoginWithEmailAndPassword = loginWithEmailAndPassword as ReturnType<
   typeof vi.fn

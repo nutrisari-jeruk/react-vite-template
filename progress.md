@@ -2,36 +2,33 @@
 
 ## Last Updated
 
-2026-08-12
+2026-10-16
 
 ## Current Objective
 
-**pwa** — Optional PWA via `frontier-fe init --pwa`. Implemented: `--pwa` flag wired in `packages/cli/src/index.ts`; `applyPwaConfig` in `init.ts` injects `vite-plugin-pwa` into the scaffolded `vite.config.ts` and a no-cache rule for `sw.js` into `docker/nginx.conf`; source app icon at `packages/cli/templates/base/pwa/public/pwa/icon.svg`; `vite-plugin-pwa` devDep added on `--pwa`. Docs at `docs/pwa.md`. **Verification passed — feature complete.**
+**template-reliability — done.** Implemented all eight frontend-template audit fixes. Canonical generated paths match src/libs, src/tests, camelCase hooks, and PascalCase components. CLI records dependencies before optional installation, completes transitive registry dependencies, wires routes/imports, and exits nonzero on installation failure.
 
-## Active Feature
+Authentication uses QUERY_KEYS.AUTH.USER and backend /auth/me identity. Removed legacy auth hooks/store. Added explicit authenticated/otp-required mutation results, pending-OTP guards, logout cleanup, session-version protection for in-flight work, separate single-flight refresh transport with token rotation, and private-cache cleanup on session expiry. Registration now exposes the username required by its production schema; tests no longer substitute a relaxed schema.
 
-**pwa** — **done.** All Definition-of-Done criteria met (see `feature_list.json`).
+QueryClient is shared with mutation retry disabled. DataTable selection requires a stable getRowId; filtering follows parent state. Added registry validation, scaffold smoke runner, CI/release gates, implementation plan, and migration guide.
 
-## Last Verified
+## Verification
 
-- Date: 2026-08-12
-- Branch: main
-- Result: **PASS** — all checks green
-  - `cli:build`: pass
-  - `sync:templates:check`: pass (0 errors — PWA icon asset is exempt from sync)
-  - PWA smoke test: `init pwa-smoke --pwa --yes` → `npm run build` → emits `dist/sw.js`, `dist/manifest.webmanifest`, `dist/registerSW.js`; `<link rel="manifest">` auto-injected; `vite-plugin-pwa@1.3.0` installs clean on Vite 8
-  - Non-PWA regression: plain scaffold has zero PWA artifacts
-  - `./init.sh`: pass (lint, type-check, 998 tests, build)
+- `./init.sh`: PASS — lint with zero warnings, source/Node/test type-check, 942 tests across 74 files, production build.
+- `npm run test:coverage -- --run`: PASS — statements 92.22%, branches 85.71%, functions 90.13%, lines 93.12%; existing 70% thresholds preserved.
+- `npm run cli:build`: PASS.
+- `npm run sync:templates:check`: PASS — 89 shared registry files, 31 base files, 1 shared doc; intentional template-only sections/blocks verified separately.
+- `npm run check:registry`: PASS — 53 items, dependency closures, local imports, template case checks.
+- `npm run smoke:cli`: PASS with a fresh npm-installed PWA dependency superset; eight isolated scenarios: base, auth, all auth pages, all UI, three Login block variants, PWA. Each scenario type-checks, runs a real DOM test, and builds. Also verifies repeated add, persisted dependency manifests and nonzero install failure.
+- Final rerun against the same installed dependency superset: PASS for all eight scenarios after the final source/CLI changes.
+- `git diff --check`: PASS.
 
-## Blockers
+Final smoke logs: `/var/folders/6v/qtlqjzld0870jwhns0xq1x7w0000gn/T/frontier-smoke-jVShzu/commands.log`.
 
-None.
+## Constraints and Remaining Boundaries
+
+Local `.claude/settings.json` changes were preserved and excluded from automatic template synchronization. Backend URLs and existing payload fields were retained; an optional refreshToken field is accepted when provided. No dependency upgrades, commit, npm publication, or deployment were performed. Real backend/browser visual verification remains outside this audit-fix scope. Existing React SWC performance advice is informational.
 
 ## Next Actions
 
-1. Commit the PWA changes (e.g. `feat(cli): add optional PWA via init --pwa`)
-2. Pick the next feature from `feature_list.json`
-
-## Recommended Next Step
-
-Commit and push. Note: the pre-existing `__dirname` warning in the base `vite.config.ts` is unrelated to PWA and out of scope.
+Review the diff and `docs/migrations/template-reliability.md` before releasing a version with the documented breaking changes. Existing generated projects need explicit migration; adding already-installed registry items does not upgrade their source automatically. Historical feature tracker entries were otherwise preserved.

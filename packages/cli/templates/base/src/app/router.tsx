@@ -9,7 +9,7 @@ import { getRouteMetadata } from "@/config/routes-metadata";
 
 // --- FRONTIER-FE: LAZY IMPORTS ---
 const Home = lazy(() => import("@/app/routes/Home"));
-const NotFound = lazy(() => import("@/app/routes/not-found"));
+const NotFound = lazy(() => import("@/app/routes/NotFound"));
 
 function PageLoader() {
   return (

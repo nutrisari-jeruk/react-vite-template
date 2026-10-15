@@ -29,8 +29,8 @@ src/
 ├── config/               # Environment variables, constants
 ├── features/             # Self-contained feature modules (add via frontier-fe add)
 ├── hooks/                # Shared custom hooks
-├── lib/                  # Third-party configs (axios instance, queryClient)
-├── testing/              # Test utilities and MSW setup
+├── libs/                  # Third-party configs (axios instance, queryClient)
+├── tests/              # Test utilities and MSW setup
 ├── types/                # Shared TypeScript types
 └── utils/                # Utility functions
 ```
@@ -43,13 +43,13 @@ src/
 // 1. React/external → 2. @/ aliases → 3. type keyword
 import { useState } from "react";
 import { Button } from "@/components/ui";
-import { api } from "@/lib";
+import { api } from "@/libs";
 import type { User } from "@/types";
 ```
 
 - Use barrel exports: `import { Button } from "@/components/ui"`
 - Use `@/` aliases for cross-directory imports
-- API calls via `api` from `@/lib` only
+- API calls via `api` from `@/libs` only
 
 ### Naming
 
@@ -57,7 +57,7 @@ import type { User } from "@/types";
 | ------------- | ----------------------------------- | -------------------------------------- |
 | UI components | lowercase folder, PascalCase file   | `button/Button.tsx` → `Button`         |
 | Page routes   | PascalCase, default export          | `Home.tsx`, `Dashboard.tsx`            |
-| Hooks         | camelCase with `use` prefix         | `useAuth.ts`, `useLocalStorage.ts`     |
+| Hooks         | camelCase with `use` prefix         | `useCountdown.ts`, `useLocalStorage.ts`     |
 | Tests         | Co-located, same name + `.test.tsx` | `Button.test.tsx` next to `Button.tsx` |
 
 ### State
@@ -110,7 +110,7 @@ Access via `env` from `@/config`, not `import.meta.env` directly. All `VITE_*` v
 
 ### API
 
-Always use `api` from `@/lib`. **axios is pinned to exactly `1.19.0`** (no `^` or `~`) — do not upgrade without Tech Lead approval.
+Always use `api` from `@/libs`. **axios is pinned to exactly `1.19.0`** (no `^` or `~`) — do not upgrade without Tech Lead approval.
 
 ## Common Tasks
 

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ChevronUp, ChevronDown, ChevronsUpDown, Loader2 } from "lucide-react";
 import {
   Table,
@@ -80,11 +79,9 @@ export interface SortingState {
  * @property emptyMessage - Message shown when no data
  * @property emptyAction - Optional action button for empty state { label: string; onClick: () => void }
  */
-export interface ServerTableProps<T> {
+interface BaseTableProps<T> {
   data: T[];
   columns: Column<T>[];
-  getRowId?: (row: T, index: number) => string;
-  enableRowSelection?: boolean;
   selectedRows?: Set<string>;
   onRowSelectionChange?: (selectedRows: Set<string>) => void;
   pagination?: boolean;
@@ -104,6 +101,15 @@ export interface ServerTableProps<T> {
   emptyAction?: { label: string; onClick: () => void };
   className?: string;
 }
+
+export type ServerTableProps<T> = BaseTableProps<T> &
+  (
+    | { enableRowSelection: true; getRowId: (row: T, index: number) => string }
+    | {
+        enableRowSelection?: false;
+        getRowId?: (row: T, index: number) => string;
+      }
+  );
 
 export function DataTable<T>({
   data,
@@ -129,8 +135,6 @@ export function DataTable<T>({
   emptyAction,
   className,
 }: ServerTableProps<T>) {
-  const [localFilter, setLocalFilter] = useState(filterValue);
-
   const allRowIds = data.map((row, index) => getRowId(row, index));
   const allSelected =
     enableRowSelection &&
@@ -183,7 +187,6 @@ export function DataTable<T>({
   };
 
   const handleFilterChange = (value: string) => {
-    setLocalFilter(value);
     if (onFilterChange) {
       onFilterChange(value);
     }
@@ -211,7 +214,7 @@ export function DataTable<T>({
           <Input
             type="text"
             placeholder="Search all columns..."
-            value={localFilter}
+            value={filterValue}
             onChange={(e) => handleFilterChange(e.target.value)}
             iconLeft={<SearchIcon />}
             inputSize="sm"

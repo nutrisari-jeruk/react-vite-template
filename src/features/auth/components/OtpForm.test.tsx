@@ -11,6 +11,12 @@ vi.mock("@/features/auth/api/authApi", async () => {
   >("@/features/auth/api/authApi");
   return {
     ...actual,
+    getUser: vi.fn().mockResolvedValue({
+      id: "42",
+      name: "User",
+      email: "u@example.com",
+      username: "user",
+    }),
     verifyOtp: vi.fn(),
     resendOtp: vi.fn(),
     resendResetPasswordOtp: vi.fn(),
@@ -19,10 +25,10 @@ vi.mock("@/features/auth/api/authApi", async () => {
 });
 
 // Mock token storage
-vi.mock("@/features/auth/lib/tokenStorage", async () => {
-  const actual = await vi.importActual<
-    typeof import("@/features/auth/lib/tokenStorage")
-  >("@/features/auth/lib/tokenStorage");
+vi.mock("@/libs/tokenStorage", async () => {
+  const actual = await vi.importActual<typeof import("@/libs/tokenStorage")>(
+    "@/libs/tokenStorage"
+  );
   return {
     ...actual,
     setAccessToken: vi.fn(),
@@ -36,7 +42,7 @@ import {
   resendResetPasswordOtp,
   validateResetPasswordOtp,
 } from "@/features/auth/api/authApi";
-import { setAccessToken } from "@/features/auth/lib/tokenStorage";
+import { setAccessToken } from "@/libs/tokenStorage";
 
 const mockVerifyOtp = verifyOtp as ReturnType<typeof vi.fn>;
 const mockResendOtp = resendOtp as ReturnType<typeof vi.fn>;
@@ -564,4 +570,17 @@ describe("OtpForm", () => {
       expect(storedValue).toBe("60");
     });
   });
+});
+
+it("completes OTP and loads the backend user when no replacement token is returned", async () => {
+  sessionStorage.setItem("otp_pending", "true");
+  mockVerifyOtp.mockResolvedValue({ success: true, message: "Verified" });
+  const onSuccess = vi.fn();
+  render(<OtpForm expiresIn={60} onSuccess={onSuccess} />);
+  await userEvent.type(screen.getByLabelText("Kode OTP"), "123456");
+  await userEvent.click(
+    screen.getByRole("button", { name: /Validasi Kode OTP/i })
+  );
+  await waitFor(() => expect(onSuccess).toHaveBeenCalled());
+  expect(sessionStorage.getItem("otp_pending")).toBeNull();
 });

@@ -3,9 +3,8 @@ import { act } from "react";
 import { ToastProvider, useToast } from "./";
 
 // Mock motion/react — animations are not the unit under test here
-vi.mock("motion/react", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const React = require("react");
+vi.mock("motion/react", async () => {
+  const React = await import("react");
 
   const AnimatePresence = ({ children }: { children: React.ReactNode }) =>
     children;

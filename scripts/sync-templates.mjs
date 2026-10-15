@@ -31,6 +31,7 @@ function ensureDirSync(dir) {
 
 async function syncFile(srcPath, templatePath) {
   if (!(await pathExists(srcPath))) {
+    console.error(`MISS  Source missing: ${path.relative(ROOT, srcPath)}`);
     return { status: "missing_source" };
   }
 
@@ -68,6 +69,15 @@ async function syncRegistryItems() {
   let synced = 0;
 
   for (const item of registry.items) {
+    if (item.templateOnly) {
+      for (const file of item.files) {
+        if (!(await pathExists(path.join(ROOT, "packages/cli", file.source)))) {
+          console.error(`MISS  Template missing: ${file.source}`);
+          errors++;
+        }
+      }
+      continue;
+    }
     for (const file of item.files) {
       if (isTestFile(file.target)) continue;
 
@@ -75,7 +85,11 @@ async function syncRegistryItems() {
       const templatePath = path.join(ROOT, "packages/cli", file.source);
 
       const result = await syncFile(srcPath, templatePath);
-      if (result.status === "differ" || result.status === "missing_template") {
+      if (
+        result.status === "differ" ||
+        result.status === "missing_template" ||
+        result.status === "missing_source"
+      ) {
         errors++;
       } else if (result.status === "copied" || result.status === "ok") {
         synced++;
@@ -107,13 +121,18 @@ async function syncBaseFiles() {
   for (const [, source, target] of entries) {
     // Skip src/ files in base template — they're intentionally minimal,
     // not copies of the showcase src/
-    if (target.startsWith("src/")) continue;
+    const sharedSource = target.startsWith("src/libs/") || target === "src/config/env.ts" || target === "src/tests/setup.ts";
+    if ((target.startsWith("src/") && !sharedSource) || target === ".claude/settings.json") continue;
 
     const srcPath = path.join(ROOT, target);
     const templatePath = path.join(TEMPLATES_DIR, source);
 
     const result = await syncFile(srcPath, templatePath);
-    if (result.status === "differ" || result.status === "missing_template") {
+    if (
+      result.status === "differ" ||
+      result.status === "missing_template" ||
+      result.status === "missing_source"
+    ) {
       errors++;
     } else if (result.status === "copied" || result.status === "ok") {
       synced++;
@@ -135,7 +154,11 @@ async function syncExtraDocs() {
 
   for (const { src, dest } of EXTRA_TEMPLATE_DOCS) {
     const result = await syncFile(path.join(ROOT, src), path.join(ROOT, dest));
-    if (result.status === "differ" || result.status === "missing_template") {
+    if (
+      result.status === "differ" ||
+      result.status === "missing_template" ||
+      result.status === "missing_source"
+    ) {
       errors++;
     } else if (result.status === "copied" || result.status === "ok") {
       synced++;
@@ -181,6 +204,7 @@ async function main() {
     console.log("\nAll templates in sync with src/");
   } else {
     console.log(`\nSync complete: ${totalSynced} files`);
+    if (totalErrors > 0) process.exitCode = 1;
   }
 }
 

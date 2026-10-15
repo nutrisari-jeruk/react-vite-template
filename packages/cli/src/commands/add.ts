@@ -1,5 +1,5 @@
-import { execSync } from "child_process";
-import { existsSync } from "fs";
+import { execFileSync } from "child_process";
+import { existsSync, readFileSync, writeFileSync } from "fs";
 import pc from "picocolors";
 import prompts from "prompts";
 import type { RegistryItem } from "../types.js";
@@ -23,6 +23,7 @@ interface AddOptions {
   type?: string;
   yes?: boolean;
   overwrite?: boolean;
+  skipInstall?: boolean;
 }
 
 export async function add(names: string[], options: AddOptions): Promise<void> {
@@ -180,14 +181,18 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
   const pagesWithRoutes: typeof newItems = [];
 
   for (const item of newItems) {
-    const files = await copyItemFiles(item, cwd);
+    const files = await copyItemFiles(
+      item,
+      cwd,
+      options.overwrite || item.type === "block"
+    );
     if (files.length > 0) {
       await updateBarrelExport(item, cwd);
       installedNames.push(item.name);
       logger.success(`Added ${pc.bold(item.name)} (${files.length} files)`);
 
       // Track pages and blocks that need route wiring
-      if (item.type === "page" && item.route) {
+      if ((item.type === "page" || item.type === "block") && item.route) {
         pagesWithRoutes.push(item);
       }
     }
@@ -210,20 +215,22 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
     logger.info("Installing npm dependencies...");
     try {
       const pm = detectPackageManager(cwd);
-      const installCmd =
-        pm === "yarn"
-          ? `yarn add ${npmDeps.join(" ")}`
-          : pm === "pnpm"
-            ? `pnpm add ${npmDeps.join(" ")}`
-            : `npm install ${npmDeps.join(" ")}`;
-
-      execSync(installCmd, { cwd, stdio: "pipe" });
+      const manifestPath = `${cwd}/package.json`;
+      const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+      manifest.dependencies ??= {};
+      for (const dep of npmDeps) manifest.dependencies[dep] ??= "*";
+      writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
+      if (!options.skipInstall)
+        execFileSync(pm, ["install"], { cwd, stdio: "pipe" });
       logger.success("Dependencies installed.");
     } catch {
       logger.warn(
         "Failed to install dependencies automatically. Install manually:"
       );
       logger.dim(`  npm install ${npmDeps.join(" ")}`);
+      throw new Error(
+        "Dependency installation failed; items were not marked installed."
+      );
     }
   }
 

@@ -4,9 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, Link, Alert } from "@/components/ui";
 import { getFieldErrors, getErrorMessage } from "@/libs/apiError";
-import { loginInputSchema } from "../lib/AuthProvider";
-import { loginWithEmailAndPassword } from "../api/authApi";
-import { setAccessToken } from "../lib/tokenStorage";
+import { loginInputSchema, useLogin } from "../lib/AuthProvider";
 import { ROUTES } from "@/config/constants";
 
 const ALERT_TIMEOUT_MS = 3000;
@@ -23,6 +21,7 @@ export function LoginForm({
   defaultPassword = "",
 }: LoginFormProps) {
   const navigate = useNavigate();
+  const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -46,22 +45,11 @@ export function LoginForm({
       setIsLoading(true);
       setFormError(null);
       clearErrors();
-      const authResponse = await loginWithEmailAndPassword(data);
-
-      // Store token
-      setAccessToken(authResponse.token);
-
-      // Check if OTP is required
-      if (authResponse.otp.isRequired) {
-        // Set OTP pending flag in sessionStorage
-        sessionStorage.setItem("otp_pending", "true");
-        // Redirect to OTP page with expiresIn
-        navigate(ROUTES.OTP, {
-          state: { expiresIn: authResponse.otp.expiresIn },
-        });
-        onSuccess?.(true, authResponse.otp.expiresIn);
+      const result = await login.mutateAsync(data);
+      if (result.status === "otp-required") {
+        navigate(ROUTES.OTP, { state: { expiresIn: result.expiresIn } });
+        onSuccess?.(true, result.expiresIn);
       } else {
-        // Redirect to dashboard
         navigate(ROUTES.DASHBOARD);
         onSuccess?.(false);
       }

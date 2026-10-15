@@ -16,7 +16,6 @@ interface EnvConfig {
   // Authentication
   authTokenKey: string;
   authRefreshTokenKey: string;
-  authTokenRefreshInterval: number;
 
   // Cache Configuration
   queryCacheTime: number;
@@ -147,11 +146,6 @@ export const env: EnvConfig = (() => {
       authRefreshTokenKey: requireEnv(
         "VITE_AUTH_REFRESH_TOKEN_KEY",
         "refreshToken"
-      ),
-      authTokenRefreshInterval: toNumber(
-        requireEnv("VITE_AUTH_TOKEN_REFRESH_INTERVAL", "300000"),
-        300000,
-        0
       ),
 
       // Cache Configuration

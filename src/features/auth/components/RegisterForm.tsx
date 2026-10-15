@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ROUTES } from "@/config/constants";
 import { Alert, Button, Input } from "@/components";
 import { cn } from "@/utils/cn";
 import { useRegister, registerInputSchema } from "../lib/AuthProvider";
@@ -11,6 +12,7 @@ interface RegisterFormProps {
 
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const registerMutation = useRegister();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -28,8 +30,13 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
   const onSubmit = async (data: RegisterInput) => {
     try {
-      await registerMutation.mutateAsync(data);
-      onSuccess?.();
+      const result = await registerMutation.mutateAsync(data);
+      if (result.status === "otp-required")
+        navigate(ROUTES.OTP, { state: { expiresIn: result.expiresIn } });
+      else {
+        navigate(ROUTES.DASHBOARD);
+        onSuccess?.();
+      }
     } catch {
       // Error is handled by the mutation
     }
@@ -67,6 +74,16 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             {errors.name.message}
           </p>
         )}
+      </div>
+
+      <div>
+        <Input
+          id="username"
+          label="Username / Employee Number"
+          autoComplete="username"
+          error={errors.username?.message}
+          {...register("username")}
+        />
       </div>
 
       <div>

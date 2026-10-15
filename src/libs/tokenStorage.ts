@@ -126,9 +126,35 @@ export function removeRefreshToken(): void {
   tokenStorage.removeToken(env.authRefreshTokenKey);
 }
 
+const sessionClearedListeners = new Set<() => void>();
+export function subscribeSessionCleared(listener: () => void): () => void {
+  sessionClearedListeners.add(listener);
+  return () => {
+    sessionClearedListeners.delete(listener);
+  };
+}
+
+let sessionVersion = 0;
+export function getSessionVersion(): number {
+  return sessionVersion;
+}
+
 export function clearAuthTokens(): void {
+  sessionVersion++;
+  if (typeof sessionStorage !== "undefined") {
+    for (const key of [
+      "otp_pending",
+      "reset_otp_pending",
+      "reset_password_token",
+      "reset_password_identifier",
+      "otp_countdown_remaining",
+      "reset_otp_countdown_remaining",
+    ])
+      sessionStorage.removeItem(key);
+  }
   removeAccessToken();
   removeRefreshToken();
+  sessionClearedListeners.forEach((listener) => listener());
 }
 
 export function setAuthTokens(

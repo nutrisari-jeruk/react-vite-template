@@ -40,6 +40,7 @@ export interface RegistryItem {
   type: ItemType;
   description: string;
   files: RegistryFile[];
+  templateOnly?: boolean;
   npmDependencies?: string[];
   registryDependencies?: string[];
   barrel?: BarrelExport;
@@ -72,7 +73,7 @@ export const DEFAULT_CONFIG: FrontierConfig = {
     ui: "@/components/ui",
     components: "@/components",
     hooks: "@/hooks",
-    lib: "@/lib",
+    lib: "@/libs",
     utils: "@/utils",
     features: "@/features",
   },

@@ -264,3 +264,12 @@ npm publish
 - [Project Structure](./project-structure.md)
 - [Components and Styling](./components-and-styling.md)
 - [CLAUDE.md](../CLAUDE.md) — CLI Development section for AI agent guidance
+
+
+## Reliability checks
+
+Run `npm run cli:build`, `npm run sync:templates:check`, `npm run check:registry`, and `npm run smoke:cli` before release. The smoke runner invokes the built CLI and validates base, auth, auth pages, all UI, each Login block, and PWA in temporary projects. It also checks repeated add, dependency persistence when skipping installation, and nonzero status on installation failure.
+
+Registry items marked `templateOnly: true` are intentional compositions or sections, maintained directly in templates. Shared items must have matching source files; missing source is an error. Local `.claude/settings.json` is deliberately excluded from automatic synchronization.
+
+`init --skip-install` and `add --skip-install` always write dependencies before returning. Automatic installs preserve versions already in the manifest, including the pinned Axios version.

@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import pc from "picocolors";
 import prompts from "prompts";
 import type { FrontierConfig } from "../types.js";
@@ -15,6 +15,7 @@ interface InitOptions {
   yes?: boolean;
   pm?: "npm" | "yarn" | "pnpm";
   pwa?: boolean;
+  skipInstall?: boolean;
 }
 
 const BASE_FILES = [
@@ -22,6 +23,7 @@ const BASE_FILES = [
   { source: "base/tsconfig.json", target: "tsconfig.json" },
   { source: "base/tsconfig.app.json", target: "tsconfig.app.json" },
   { source: "base/tsconfig.node.json", target: "tsconfig.node.json" },
+  { source: "base/tsconfig.spec.json", target: "tsconfig.spec.json" },
   { source: "base/vite.config.ts", target: "vite.config.ts" },
   { source: "base/vitest.config.ts", target: "vitest.config.ts" },
   { source: "base/eslint.config.js", target: "eslint.config.js" },
@@ -73,31 +75,36 @@ const BASE_FILES = [
   },
   { source: "base/src/config/index.ts", target: "src/config/index.ts" },
   // Lib
-  { source: "base/src/lib/api-client.ts", target: "src/lib/api-client.ts" },
-  { source: "base/src/lib/api-error.ts", target: "src/lib/api-error.ts" },
-  { source: "base/src/lib/index.ts", target: "src/lib/index.ts" },
+  { source: "base/src/libs/apiClient.ts", target: "src/libs/apiClient.ts" },
+  { source: "base/src/libs/apiError.ts", target: "src/libs/apiError.ts" },
+  { source: "base/src/libs/index.ts", target: "src/libs/index.ts" },
+  {
+    source: "base/src/libs/tokenStorage.ts",
+    target: "src/libs/tokenStorage.ts",
+  },
+  { source: "base/src/libs/queryClient.ts", target: "src/libs/queryClient.ts" },
   // Types
   { source: "base/src/types/index.ts", target: "src/types/index.ts" },
   // Testing
-  { source: "base/src/testing/setup.ts", target: "src/testing/setup.ts" },
+  { source: "base/src/tests/setup.ts", target: "src/tests/setup.ts" },
   {
-    source: "base/src/testing/test-utils.tsx",
-    target: "src/testing/test-utils.tsx",
+    source: "base/src/tests/testUtils.tsx",
+    target: "src/tests/testUtils.tsx",
   },
-  { source: "base/src/testing/index.ts", target: "src/testing/index.ts" },
+  { source: "base/src/tests/index.ts", target: "src/tests/index.ts" },
   // Route pages
   {
     source: "base/src/app/routes/Home.tsx",
     target: "src/app/routes/Home.tsx",
   },
   {
-    source: "base/src/app/routes/not-found.tsx",
-    target: "src/app/routes/not-found.tsx",
+    source: "base/src/app/routes/NotFound.tsx",
+    target: "src/app/routes/NotFound.tsx",
   },
   // Layouts (minimal navbar with markers)
   {
     source: "base/src/components/layouts/navbar.tsx",
-    target: "src/components/layouts/navbar.tsx",
+    target: "src/components/layouts/Navbar.tsx",
   },
   // Empty barrel files for extensibility
   { source: "base/src/hooks/index.ts", target: "src/hooks/index.ts" },
@@ -163,7 +170,7 @@ const BASE_DEV_DEPS: Record<string, string> = {
   "eslint-plugin-react-refresh": "^0.4.26",
   globals: "^16.5.0",
   husky: "^9.1.7",
-  jsdom: "^27.4.0",
+  jsdom: "^26.1.0",
   "lint-staged": "^16.4.0",
   msw: "^2.12.7",
   postcss: "^8.5.15",
@@ -230,6 +237,8 @@ export async function init(options: InitOptions): Promise<void> {
 
   // Determine package manager
   const pm = options.pm || detectPackageManager(cwd);
+  if (!["npm", "yarn", "pnpm"].includes(pm))
+    throw new Error("Unsupported package manager");
 
   // Create config
   const config: FrontierConfig = {
@@ -249,10 +258,10 @@ export async function init(options: InitOptions): Promise<void> {
 
     await fs.ensureDir(path.dirname(targetPath));
 
-    if (await fs.pathExists(sourcePath)) {
-      await fs.copy(sourcePath, targetPath, { overwrite: false });
-      copiedCount++;
-    }
+    if (!(await fs.pathExists(sourcePath)))
+      throw new Error(`Missing base template: ${file.source}`);
+    await fs.copy(sourcePath, targetPath, { overwrite: false });
+    copiedCount++;
   }
   logger.success(`Copied ${copiedCount} base files.`);
 
@@ -286,16 +295,31 @@ export async function init(options: InitOptions): Promise<void> {
         "lint:fix": "eslint . --fix",
         format: 'prettier --write "src/**/*.{ts,tsx,css}"',
         "format:check": 'prettier --check "src/**/*.{ts,tsx,css}"',
+        "type-check": "tsc -b && tsc -p tsconfig.spec.json --noEmit",
         test: "vitest",
+        "test:run": "vitest run",
         "test:coverage": "vitest --coverage",
         preview: "vite preview",
       },
-      dependencies: {},
-      devDependencies: {},
+      dependencies: BASE_NPM_DEPS,
+      devDependencies: {
+        ...BASE_DEV_DEPS,
+        ...(options.pwa ? PWA_DEV_DEPS : {}),
+      },
     };
     await fs.writeJSON(pkgPath, pkg, { spaces: 2 });
     logger.success("Created package.json");
   }
+
+  // Persist dependencies even when installation is skipped.
+  const manifest = await fs.readJSON(pkgPath);
+  manifest.dependencies = { ...BASE_NPM_DEPS, ...manifest.dependencies };
+  manifest.devDependencies = {
+    ...BASE_DEV_DEPS,
+    ...(options.pwa ? PWA_DEV_DEPS : {}),
+    ...manifest.devDependencies,
+  };
+  await fs.writeJSON(pkgPath, manifest, { spaces: 2 });
 
   // Apply PWA configuration if requested (--pwa)
   if (options.pwa) {
@@ -308,7 +332,9 @@ export async function init(options: InitOptions): Promise<void> {
   logger.success("Created frontier-fe.json");
 
   // Install dependencies
-  if (!options.yes) {
+  if (options.skipInstall) {
+    logger.info(`Dependencies recorded. Run ${pm} install when ready.`);
+  } else if (!options.yes) {
     const { install } = await prompts({
       type: "confirm",
       name: "install",
@@ -317,14 +343,14 @@ export async function init(options: InitOptions): Promise<void> {
     });
 
     if (install) {
-      await installDeps(cwd, pm, options.pwa);
+      await installDeps(cwd, pm);
     } else {
       logger.break();
       logger.info("Skip dependency installation. Run manually:");
       logger.dim(`  ${pm} install`);
     }
   } else {
-    await installDeps(cwd, pm, options.pwa);
+    await installDeps(cwd, pm);
   }
 
   // Done
@@ -347,32 +373,12 @@ export async function init(options: InitOptions): Promise<void> {
 
 async function installDeps(
   cwd: string,
-  pm: "npm" | "yarn" | "pnpm",
-  pwa?: boolean
+  pm: "npm" | "yarn" | "pnpm"
 ): Promise<void> {
   logger.info("Installing dependencies...");
-
-  // Write deps directly into package.json, then run a single install.
-  // Passing ~30+ package names as CLI args can exceed shell arg limits.
   const pkgPath = path.resolve(cwd, "package.json");
-  const pkg = await fs.readJSON(pkgPath);
-  pkg.dependencies = pkg.dependencies || {};
-  pkg.devDependencies = pkg.devDependencies || {};
-  for (const [dep, version] of Object.entries(BASE_NPM_DEPS)) {
-    pkg.dependencies[dep] = version;
-  }
-  for (const [dep, version] of Object.entries(BASE_DEV_DEPS)) {
-    pkg.devDependencies[dep] = version;
-  }
-  if (pwa) {
-    for (const [dep, version] of Object.entries(PWA_DEV_DEPS)) {
-      pkg.devDependencies[dep] = version;
-    }
-  }
-  await fs.writeJSON(pkgPath, pkg, { spaces: 2 });
-
   try {
-    execSync(`${pm} install`, { cwd, stdio: "pipe" });
+    execFileSync(pm, ["install"], { cwd, stdio: "pipe" });
     logger.success("Dependencies installed.");
     // Add husky prepare script now that husky is actually installed
     const updatedPkg = await fs.readJSON(pkgPath);
@@ -385,6 +391,9 @@ async function installDeps(
     if (err instanceof Error && err.message) {
       logger.dim(`  Error: ${err.message.split("\n")[0]}`);
     }
+    throw new Error(
+      `Dependency installation failed. Run ${pm} install in ${cwd}.`
+    );
   }
 }
 

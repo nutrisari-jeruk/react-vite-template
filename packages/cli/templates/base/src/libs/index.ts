@@ -1,5 +1,5 @@
-export { api, api as default } from "./api-client";
-export type { ApiResponse } from "./api-client";
+export { api, api as default } from "./apiClient";
+export type { ApiResponse } from "./apiClient";
 export {
   ApiError,
   NetworkError,
@@ -16,4 +16,4 @@ export {
   getErrorMessage,
   getFieldErrors,
   isRetryableError,
-} from "./api-error";
+} from "./apiError";

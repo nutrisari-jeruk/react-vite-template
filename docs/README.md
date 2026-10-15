@@ -43,3 +43,7 @@ src/
 3. **Type safety** - Full TypeScript with Zod validation
 4. **Lazy loading** - Route-based code splitting
 5. **Co-located tests** - Tests next to source files
+
+## Template migration
+
+See [Template reliability migration](./migrations/template-reliability.md) for source paths, session APIs, DataTable props, and CLI verification changes.

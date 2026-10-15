@@ -94,7 +94,7 @@ import type { User } from "@/types";
 
 - Use barrel exports: `import { Button } from "@/components/ui"`
 - Use `@/` aliases for cross-directory imports
-- API calls via `api` from `@//libs` only
+- API calls via `api` from `@/libs` only
 
 ### Naming
 
@@ -102,7 +102,7 @@ import type { User } from "@/types";
 | ------------- | ----------------------------------- | -------------------------------------- |
 | UI components | lowercase folder, PascalCase file   | `button/Button.tsx` → `Button`         |
 | Page routes   | PascalCase, default export          | `Home.tsx`, `DataTable.tsx`            |
-| Hooks         | camelCase with `use` prefix         | `useAuth.ts`, `useLocalStorage.ts`     |
+| Hooks         | camelCase with `use` prefix         | `useCountdown.ts`, `useLocalStorage.ts`     |
 | Tests         | Co-located, same name + `.test.tsx` | `Button.test.tsx` next to `Button.tsx` |
 
 ### State

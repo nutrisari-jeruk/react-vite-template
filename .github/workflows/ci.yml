@@ -36,5 +36,14 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Install CLI dependencies
+        run: npm ci --prefix packages/cli
+
+      - name: Check templates and registry
+        run: npm run sync:templates:check && npm run check:registry
+
+      - name: Build and smoke-test CLI
+        run: npm run cli:build && npm run smoke:cli
+
       - name: Security audit
         run: npm audit --audit-level=high

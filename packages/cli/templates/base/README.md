@@ -19,7 +19,7 @@
 
 ### Prerequisites
 
-- Node.js 18 or higher
+- Node.js 20.19+ or 22.12+
 - npm, yarn, or pnpm
 
 ### Installation
@@ -66,8 +66,8 @@ src/
 ├── config/          # Environment variables, constants
 ├── features/        # Feature modules (add via CLI)
 ├── hooks/           # Shared custom hooks
-├── lib/             # Third-party configs (axios, queryClient)
-├── testing/         # Test utilities, MSW setup
+├── libs/             # Third-party configs (axios, queryClient)
+├── tests/         # Test utilities, MSW setup
 ├── types/           # Shared TypeScript types
 └── utils/           # Utility functions
 ```
@@ -76,10 +76,10 @@ src/
 
 ### API Integration
 
-Use the `api` client from `@/lib` for all HTTP requests. It's pre-configured with interceptors for error handling and token refresh.
+Use the `api` client from `@/libs` for all HTTP requests. It's pre-configured with interceptors for error handling and token refresh.
 
 ```typescript
-import { api } from "@/lib";
+import { api } from "@/libs";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 // Fetch data
@@ -101,7 +101,7 @@ Access env vars via `env` from `@/config`, not `import.meta.env` directly.
 ```typescript
 import { env } from "@/config";
 
-const apiUrl = env.VITE_API_URL;
+const apiUrl = env.apiUrl;
 ```
 
 ### Adding Components
@@ -162,3 +162,10 @@ frontier-fe list          # List all available items
 ## License
 
 MIT
+
+
+## Session and verification defaults
+
+Authentication uses `useUser`, `useLogin`, `useRegister`, and `useLogout` from `@/features/auth` after adding the auth feature. Login/registration return `{ status: "authenticated", user }` or `{ status: "otp-required", expiresIn }`. User identity comes from `/auth/me`. AuthGuard blocks pending OTP sessions. Refresh is request-driven; mutation retry is disabled by default.
+
+`npm run type-check` checks source, Node configuration and tests. `npm run test:run` executes tests once. `init --skip-install` and `add --skip-install` still write dependencies to package.json; install them before running the project.

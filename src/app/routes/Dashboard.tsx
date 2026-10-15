@@ -1,7 +1,7 @@
-import { useAuth } from "@/features/auth";
+import { useUser } from "@/features/auth";
 
 export default function Dashboard() {
-  const { isAuthenticated, accessToken, tokenExpiresIn, isLoading } = useAuth();
+  const { data: user, isLoading } = useUser();
 
   if (isLoading) {
     return (
@@ -30,21 +30,19 @@ export default function Dashboard() {
           <div className="flex justify-between">
             <dt className="text-gray-600 dark:text-gray-400">Authenticated:</dt>
             <dd className="font-medium text-gray-900 dark:text-white">
-              {isAuthenticated ? "Yes" : "No"}
+              {user ? "Yes" : "No"}
             </dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-gray-600 dark:text-gray-400">Access Token:</dt>
+            <dt className="text-gray-600 dark:text-gray-400">User ID:</dt>
             <dd className="max-w-xs truncate font-mono text-xs text-gray-900 dark:text-white">
-              {accessToken || "None"}
+              {user?.id || "None"}
             </dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-gray-600 dark:text-gray-400">Expires In:</dt>
+            <dt className="text-gray-600 dark:text-gray-400">Username:</dt>
             <dd className="font-medium text-gray-900 dark:text-white">
-              {tokenExpiresIn !== null
-                ? `${Math.floor(tokenExpiresIn / 1000)}s`
-                : "N/A"}
+              {user?.username || "N/A"}
             </dd>
           </div>
         </dl>

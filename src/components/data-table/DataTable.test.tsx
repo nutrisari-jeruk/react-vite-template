@@ -412,3 +412,47 @@ describe("DataTable", () => {
     });
   });
 });
+
+it("updates the displayed filter when the parent resets it", () => {
+  const props = {
+    data: testData,
+    columns,
+    onFilterChange: vi.fn(),
+    pagination: false,
+  };
+  const { rerender } = render(<DataTable {...props} filterValue="Alice" />);
+  expect(screen.getByRole("textbox")).toHaveValue("Alice");
+  rerender(<DataTable {...props} filterValue="" />);
+  expect(screen.getByRole("textbox")).toHaveValue("");
+});
+
+it("preserves selected IDs when server pages change or reorder", async () => {
+  const onRowSelectionChange = vi.fn();
+  const props = {
+    columns,
+    enableRowSelection: true as const,
+    getRowId: (row: TestRow) => row.id,
+    selectedRows: new Set(["1"]),
+    onRowSelectionChange,
+    pagination: false,
+    filtering: false,
+  };
+  const { rerender } = render(<DataTable {...props} data={[testData[0]]} />);
+  expect(screen.getAllByRole("checkbox")[1]).toBeChecked();
+  rerender(<DataTable {...props} data={[testData[1]]} />);
+  expect(screen.getAllByRole("checkbox")[1]).not.toBeChecked();
+  await userEvent.click(screen.getAllByRole("checkbox")[1]);
+  expect(onRowSelectionChange).toHaveBeenCalledWith(new Set(["1", "2"]));
+  rerender(<DataTable {...props} data={[testData[1], testData[0]]} />);
+  expect(screen.getAllByRole("checkbox")[2]).toBeChecked();
+});
+
+it("requires a stable row ID in the selection type contract", () => {
+  // @ts-expect-error Selection without getRowId must be rejected by type-check.
+  const invalid: import("./DataTable").ServerTableProps<TestRow> = {
+    data: [],
+    columns: [],
+    enableRowSelection: true,
+  };
+  expect(invalid.enableRowSelection).toBe(true);
+});

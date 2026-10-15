@@ -5,7 +5,6 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
-import type { ReactNode } from "react";
 import {
   MainLayout,
   LandingLayout,
@@ -14,8 +13,6 @@ import {
 } from "@/components/layouts";
 import { setPageMetadata, setCanonicalUrl } from "@/utils";
 import { getRouteMetadata } from "@/config/routes-metadata";
-import { AuthLoader } from "@/features/auth/lib/AuthProvider";
-import { getAccessToken } from "@/features/auth";
 
 const Home = lazy(() => import("@/app/routes/Home"));
 const Login = lazy(() => import("@/app/routes/Login"));
@@ -44,20 +41,6 @@ function PageLoader() {
 
 function LazyPage({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<PageLoader />}>{children}</Suspense>;
-}
-
-/**
- * ProtectedRoute - Checks token before rendering AuthLoader
- * This ensures redirect happens immediately if no token exists
- */
-function ProtectedRoute({ children }: { children: ReactNode }) {
-  const hasToken = !!getAccessToken();
-
-  if (!hasToken) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
 }
 
 /**
@@ -250,22 +233,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <MetadataUpdater />
-        <ProtectedRoute>
-          <AuthLoader
-            renderLoading={() => (
-              <div className="flex min-h-dvh items-center justify-center">
-                <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
-              </div>
-            )}
-            renderError={() => {
-              // Redirect to login on auth error
-              window.location.href = "/login";
-              return null;
-            }}
-          >
-            <AuthenticatedLayout />
-          </AuthLoader>
-        </ProtectedRoute>
+        <AuthenticatedLayout />
       </>
     ),
     children: [

@@ -158,7 +158,7 @@ self.addEventListener("notificationclick", (event) => {
 Request permission on a **user action** (e.g. an "Enable notifications" button) — never on page load:
 
 ```ts
-import { api } from "@/lib";
+import { api } from "@/libs";
 import { env } from "@/config";
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {

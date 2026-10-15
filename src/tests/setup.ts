@@ -1,4 +1,4 @@
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/vitest";
 
 // Mock IntersectionObserver for components that use it (e.g., Components page)
 globalThis.IntersectionObserver = class IntersectionObserver {

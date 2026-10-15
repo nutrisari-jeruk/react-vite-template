@@ -13,13 +13,14 @@ import {
   RateLimitError,
   ServerError,
   ServiceUnavailableError,
-} from "./api-error";
+} from "./apiError";
 import {
   getAccessToken,
   getRefreshToken,
-  setAccessToken,
+  setAuthTokens,
+  getSessionVersion,
   clearAuthTokens,
-} from "@/features/auth";
+} from "./tokenStorage";
 
 export interface ApiResponse<T = unknown> {
   success: boolean;
@@ -45,23 +46,31 @@ export const api = axios.create({
   timeout: env.apiTimeout,
 });
 
+export const refreshApi = axios.create({
+  baseURL: env.apiUrl,
+  timeout: env.apiTimeout,
+});
+
 // Track ongoing token refresh to prevent multiple concurrent refresh attempts
 let refreshPromise: Promise<{
   accessToken: string;
   refreshToken: string;
 }> | null = null;
+let refreshVersion = -1;
 
 // Type extension to track retry attempts on requests
 declare module "axios" {
   interface InternalAxiosRequestConfig {
     _retry?: boolean;
+    _sessionVersion?: number;
   }
 }
 
 api.interceptors.request.use(
   (config) => {
+    config._sessionVersion ??= getSessionVersion();
     const token = getAccessToken();
-    if (token) {
+    if (token && !config.headers.Authorization) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
@@ -106,78 +115,64 @@ api.interceptors.response.use(
         );
 
       case 401: {
-        // Attempt token refresh before clearing session
-        const originalRequest = error.config as typeof error.config & {
-          _retry?: boolean;
-        };
-
-        // Check if this is an auth endpoint that should handle redirects itself
-        const isAuthEndpoint =
-          originalRequest.url?.includes(API_ENDPOINTS.AUTH.ME) ||
-          originalRequest.url?.includes("/auth/me");
-
-        if (!originalRequest._retry) {
-          originalRequest._retry = true;
-
-          const refreshTokenValue = getRefreshToken();
-          if (refreshTokenValue) {
-            // Use existing refresh promise if refresh is already in progress
-            if (!refreshPromise) {
-              refreshPromise = api
-                .post<
-                  ApiResponse<{ accessToken: string; refreshToken: string }>
-                >(API_ENDPOINTS.AUTH.REFRESH, {
-                  refreshToken: refreshTokenValue,
-                })
-                .then((response) => {
-                  refreshPromise = null;
-                  if (!response.data.data) {
-                    throw new Error("Token refresh failed");
-                  }
-                  return response.data.data;
-                })
-                .catch((err) => {
-                  refreshPromise = null;
-                  throw err;
-                });
-            }
-
-            // Return the refresh promise chain
-            return refreshPromise
-              .then((refreshedTokens) => {
-                setAccessToken(refreshedTokens.accessToken);
-                // Retry original request with new token
-                originalRequest.headers.Authorization = `Bearer ${refreshedTokens.accessToken}`;
-                return api(originalRequest);
-              })
-              .catch(() => {
-                // Refresh failed - clear tokens
-                clearAuthTokens();
-                // Only redirect if not an auth endpoint (let auth flow handle it)
-                if (!isAuthEndpoint && window.location.pathname !== "/login") {
-                  window.location.href = "/login";
-                }
-                throw new UnauthorizedError(
-                  responseData?.message ||
-                    "Session expired. Please log in again."
-                );
-              });
-          }
+        const originalRequest = error.config;
+        if (!originalRequest) return Promise.reject(new UnauthorizedError());
+        const url = originalRequest.url?.split("?")[0];
+        const excluded = [
+          API_ENDPOINTS.AUTH.LOGIN,
+          API_ENDPOINTS.AUTH.REGISTER,
+          API_ENDPOINTS.AUTH.REFRESH,
+          API_ENDPOINTS.AUTH.LOGOUT,
+        ].some((endpoint) => endpoint === url);
+        const currentVersion = getSessionVersion();
+        if (
+          originalRequest._sessionVersion !== undefined &&
+          originalRequest._sessionVersion !== currentVersion
+        ) {
+          return Promise.reject(new UnauthorizedError("Session changed."));
         }
-
-        // Clear tokens
-        clearAuthTokens();
-
-        // Only redirect if not an auth endpoint (let auth flow handle redirects)
-        if (!isAuthEndpoint && window.location.pathname !== "/login") {
-          window.location.href = "/login";
+        const refreshToken = getRefreshToken();
+        if (excluded)
+          return Promise.reject(new UnauthorizedError(responseData?.message));
+        if (originalRequest._retry || !refreshToken) {
+          clearAuthTokens();
+          return Promise.reject(new UnauthorizedError(responseData?.message));
         }
-
-        return Promise.reject(
-          new UnauthorizedError(
-            responseData?.message || "Session expired. Please log in again."
-          )
-        );
+        originalRequest._retry = true;
+        if (!refreshPromise || refreshVersion !== currentVersion) {
+          refreshVersion = currentVersion;
+          const pending = refreshApi
+            .post<ApiResponse<{ accessToken: string; refreshToken: string }>>(
+              API_ENDPOINTS.AUTH.REFRESH,
+              { refreshToken }
+            )
+            .then((response) => {
+              const tokens = response.data.data;
+              if (!tokens?.accessToken || !tokens.refreshToken)
+                throw new UnauthorizedError("Invalid refresh response.");
+              if (getSessionVersion() !== currentVersion)
+                throw new UnauthorizedError("Session changed.");
+              setAuthTokens(tokens.accessToken, tokens.refreshToken);
+              return tokens;
+            })
+            .catch(() => {
+              if (getSessionVersion() === currentVersion) clearAuthTokens();
+              throw new UnauthorizedError(
+                "Session expired. Please log in again."
+              );
+            })
+            .finally(() => {
+              if (refreshPromise === pending) refreshPromise = null;
+            });
+          refreshPromise = pending;
+        }
+        // Retry outside the refresh catch: a later 422/500 must retain its type.
+        return refreshPromise.then((tokens) => {
+          if (getSessionVersion() !== currentVersion)
+            throw new UnauthorizedError("Session changed.");
+          originalRequest.headers.Authorization = `Bearer ${tokens.accessToken}`;
+          return api(originalRequest);
+        });
       }
 
       case 403:

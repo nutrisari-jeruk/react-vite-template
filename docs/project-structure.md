@@ -104,10 +104,9 @@ features/
     │   ├── OtpForm.tsx
     │   └── ResetPasswordForm.tsx
     ├── hooks/            # Feature-specific hooks
-    │   ├── useAuth.ts
-    │   └── useTokenRefresh.ts
+    │   └── (feature hooks)
     ├── api/              # Feature API calls
-    ├── lib/              # Feature utilities
+    ├── libs/              # Feature utilities
     ├── types/            # Feature types
     │   └── index.ts
     └── index.ts          # Public API
@@ -181,7 +180,7 @@ utils/
 | ------------- | ----------------------------- | -------------------------------------- |
 | UI components | PascalCase                    | `Button.tsx`, `LoginForm.tsx`          |
 | Page routes   | PascalCase                    | `Home.tsx`, `DataTable.tsx`            |
-| Hooks         | camelCase with `use` prefix   | `useAuth.ts`, `useLocalStorage.ts`     |
+| Hooks         | camelCase with `use` prefix   | `useCountdown.ts`, `useLocalStorage.ts`     |
 | Utilities     | kebab-case                    | `cn.ts`, `api-client.ts`               |
 | Tests         | Co-located, `[Name].test.tsx` | `Button.test.tsx` next to `Button.tsx` |
 
@@ -192,7 +191,7 @@ The project uses `@/` as an alias for `src/`:
 ```typescript
 // ✅ Good
 import { Button } from "@/components/ui";
-import { useAuth } from "@/features/auth";
+import { useUser } from "@/features/auth";
 import { env } from "@/config";
 
 // ❌ Bad

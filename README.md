@@ -86,8 +86,8 @@ src/
 ├── config/          # Environment variables, constants
 ├── features/        # Self-contained feature modules
 ├── hooks/           # Shared custom hooks
-├── lib/             # Core utilities (api-client, api-error)
-├── testing/         # Test utilities and setup
+├── libs/             # Core utilities (api-client, api-error)
+├── tests/         # Test utilities and setup
 ├── types/           # Shared TypeScript types
 ├── utils/           # Utility functions
 ├── main.tsx         # Entry point
@@ -765,7 +765,7 @@ npm run test:coverage   # Run with coverage report
 
 ```typescript
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { api } from "@/lib";
+import { api } from "@/libs";
 
 // Fetch data
 const { data, isLoading, error } = useQuery({
@@ -792,7 +792,7 @@ const mutation = useMutation({
 ### Using Axios Directly
 
 ```typescript
-import { api } from "@/lib";
+import { api } from "@/libs";
 
 // GET request
 const response = await api.get("/users");
@@ -830,7 +830,7 @@ import {
   RateLimitError,
   ServerError,
   ServiceUnavailableError,
-} from "@/lib";
+} from "@/libs";
 ```
 
 ### Using useApiError Hook
@@ -886,106 +886,41 @@ The API client automatically handles different error types:
 
 ### Automatic Retry Logic
 
-Queries and mutations automatically retry on retryable errors:
+Queries automatically retry on retryable errors. Mutations default to no retry:
 
 - **Exponential backoff**: 1s, 2s, 4s, 8s, 16s (max 30s)
 - **Jitter**: Random delay to avoid thundering herd
 - **Configurable retries**: Set via `VITE_QUERY_RETRY_TIMES`
 - **Smart retry**: Only retryable errors are retried
 
-### Token Management
+### Authentication and Token Refresh
 
-On 401 errors:
+Use `useUser`, `useLogin`, `useRegister`, and `useLogout` from `@/features/auth`.
+User data is cached under `QUERY_KEYS.AUTH.USER` and loaded from `/auth/me`.
 
-1. Clear expired tokens from secure storage
-2. Redirect to login page
-3. User-friendly session expired message
-
-### Using Authentication
-
-```typescript
-import { useAuth } from '@/features/auth'
-
-function MyComponent() {
-  const { isAuthenticated, accessToken, logout, tokenExpiresIn } = useAuth()
-
-  if (!isAuthenticated) {
-    return <Login />
-  }
-
-  return (
-    <div>
-      <p>Welcome! Your token expires in {tokenExpiresIn}ms</p>
-      <button onClick={logout}>Logout</button>
-    </div>
-  )
+```tsx
+const { data: user, isLoading } = useUser();
+const login = useLogin();
+const logout = useLogout();
+const result = await login.mutateAsync({ username, password });
+if (result.status === "otp-required") {
+  navigate(ROUTES.OTP, { state: { expiresIn: result.expiresIn } });
+} else {
+  navigate(ROUTES.DASHBOARD);
 }
+// For a logout button: onClick={() => logout.mutate(undefined)}
 ```
 
-### Secure Token Storage
+`AuthGuard` waits for the session query and sends pending OTP sessions to `/otp`.
+Login and registration obtain the actual user ID from `/auth/me`; OTP completion refreshes that user even when the backend keeps the existing token.
 
-The authentication system uses secure token storage:
+Token utilities live in `@/libs/tokenStorage`. Development and staging use localStorage; production uses JavaScript-managed cookies. These cookies remain accessible to JavaScript; HttpOnly cookies require backend support. JWT helpers decode payloads and inspect expiry; they do not verify signatures.
 
-- **Development**: localStorage (for easier debugging)
-- **Production**: Cookies (with secure, httpOnly flags)
-- **Automatic fallback**: localStorage if cookies fail
-- **JWT Support**: Parse and validate JWT payloads
-- **Expiration Tracking**: Check token expiration automatically
+A 401 on an authenticated request triggers one shared refresh operation when a refresh token is available. Both rotated tokens are saved before requests retry. Failed refresh clears tokens and cached private data. Login, registration, logout, and refresh requests do not trigger refresh recursively. Refresh is request-driven; there is no interval hook.
 
-```typescript
-import {
-  getAccessToken,
-  setAccessToken,
-  clearAuthTokens,
-  parseJWT,
-  isTokenExpired,
-} from "@/features/auth";
+Queries retry retryable errors. Mutations default to `retry: false`; enable retries only on operations designed to support repetition.
 
-// Get token
-const token = getAccessToken();
-
-// Set token with options
-setAccessToken(token, {
-  expires: 7, // days
-  secure: true,
-  httpOnly: true,
-  sameSite: "strict",
-});
-
-// Check authentication
-if (isAuthenticated()) {
-  // User is logged in
-}
-
-// Parse JWT payload
-const payload = parseJWT(token);
-console.log(payload.sub, payload.exp);
-
-// Check expiration
-if (isTokenExpired(token)) {
-  // Token is expired
-}
-```
-
-### Token Refresh
-
-Use the `useTokenRefresh` hook to manage token refresh:
-
-```typescript
-import { useTokenRefresh } from "@/features/auth";
-
-function App() {
-  const { shouldRefresh, refresh } = useTokenRefresh();
-
-  useEffect(() => {
-    if (shouldRefresh) {
-      refresh();
-    }
-  }, [shouldRefresh, refresh]);
-}
-```
-
-> **See [docs/security.md](./docs/security.md)** for token storage, XSS/CSRF prevention, input validation, and dependency security.
+See [migration guide](./docs/migrations/template-reliability.md) for breaking API and scaffold changes.
 
 ### Dialog Component
 
@@ -1179,7 +1114,7 @@ import {
   getFieldErrors,
   isRetryableError,
   isAxiosError,
-} from "@/lib";
+} from "@/libs";
 
 // Get user-friendly error message
 const message = getErrorMessage(error);
@@ -1649,7 +1584,7 @@ export { MyComponent } from "./my-component"
 
 ### API Integration
 
-1. Use the API client from `@/lib`
+1. Use the API client from `@/libs`
 2. Use TanStack Query hooks for data fetching
 3. Define query keys in `src/config/constants.ts`
 4. Type your API responses in `src/types/`

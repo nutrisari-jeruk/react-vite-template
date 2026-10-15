@@ -1,302 +1,178 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act, render, screen } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { ReactNode } from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { QUERY_KEYS } from "@/config/constants";
+import {
+  clearAuthTokens,
+  getAccessToken,
+  getRefreshToken,
+  setAccessToken,
+} from "@/libs/tokenStorage";
+import {
+  getUser,
+  loginWithEmailAndPassword,
+  registerWithEmailAndPassword,
+  logout,
+} from "../api/authApi";
 import {
   useUser,
   useLogin,
-  useLogout,
   useRegister,
-  AuthLoader,
+  useLogout,
   loginInputSchema,
   registerInputSchema,
 } from "./AuthProvider";
 
-const mockGetUser = vi.fn();
-const mockLogin = vi.fn();
-const mockRegister = vi.fn();
-const mockLogout = vi.fn();
-const mockSetAccessToken = vi.fn();
-const mockClearAuthTokens = vi.fn();
-
 vi.mock("../api/authApi", () => ({
-  getUser: (...args: unknown[]) => mockGetUser(...args),
-  loginWithEmailAndPassword: (...args: unknown[]) => mockLogin(...args),
-  registerWithEmailAndPassword: (...args: unknown[]) => mockRegister(...args),
-  logout: (...args: unknown[]) => mockLogout(...args),
+  getUser: vi.fn(),
+  loginWithEmailAndPassword: vi.fn(),
+  registerWithEmailAndPassword: vi.fn(),
+  logout: vi.fn(),
 }));
-
-vi.mock("./tokenStorage", () => ({
-  setAccessToken: (...args: unknown[]) => mockSetAccessToken(...args),
-  clearAuthTokens: () => mockClearAuthTokens(),
-}));
-
-function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-      mutations: { retry: false },
-    },
+const user = {
+  id: "backend-42",
+  name: "User",
+  username: "12345678901",
+  email: "u@example.com",
+};
+const input = { username: user.username, password: "password123" };
+function setup() {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={client}>{children}</QueryClientProvider>
   );
+  return { client, wrapper };
 }
-
-describe("Auth Provider", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockGetUser.mockResolvedValue(null);
+beforeEach(() => {
+  vi.resetAllMocks();
+  clearAuthTokens();
+  vi.mocked(getUser).mockResolvedValue(user);
+});
+describe("authentication lifecycle", () => {
+  it("loads the backend user under the shared query key", async () => {
+    const { client, wrapper } = setup();
+    const { result } = renderHook(() => useUser(), { wrapper });
+    await waitFor(() => expect(result.current.data?.id).toBe("backend-42"));
+    expect(client.getQueryData(QUERY_KEYS.AUTH.USER)).toEqual(user);
   });
-
-  describe("useUser", () => {
-    it("returns error when not authenticated", async () => {
-      mockGetUser.mockResolvedValue(null);
-
-      const { result } = renderHook(() => useUser(), {
-        wrapper: createWrapper(),
-      });
-
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 50));
-      });
-
-      expect(result.current.data).toBeUndefined();
-      expect(result.current.isError).toBe(true);
-      expect((result.current.error as Error)?.message).toBe(
-        "Not authenticated"
-      );
-    });
-
-    it("returns user when authenticated", async () => {
-      const user = {
-        id: "1",
-        name: "User",
-        email: "user@example.com",
-        username: "user",
-      };
-      mockGetUser.mockResolvedValue(user);
-
-      const { result } = renderHook(() => useUser(), {
-        wrapper: createWrapper(),
-      });
-
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 50));
-      });
-
-      expect(result.current.data).toEqual(user);
-    });
+  it("returns null for an anonymous session", async () => {
+    vi.mocked(getUser).mockResolvedValue(null);
+    const { wrapper } = setup();
+    const { result } = renderHook(() => useUser(), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toBeNull();
   });
-
-  describe("useLogin", () => {
-    it("calls login API and stores token on success", async () => {
-      const loginResponse = {
-        name: "User",
-        email: "user@example.com",
-        username: "user",
-        token: "access-token",
-        otp: { isRequired: false, expiresIn: 0 },
-      };
-      mockLogin.mockResolvedValue(loginResponse);
-
-      const { result } = renderHook(() => useLogin(), {
-        wrapper: createWrapper(),
-      });
-
-      await act(async () => {
-        result.current.mutate({
-          username: "user",
-          password: "password123",
-        });
-      });
-
-      expect(mockLogin).toHaveBeenCalledWith({
-        username: "user",
-        password: "password123",
-      });
-      expect(mockSetAccessToken).toHaveBeenCalledWith("access-token");
+  it("login stores token and takes user identity from /me", async () => {
+    vi.mocked(loginWithEmailAndPassword).mockResolvedValue({
+      ...user,
+      token: "access",
+      refreshToken: "refresh-from-backend",
+      otp: { isRequired: false, expiresIn: 0 },
     });
-  });
-
-  describe("useLogout", () => {
-    it("calls logout API and clears tokens", async () => {
-      mockLogout.mockResolvedValue(undefined);
-
-      const { result } = renderHook(() => useLogout(), {
-        wrapper: createWrapper(),
+    const { client, wrapper } = setup();
+    const { result } = renderHook(() => useLogin(), { wrapper });
+    await act(async () => {
+      expect(await result.current.mutateAsync(input)).toEqual({
+        status: "authenticated",
+        user,
       });
-
-      await act(async () => {
-        result.current.mutate(undefined);
-      });
-
-      expect(mockLogout).toHaveBeenCalled();
-      expect(mockClearAuthTokens).toHaveBeenCalled();
     });
+    expect(getAccessToken()).toBe("access");
+    expect(getRefreshToken()).toBe("refresh-from-backend");
+    expect(client.getQueryData(QUERY_KEYS.AUTH.USER)).toEqual(user);
   });
-
-  describe("useRegister", () => {
-    it("calls register API and stores token on success", async () => {
-      const registerResponse = {
-        name: "New User",
-        email: "new@example.com",
-        username: "newuser",
-        token: "new-token",
-        otp: { isRequired: true, expiresIn: 3600 },
-      };
-      mockRegister.mockResolvedValue(registerResponse);
-
-      const { result } = renderHook(() => useRegister(), {
-        wrapper: createWrapper(),
-      });
-
-      await act(async () => {
-        result.current.mutate({
-          email: "new@example.com",
-          password: "password123",
-          name: "New User",
-          username: "12345678901",
-        });
-      });
-
-      expect(mockRegister).toHaveBeenCalledWith(
-        expect.objectContaining({
-          email: "new@example.com",
-          password: "password123",
-          name: "New User",
-          username: "12345678901",
+  it("registration requiring OTP does not publish a user", async () => {
+    vi.mocked(registerWithEmailAndPassword).mockResolvedValue({
+      ...user,
+      token: "pending",
+      otp: { isRequired: true, expiresIn: 75 },
+    });
+    const { client, wrapper } = setup();
+    const { result } = renderHook(() => useRegister(), { wrapper });
+    await act(async () => {
+      expect(
+        await result.current.mutateAsync({
+          ...input,
+          name: user.name,
+          email: user.email,
         })
-      );
-      expect(mockSetAccessToken).toHaveBeenCalledWith("new-token");
+      ).toEqual({ status: "otp-required", expiresIn: 75 });
     });
+    expect(sessionStorage.getItem("otp_pending")).toBe("true");
+    expect(getUser).not.toHaveBeenCalled();
+    expect(client.getQueryData(QUERY_KEYS.AUTH.USER)).toBeNull();
   });
-
-  describe("AuthLoader", () => {
-    it("renders children when user is loaded", async () => {
-      mockGetUser.mockResolvedValue({
-        id: "1",
-        name: "User",
-        email: "user@example.com",
-        username: "user",
-      });
-
-      render(
-        <QueryClientProvider
-          client={
-            new QueryClient({
-              defaultOptions: { queries: { retry: false } },
-            })
-          }
-        >
-          <AuthLoader
-            renderLoading={() => <div>Loading...</div>}
-            renderError={() => <div>Error</div>}
-          >
-            <div>Content</div>
-          </AuthLoader>
-        </QueryClientProvider>
-      );
-
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 50));
-      });
-
-      expect(screen.getByText("Content")).toBeInTheDocument();
-    });
-
-    it("renders error when authentication fails", async () => {
-      mockGetUser.mockResolvedValue(null);
-
-      render(
-        <QueryClientProvider
-          client={
-            new QueryClient({
-              defaultOptions: { queries: { retry: false } },
-            })
-          }
-        >
-          <AuthLoader
-            renderLoading={() => <div>Loading...</div>}
-            renderError={() => <div>Auth Error</div>}
-          >
-            <div>Content</div>
-          </AuthLoader>
-        </QueryClientProvider>
-      );
-
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 50));
-      });
-
-      expect(screen.getByText("Auth Error")).toBeInTheDocument();
-    });
+  it("pending OTP stays anonymous when user query mounts", async () => {
+    sessionStorage.setItem("otp_pending", "true");
+    const { wrapper } = setup();
+    const { result } = renderHook(() => useUser(), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toBeNull();
+    expect(getUser).not.toHaveBeenCalled();
   });
-
-  describe("loginInputSchema", () => {
-    it("validates valid login input", () => {
-      const result = loginInputSchema.safeParse({
-        username: "user",
-        password: "password",
-      });
-      expect(result.success).toBe(true);
+  it("logout clears local session and cached data even when the server fails", async () => {
+    setAccessToken("access");
+    sessionStorage.setItem("reset_password_token", "reset");
+    vi.mocked(logout).mockRejectedValue(new Error("offline"));
+    const { client, wrapper } = setup();
+    client.setQueryData(["private"], { secret: true });
+    const { result } = renderHook(() => useLogout(), { wrapper });
+    await act(async () => {
+      await expect(result.current.mutateAsync(undefined)).rejects.toThrow(
+        "offline"
+      );
     });
-
-    it("rejects empty username", () => {
-      const result = loginInputSchema.safeParse({
-        username: "",
-        password: "password",
-      });
-      expect(result.success).toBe(false);
-    });
-
-    it("rejects empty password", () => {
-      const result = loginInputSchema.safeParse({
-        username: "user",
-        password: "",
-      });
-      expect(result.success).toBe(false);
-    });
+    expect(getAccessToken()).toBeNull();
+    expect(sessionStorage.getItem("reset_password_token")).toBeNull();
+    expect(client.getQueryData(["private"])).toBeUndefined();
+    expect(client.getQueryData(QUERY_KEYS.AUTH.USER)).toBeNull();
+    expect(logout).toHaveBeenCalledWith("access");
   });
-
-  describe("registerInputSchema", () => {
-    it("validates valid register input", () => {
-      const result = registerInputSchema.safeParse({
-        email: "user@example.com",
-        password: "password123",
-        name: "User",
-        username: "12345678901",
-      });
-      expect(result.success).toBe(true);
+  it("an in-flight login cannot restore a logged-out session", async () => {
+    let finish!: (
+      response: Awaited<ReturnType<typeof loginWithEmailAndPassword>>
+    ) => void;
+    vi.mocked(loginWithEmailAndPassword).mockReturnValue(
+      new Promise((resolve) => {
+        finish = resolve;
+      })
+    );
+    const { wrapper } = setup();
+    const { result } = renderHook(() => useLogin(), { wrapper });
+    let pending!: Promise<unknown>;
+    act(() => {
+      pending = result.current.mutateAsync(input);
     });
-
-    it("rejects invalid email", () => {
-      const result = registerInputSchema.safeParse({
-        email: "invalid",
-        password: "password123",
-        name: "User",
-        username: "12345678901",
+    await waitFor(() => expect(loginWithEmailAndPassword).toHaveBeenCalled());
+    clearAuthTokens();
+    await act(async () => {
+      finish({
+        ...user,
+        token: "late",
+        otp: { isRequired: false, expiresIn: 0 },
       });
-      expect(result.success).toBe(false);
+      await expect(pending).rejects.toThrow("Session changed");
     });
-
-    it("rejects short password", () => {
-      const result = registerInputSchema.safeParse({
-        email: "user@example.com",
-        password: "12345",
-        name: "User",
-        username: "12345678901",
-      });
-      expect(result.success).toBe(false);
-    });
-
-    it("rejects short username", () => {
-      const result = registerInputSchema.safeParse({
-        email: "user@example.com",
-        password: "password123",
-        name: "User",
-        username: "12345",
-      });
-      expect(result.success).toBe(false);
-    });
+    expect(getAccessToken()).toBeNull();
+  });
+  it("validates login and registration inputs", () => {
+    expect(loginInputSchema.safeParse(input).success).toBe(true);
+    expect(loginInputSchema.safeParse({ ...input, password: "" }).success).toBe(
+      false
+    );
+    expect(
+      registerInputSchema.safeParse({
+        ...input,
+        name: user.name,
+        email: user.email,
+      }).success
+    ).toBe(true);
+    expect(
+      registerInputSchema.safeParse({ ...input, name: "", email: "invalid" })
+        .success
+    ).toBe(false);
   });
 });

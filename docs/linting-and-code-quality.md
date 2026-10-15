@@ -50,7 +50,7 @@ Imports are automatically sorted and grouped:
 ```tsx
 import { useState } from "react"; // External - React first
 import { Button } from "@/components/ui"; // Internal
-import { useAuth } from "@/features/auth"; // Internal
+import { useUser } from "@/features/auth"; // Internal
 import { MyComponent } from "./MyComponent"; // Relative
 import type { User } from "@/types"; // Type import
 ```

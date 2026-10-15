@@ -25,7 +25,7 @@ vi.mock("@/libs/apiClient", () => ({
   },
 }));
 
-vi.mock("../lib/tokenStorage", () => ({
+vi.mock("@/libs/tokenStorage", () => ({
   getAccessToken: () => mockGetAccessToken(),
   clearAuthTokens: () => mockClearAuthTokens(),
 }));
@@ -192,7 +192,9 @@ describe("Auth API", () => {
       await logout();
 
       expect(mockApiPost).toHaveBeenCalledWith(
-        expect.stringContaining("/auth/logout")
+        expect.stringContaining("/auth/logout"),
+        undefined,
+        expect.objectContaining({ headers: expect.any(Object) })
       );
     });
   });

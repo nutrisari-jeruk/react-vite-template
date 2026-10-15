@@ -6,77 +6,13 @@ This document covers security best practices implemented in the application.
 
 ## Authentication
 
-### Token Storage
+### Token Storage and Session Lifecycle
 
-The application uses environment-aware token storage:
+Token utilities are defined in `src/libs/tokenStorage.ts`. Development and staging use localStorage; production uses JavaScript-managed cookies. Cookie options are caller-supplied. JavaScript cannot create HttpOnly cookies; server-managed HttpOnly authentication requires a backend integration. JWT helpers decode payloads and inspect expiration without verifying signatures.
 
-| Environment | Storage      | Reason           |
-| ----------- | ------------ | ---------------- |
-| Development | localStorage | Easier debugging |
-| Production  | Cookies      | More secure      |
+`useUser` reads `/auth/me` through the shared query cache. Pending OTP sessions cannot access protected routes. Logout clears local tokens, pending verification state, and private query data even if the server request fails.
 
-```typescript
-// src/features/auth/lib/token-storage.ts
-const storage = isProduction ? cookieStorage : localStorageStorage;
-
-export function setAccessToken(token: string) {
-  storage.set(STORAGE_KEYS.ACCESS_TOKEN, token);
-}
-
-export function getAccessToken(): string | null {
-  return storage.get(STORAGE_KEYS.ACCESS_TOKEN);
-}
-```
-
-### Cookie Configuration
-
-Production cookies use secure settings:
-
-```typescript
-const cookieOptions = {
-  secure: true, // HTTPS only
-  sameSite: "strict", // CSRF protection
-  path: "/",
-  expires: 7, // Days
-};
-```
-
-### Token Expiration
-
-JWT tokens are validated for expiration:
-
-```typescript
-import { isTokenExpired, getTimeUntilExpiration } from "@/features/auth";
-
-// Check if token is expired
-if (isTokenExpired(token)) {
-  // Redirect to login
-}
-
-// Get time until expiration
-const expiresIn = getTimeUntilExpiration(token);
-if (expiresIn < 5 * 60 * 1000) {
-  // Refresh token soon
-}
-```
-
-### Automatic Token Clearing
-
-On 401 responses, tokens are automatically cleared:
-
-```typescript
-// src/libs/api-client.ts
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      clearAuthTokens();
-      window.location.href = "/login";
-    }
-    return Promise.reject(error);
-  }
-);
-```
+The HTTP client uses a separate refresh transport. Authenticated 401 responses share one refresh and retry once; both rotated tokens are persisted. Failed refresh clears session state. Logout invalidates in-flight refresh results, preventing a late response from restoring a cleared session.
 
 ## XSS Prevention
 

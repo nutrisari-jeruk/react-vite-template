@@ -11,7 +11,10 @@ import {
   validateResetPasswordOtp,
 } from "../api/authApi";
 import { useCountdown } from "@/hooks";
-import { setAccessToken } from "../lib/tokenStorage";
+import { setAccessToken } from "@/libs/tokenStorage";
+import { getUser } from "../api/authApi";
+import { UnauthorizedError } from "@/libs/apiError";
+import { getSessionVersion } from "@/libs/tokenStorage";
 import { QUERY_KEYS } from "@/config/constants";
 import { z } from "zod";
 
@@ -64,16 +67,21 @@ export function OtpForm({
   });
 
   const verifyLoginOtpMutation = useMutation({
-    mutationFn: verifyOtp,
-    onSuccess: (response) => {
-      if (response.token) {
-        setAccessToken(response.token);
-        // Remove OTP pending flag
-        sessionStorage.removeItem(OTP_PENDING_KEY);
-        sessionStorage.removeItem(countdownStorageKey);
-        // Invalidate user query to refetch user data
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AUTH.USER });
-      }
+    mutationFn: async (data: OtpInput) => {
+      const version = getSessionVersion();
+      const response = await verifyOtp(data);
+      if (version !== getSessionVersion())
+        throw new UnauthorizedError("Session changed.");
+      if (response.token) setAccessToken(response.token);
+      const user = await getUser();
+      if (version !== getSessionVersion() || !user)
+        throw new UnauthorizedError("Unable to load authenticated user.");
+      return user;
+    },
+    onSuccess: (user) => {
+      sessionStorage.removeItem(OTP_PENDING_KEY);
+      sessionStorage.removeItem(countdownStorageKey);
+      queryClient.setQueryData(QUERY_KEYS.AUTH.USER, user);
       onSuccess?.();
     },
     onError: (error) => {

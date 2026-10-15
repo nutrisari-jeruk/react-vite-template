@@ -2,14 +2,14 @@ import fs from "fs-extra";
 import path from "path";
 import type { RegistryItem } from "../types.js";
 import { getTemplatesDir } from "./registry.js";
-import { logger } from "./logger.js";
 
 /**
  * Copy template files for a registry item into the target project.
  */
 export async function copyItemFiles(
   item: RegistryItem,
-  targetDir: string
+  targetDir: string,
+  overwrite = false
 ): Promise<string[]> {
   const templatesDir = getTemplatesDir();
   const copiedFiles: string[] = [];
@@ -25,10 +25,10 @@ export async function copyItemFiles(
     await fs.ensureDir(path.dirname(targetPath));
 
     if (await fs.pathExists(sourcePath)) {
-      await fs.copy(sourcePath, targetPath, { overwrite: false });
+      await fs.copy(sourcePath, targetPath, { overwrite });
       copiedFiles.push(file.target);
     } else {
-      logger.warn(`Template file not found: ${file.source}`);
+      throw new Error(`Template file not found: ${file.source}`);
     }
   }
 

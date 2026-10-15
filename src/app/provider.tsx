@@ -1,40 +1,7 @@
 import type { ReactNode } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { env } from "@/config/env";
-import { isRetryableError } from "@/libs/apiError";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/libs/queryClient";
 import { ToastProvider } from "@/components/ui";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: (failureCount, error) => {
-        if (!isRetryableError(error)) {
-          return false;
-        }
-        return failureCount < env.queryRetryTimes;
-      },
-      retryDelay: (attemptIndex) => {
-        const delay = Math.min(1000 * 2 ** attemptIndex, 30000);
-        return delay + Math.random() * 1000;
-      },
-      refetchOnWindowFocus: false,
-      staleTime: env.queryStaleTime,
-      gcTime: env.queryCacheTime,
-    },
-    mutations: {
-      retry: (failureCount, error) => {
-        if (!isRetryableError(error)) {
-          return false;
-        }
-        return failureCount < env.queryRetryTimes;
-      },
-      retryDelay: (attemptIndex) => {
-        const delay = Math.min(1000 * 2 ** attemptIndex, 30000);
-        return delay + Math.random() * 1000;
-      },
-    },
-  },
-});
 
 interface AppProviderProps {
   children: ReactNode;

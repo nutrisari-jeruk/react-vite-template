@@ -13,7 +13,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc -b && tsc -p tsconfig.spec.json --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
     "test:ui": "vitest --ui",
@@ -23,7 +23,9 @@
     "prepare": "husky",
     "cli:build": "cd packages/cli && npm run build",
     "sync:templates": "node scripts/sync-templates.mjs",
-    "sync:templates:check": "node scripts/sync-templates.mjs --check"
+    "sync:templates:check": "node scripts/sync-templates.mjs --check",
+    "check:registry": "node scripts/check-registry.mjs",
+    "smoke:cli": "node scripts/smoke-cli.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",

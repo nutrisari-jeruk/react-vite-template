@@ -5,7 +5,7 @@
 import { api, type ApiResponse } from "@/libs/apiClient";
 import { isAxiosError } from "@/libs/apiError";
 import { API_ENDPOINTS } from "@/config/constants";
-import { getAccessToken, clearAuthTokens } from "../lib/tokenStorage";
+import { getAccessToken, clearAuthTokens } from "@/libs/tokenStorage";
 import type { User } from "../types/user";
 
 /**
@@ -24,6 +24,7 @@ export interface AuthResponse {
   email: string;
   username: string;
   token: string;
+  refreshToken?: string;
   otp: OtpConfig;
 }
 
@@ -117,8 +118,10 @@ export const registerWithEmailAndPassword = async (
 /**
  * Logout current user
  */
-export const logout = async (): Promise<void> => {
-  await api.post<void>(API_ENDPOINTS.AUTH.LOGOUT);
+export const logout = async (token = getAccessToken()): Promise<void> => {
+  await api.post<void>(API_ENDPOINTS.AUTH.LOGOUT, undefined, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
 };
 
 /**

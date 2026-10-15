@@ -78,7 +78,7 @@ Each module exposes a public API through `index.ts`:
 ```typescript
 // Import from barrel
 import { Button, Card } from "@/components";
-import { useAuth } from "@/features/auth";
+import { useUser } from "@/features/auth";
 ```
 
 ### Provider Composition

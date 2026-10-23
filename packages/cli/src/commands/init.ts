@@ -62,6 +62,13 @@ const BASE_FILES = [
   { source: "base/src/app/index.tsx", target: "src/app/index.tsx" },
   { source: "base/src/app/provider.tsx", target: "src/app/provider.tsx" },
   { source: "base/src/app/router.tsx", target: "src/app/router.tsx" },
+  { source: "base/src/mocks/initialize.ts", target: "src/mocks/initialize.ts" },
+  { source: "base/src/mocks/browser.ts", target: "src/mocks/browser.ts" },
+  { source: "base/src/mocks/handlers.ts", target: "src/mocks/handlers.ts" },
+  {
+    source: "base/public/mockServiceWorker.js",
+    target: "public/mockServiceWorker.js",
+  },
   // Utilities
   { source: "base/src/utils/cn.ts", target: "src/utils/cn.ts" },
   { source: "base/src/utils/metadata.ts", target: "src/utils/metadata.ts" },
@@ -301,6 +308,7 @@ export async function init(options: InitOptions): Promise<void> {
         "test:coverage": "vitest --coverage",
         preview: "vite preview",
       },
+      msw: { workerDirectory: ["public"] },
       dependencies: BASE_NPM_DEPS,
       devDependencies: {
         ...BASE_DEV_DEPS,
@@ -313,6 +321,7 @@ export async function init(options: InitOptions): Promise<void> {
 
   // Persist dependencies even when installation is skipped.
   const manifest = await fs.readJSON(pkgPath);
+  manifest.msw ??= { workerDirectory: ["public"] };
   manifest.dependencies = { ...BASE_NPM_DEPS, ...manifest.dependencies };
   manifest.devDependencies = {
     ...BASE_DEV_DEPS,

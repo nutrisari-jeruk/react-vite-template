@@ -169,3 +169,10 @@ MIT
 Authentication uses `useUser`, `useLogin`, `useRegister`, and `useLogout` from `@/features/auth` after adding the auth feature. Login/registration return `{ status: "authenticated", user }` or `{ status: "otp-required", expiresIn }`. User identity comes from `/auth/me`. AuthGuard blocks pending OTP sessions. Refresh is request-driven; mutation retry is disabled by default.
 
 `npm run type-check` checks source, Node configuration and tests. `npm run test:run` executes tests once. `init --skip-install` and `add --skip-install` still write dependencies to package.json; install them before running the project.
+
+
+## Optional development mocks
+
+Set `VITE_ENABLE_MOCKS=true` in `.env` and restart Vite to enable MSW. Add your API fixtures to `src/mocks/handlers.ts`, which starts empty; unmatched requests use the network. The default is `false`, so set `VITE_API_URL` to your backend URL for integration testing. Production always disables mocking. Disabling mocks removes only the old mockServiceWorker.js registration, reloading first if it still controls the document; PWA workers are retained.
+
+The generated `msw.workerDirectory` package setting lets dependency installation update `public/mockServiceWorker.js` to match the installed SDK. If you install with lifecycle scripts disabled, run `npx msw init public` manually before enabling mocks.

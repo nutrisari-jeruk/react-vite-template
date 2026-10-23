@@ -58,3 +58,10 @@ Filtering is controlled: pass both `filterValue` and `onFilterChange`. Updating 
 Run `./init.sh`, `npm run test:coverage -- --run`, `npm run sync:templates:check`, `npm run check:registry`, `npm run cli:build`, and `npm run smoke:cli`. Smoke checks install a shared dependency fixture in a temporary directory and then validate eight isolated generated projects. Logs remain there for diagnosis. For repeat checks, pass `npm run smoke:cli -- --dependencies=/absolute/path/to/fixture/node_modules` with a previously installed superset including vite-plugin-pwa.
 
 Local `.claude/settings.json` is excluded from automatic template synchronization. Review changes to the packaged settings explicitly.
+
+
+## Explicit mock mode (2026-10-23)
+
+Development no longer starts MSW automatically. Set `VITE_ENABLE_MOCKS=true` and `VITE_API_URL=/api` to use showcase fixtures, then restart Vite. For backend integration leave the flag false or unset and configure `VITE_API_URL` for your backend. The previously unused `VITE_ENABLE_MSW` variable is ignored. Production builds always disable mocking.
+
+Only the application mock service worker is removed on switching to backend mode. A controlled document reloads before React mounts, while unrelated PWA workers remain registered. Fresh CLI projects include the bootstrap and an empty `src/mocks/handlers.ts`; add your project's own handlers when opting in.

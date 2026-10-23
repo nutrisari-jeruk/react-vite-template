@@ -6,6 +6,10 @@
 
 ## Current Objective
 
+**mock-backend-switch — done.** `VITE_ENABLE_MOCKS` is an explicit, development-only opt-in, defaulting to false. Production ignores it. Cleanup removes the application MSW registration, reloads before React mounts if the old controller remains, and preserves unrelated/PWA workers. Startup failures stop rendering instead of silently changing request behavior. CLI starters share the bootstrap and include empty project-specific handlers; generated manifests let MSW refresh the worker on dependency installation.
+
+## Template reliability (previous work)
+
 **template-reliability — done.** Implemented all eight frontend-template audit fixes. Canonical generated paths match src/libs, src/tests, camelCase hooks, and PascalCase components. CLI records dependencies before optional installation, completes transitive registry dependencies, wires routes/imports, and exits nonzero on installation failure.
 
 Authentication uses QUERY_KEYS.AUTH.USER and backend /auth/me identity. Removed legacy auth hooks/store. Added explicit authenticated/otp-required mutation results, pending-OTP guards, logout cleanup, session-version protection for in-flight work, separate single-flight refresh transport with token rotation, and private-cache cleanup on session expiry. Registration now exposes the username required by its production schema; tests no longer substitute a relaxed schema.
@@ -50,3 +54,21 @@ Verification: `./init.sh` PASS (lint, real type-check, 942 tests, app build); CL
 Final Docker smoke log: `/var/folders/6v/qtlqjzld0870jwhns0xq1x7w0000gn/T/frontier-docker-1GNC6p/docker.log`.
 
 Remaining manual browser/backend checks in session-handoff.md are still pending. Local `.claude/settings.json` was preserved. No production stack was started or publication made for this follow-up.
+
+
+## Mock/Backend Switch — 2026-10-23
+
+Replaced the unused `VITE_ENABLE_MSW` example with `VITE_ENABLE_MOCKS=false`. Read it through typed `env.enableMocks`, guarded by Vite DEV. The browser SDK is dynamically imported only when enabled. The local .env and .claude/settings.json were not edited.
+
+Regression tests cover false/unset/invalid flags, development opt-in, production override, asynchronous startup, startup/cleanup failure, stale registrations in active/waiting/installing states, reload-before-render, and retention of unrelated/PWA registrations. Generated scaffolds contain the same bootstrap, an empty handlers file, and a copied worker; package.json configures `msw.workerDirectory` so normal installation aligns the public worker to the installed SDK. Installations that disable lifecycle scripts need `npx msw init public` explicitly.
+
+Verification:
+
+- `./init.sh`: PASS — lint, source/Node/test type-check, 965 tests across 77 files, production build.
+- `npm run test:coverage -- --run`: PASS — statements 92.25%, branches 85.89%, functions 90.02%, lines 93.18%.
+- `VITE_ENABLE_MOCKS=true npm run build`: PASS; all 17 emitted application JS files checked without MSW runtime protocol markers or showcase API fixture markers.
+- Browser probe on http://127.0.0.1:5181: enabled mode returned the MSW 401 Unauthorized response; after same-origin restart in disabled mode, the backend probe returned 200 with source=backend-probe, controller=null and no mock registration. A test PWA /sw.js registration survived reload and backend requests still passed through. The PWA fixture was then unregistered and the temporary server stopped. This used a controlled backend probe, not the user's real backend.
+- CLI build, template sync, 53-item registry validation and all eight CLI scaffold scenarios: PASS. The fresh dependency fixture also proved its public worker matched the installed MSW SDK exactly.
+- Final smoke log: `/var/folders/6v/qtlqjzld0870jwhns0xq1x7w0000gn/T/frontier-smoke-rrCqh0/commands.log`; browser artifacts: `/tmp/frontier-mock-browser-x9b0fzdp/playwright`.
+
+Next: set VITE_ENABLE_MOCKS=false and VITE_API_URL for the real backend, then execute the existing manual auth/session/DataTable checklist. Restart Vite after changing environment values. Form component audit findings remain separate pending work.

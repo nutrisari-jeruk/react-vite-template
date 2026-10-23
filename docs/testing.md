@@ -386,3 +386,37 @@ npm run test -- button.test.tsx
 
 - [Components and Styling](./components-and-styling.md)
 - [Error Handling](./error-handling.md)
+
+
+## Mock API and real backend
+
+Mocks are **off by default**. Configure `.env` and restart Vite after changing values:
+
+```dotenv
+# Showcase API fixtures (development only)
+VITE_ENABLE_MOCKS=true
+VITE_API_URL=/api
+```
+
+```dotenv
+# Real backend
+VITE_ENABLE_MOCKS=false
+VITE_API_URL=http://localhost:8000/api
+```
+
+Only the literal `true` enables mocks, and only in a Vite development run. An unset flag means backend mode. Production builds ignore the opt-in and do not import the MSW browser runtime or showcase fixtures. The old unused `VITE_ENABLE_MSW` setting has been replaced; it is not an alias.
+
+Startup waits for MSW when enabled. When disabled, it unregisters only the same-origin `/mockServiceWorker.js` registration. If that worker still controls the document, startup reloads before mounting React or sending application requests. PWA `/sw.js` and other unrelated workers are retained. A startup/cleanup failure shows an error instead of silently switching request behavior.
+
+The showcase mock handlers cover `/api`; unhandled requests pass through to the network. CLI-generated projects have the same switch and worker setup, with an empty `src/mocks/handlers.ts` for project-specific fixtures. Enabling the switch in a fresh scaffold does not invent backend responses.
+
+### Browser regression scenario
+
+1. Start development with mocks enabled and `/api` as the API URL. Confirm `/api/auth/me` is intercepted by MSW.
+2. Restart the server on the same origin with the flag false. Reload the page and confirm the old mock controller/registration is gone before application requests go to the backend.
+3. Verify an unrelated PWA `/sw.js` registration survives a reload in backend mode.
+4. Build production with `VITE_ENABLE_MOCKS=true`; mocks must remain disabled.
+
+Focused automated checks: `npx vitest run src/config/mockMode.test.ts src/mocks/initialize.test.ts src/main.test.tsx`.
+
+Generated manifests configure `msw.workerDirectory` so normal dependency installation refreshes the worker to match the SDK. With lifecycle scripts disabled, run `npx msw init public` explicitly before opting in.

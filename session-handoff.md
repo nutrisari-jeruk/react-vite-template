@@ -1,6 +1,18 @@
 # Session Handoff
 
-## Latest update — 2026-10-23
+## Latest update — mock/backend switch (2026-10-23)
+
+The development mock/backend switch is complete. Earlier fixes are committed as 76075fa (template reliability) and 6e8addd (Docker/Nginx).
+
+Use `VITE_ENABLE_MOCKS=true` with `VITE_API_URL=/api` for showcase fixtures. The default false/unset mode uses the backend configured by VITE_API_URL. Production always disables mocks. Restart Vite after env changes. The unused VITE_ENABLE_MSW example has been replaced; it is not an alias. Local .env and .claude/settings.json remain untouched.
+
+Startup awaits optional MSW, removes only stale mockServiceWorker.js registrations when disabled, and reloads before mounting React if the document remains controlled. Unrelated PWA workers are preserved. Generated starters share the switch but have empty handlers for project-specific fixtures. Their msw.workerDirectory package setting keeps the public worker aligned on normal dependency installation.
+
+Verification passed: 965 tests, lint, app/Node/test type-check, coverage thresholds, production build with the flag true and no MSW runtime/fixture code, CLI build, template sync, registry validation, and eight scaffold scenarios. A real-browser test on a controlled local backend proved enabled interception, disabled passthrough with stale MSW removed, and PWA registration retention. It did not exercise the user's real backend. See progress.md and docs/testing.md for evidence.
+
+Next session: remind the user to run the manual checklist below with VITE_ENABLE_MOCKS=false and the actual backend URL. The Input ID/Form context audit findings remain pending after integration verification. Do not publish/deploy or commit further work without an explicit request.
+
+## Docker/Nginx follow-up — 2026-10-23
 
 Docker/Nginx follow-up is complete. The earlier reliability implementation is committed as `76075fa`.
 

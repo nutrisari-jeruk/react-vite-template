@@ -121,7 +121,7 @@ async function syncBaseFiles() {
   for (const [, source, target] of entries) {
     // Skip src/ files in base template — they're intentionally minimal,
     // not copies of the showcase src/
-    const sharedSource = target.startsWith("src/libs/") || target === "src/config/env.ts" || target === "src/tests/setup.ts";
+    const sharedSource = target.startsWith("src/libs/") || target === "src/config/env.ts" || target === "src/tests/setup.ts" || target === "src/mocks/initialize.ts" || target === "src/mocks/browser.ts";
     if ((target.startsWith("src/") && !sharedSource) || target === ".claude/settings.json") continue;
 
     const srcPath = path.join(ROOT, target);

@@ -2,24 +2,22 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { App } from "@/app";
-import { startMockWorker } from "@/mocks/browser";
+import { initializeMocks } from "@/mocks/initialize";
 import "./index.css";
 
 async function initApp() {
-  // Wait for MSW to be ready in development
-  if (import.meta.env.DEV) {
-    try {
-      await startMockWorker();
-      console.log("[MSW] Mock API worker ready");
-    } catch (err) {
-      console.error("Failed to start MSW worker:", err);
-    }
-  }
-
-  // Render app after MSW is ready
   const rootElement = document.getElementById("root");
-  if (!rootElement) {
-    throw new Error("Root element not found");
+  if (!rootElement) throw new Error("Root element not found");
+
+  try {
+    if (!(await initializeMocks())) return;
+  } catch (error) {
+    // Do not silently switch to the real backend after a failed mock startup.
+    console.error("Application initialization failed:", error);
+    rootElement.setAttribute("role", "alert");
+    rootElement.textContent =
+      "Unable to start the application. Check the console for details.";
+    return;
   }
 
   createRoot(rootElement).render(

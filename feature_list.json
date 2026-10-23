@@ -112,6 +112,21 @@
         "template-reliability"
       ],
       "evidence": "2026-10-23: reproduced original Nginx context failure in nginx:alpine. npm run smoke:docker passed showcase and fresh plain/PWA builds, nginx -t, healthy non-root runtime with read-only rootfs and all capabilities dropped, SPA fallback, asset/cache/404 checks, and PWA service worker no-store. ./init.sh passed (942 tests); CLI build, template sync, registry validation and git diff --check passed."
+    },
+    {
+      "id": "mock-backend-switch",
+      "name": "Explicit mock/backend switch",
+      "status": "done",
+      "description": "Opt-in development MSW with production disabled and targeted stale-worker cleanup",
+      "done_criteria": [
+        "VITE_ENABLE_MOCKS defaults to false and only enables MSW in development",
+        "Disabled mode removes only the application MSW registration and renders after stale control is released",
+        "Regression tests, production build and shared template validation pass"
+      ],
+      "dependencies": [
+        "template-reliability"
+      ],
+      "evidence": "2026-10-23: ./init.sh passed (965 tests across 77 files, lint, app/node/test type-check, build). Coverage passed: statements 92.25%, branches 85.89%, functions 90.02%, lines 93.18%. Actual browser probe on one origin verified enabled MSW response, disabled backend response with MSW removed, and unrelated PWA registration retained. Production build with VITE_ENABLE_MOCKS=true contained no MSW runtime protocol/showcase fixture markers. CLI build, sync check, registry validation and all 8 scaffold scenarios passed, including automatic worker/SDK version alignment on dependency installation."
     }
   ]
 }

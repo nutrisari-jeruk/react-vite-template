@@ -12,6 +12,7 @@ interface EnvConfig {
   // API Configuration
   apiUrl: string;
   apiTimeout: number;
+  enableMocks: boolean;
 
   // Authentication
   authTokenKey: string;
@@ -140,6 +141,10 @@ export const env: EnvConfig = (() => {
         1000,
         60000
       ),
+
+      // Never enable mocks in a production build, even with an explicit flag.
+      enableMocks:
+        import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCKS === "true",
 
       // Authentication
       authTokenKey: requireEnv("VITE_AUTH_TOKEN_KEY", "token"),

@@ -45,6 +45,17 @@ if (supplied) {
   // Install once; each fixture has its own sources, manifest, output and tests.
   command(["init", "dependencies", "--cwd", temp, "--pwa", "--yes"]);
   dependencies = path.join(temp, "dependencies/node_modules");
+  assert.equal(
+    fs.readFileSync(
+      path.join(temp, "dependencies/public/mockServiceWorker.js"),
+      "utf8"
+    ),
+    fs.readFileSync(
+      path.join(dependencies, "msw/lib/mockServiceWorker.js"),
+      "utf8"
+    ),
+    "Installed MSW must update the scaffold worker to the matching SDK version"
+  );
 }
 const cases = [
   { name: "base", items: [] },
@@ -83,6 +94,7 @@ for (const scenario of cases) {
     fs.readFileSync(path.join(cwd, "package.json"), "utf8")
   );
   assert.equal(manifest.dependencies.axios, "1.19.0");
+  assert.deepEqual(manifest.msw.workerDirectory, ["public"]);
   assert.ok(manifest.devDependencies.vitest);
   fs.symlinkSync(dependencies, path.join(cwd, "node_modules"), "dir");
   if (scenario.items.length) {

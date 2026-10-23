@@ -2,7 +2,7 @@
 
 ## Last Updated
 
-2026-10-16
+2026-10-23
 
 ## Current Objective
 
@@ -32,3 +32,21 @@ Local `.claude/settings.json` changes were preserved and excluded from automatic
 ## Next Actions
 
 Review the diff and `docs/migrations/template-reliability.md` before releasing a version with the documented breaking changes. Existing generated projects need explicit migration; adding already-installed registry items does not upgrade their source automatically. Historical feature tracker entries were otherwise preserved.
+
+
+## Docker/Nginx Follow-up — 2026-10-23
+
+**docker-runtime — done.** Previous application/scaffold reliability changes were committed as `76075fa`. This section records verification for the Docker follow-up.
+
+- Reproduced the original `worker_processes directive is not allowed here` failure using the official Nginx image.
+- Install the full configuration at `/etc/nginx/nginx.conf`; reuse the image's nginx user. Runtime port is 8080; Compose still exposes host port 80 by default.
+- PID and request temporary files use `/tmp`, mounted as writable tmpfs; logs go to stdout/stderr. The runtime works with a read-only root and all Linux capabilities dropped.
+- Both showcase and scaffolds build through `npm run build`. Locked projects use npm ci; fresh scaffolds without a lock use npm install. Retained the original legacy-peer-deps policy after reproducing a resolver failure on an unlocked scaffold without that option.
+- Compose explicitly builds with VITE_APP_ENV=production and accepts VITE_API_URL as a public build argument. Removed the nonexistent Tailwind config watch path. Updated Docker documentation and synchronized shared templates.
+- Added `npm run smoke:docker` to CI and the publish gate. It creates no published host ports and removes its temporary containers and tagged images.
+
+Verification: `./init.sh` PASS (lint, real type-check, 942 tests, app build); CLI build PASS; template sync check PASS; registry validation PASS (53 items); git diff check PASS. Docker smoke PASS for showcase, fresh plain and fresh PWA projects: image build, Compose syntax, nginx -t, non-root/read-only runtime, Docker health status, /health, /dashboard SPA fallback, JavaScript assets, noncached HTML, immutable asset headers, missing-asset 404 and dotfile denial. PWA additionally passed /sw.js no-store and manifest checks.
+
+Final Docker smoke log: `/var/folders/6v/qtlqjzld0870jwhns0xq1x7w0000gn/T/frontier-docker-1GNC6p/docker.log`.
+
+Remaining manual browser/backend checks in session-handoff.md are still pending. Local `.claude/settings.json` was preserved. No production stack was started or publication made for this follow-up.

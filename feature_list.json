@@ -97,6 +97,21 @@
       ],
       "dependencies": [],
       "evidence": "2026-10-16: ./init.sh passed (lint with zero warnings, real app/node/test type-check, 942 tests, app build). Coverage passed: statements 92.22%, branches 85.71%, functions 90.13%, lines 93.12%. CLI build, sync check, registry validation (53 items), and 8 scaffold scenarios passed, including idempotent add, skipped-install manifests and nonzero install failure. Breaking changes documented in docs/migrations/template-reliability.md."
+    },
+    {
+      "id": "docker-runtime",
+      "name": "Docker/Nginx runtime reliability",
+      "status": "done",
+      "description": "Correct production build, unprivileged read-only runtime and generated plain/PWA Docker support",
+      "done_criteria": [
+        "Showcase and generated plain/PWA container images build",
+        "Nginx config validates and containers serve health, SPA routes and assets with read-only rootfs",
+        "Shared templates and documentation match the verified runtime"
+      ],
+      "dependencies": [
+        "template-reliability"
+      ],
+      "evidence": "2026-10-23: reproduced original Nginx context failure in nginx:alpine. npm run smoke:docker passed showcase and fresh plain/PWA builds, nginx -t, healthy non-root runtime with read-only rootfs and all capabilities dropped, SPA fallback, asset/cache/404 checks, and PWA service worker no-store. ./init.sh passed (942 tests); CLI build, template sync, registry validation and git diff --check passed."
     }
   ]
 }

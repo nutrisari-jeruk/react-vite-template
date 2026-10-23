@@ -45,5 +45,8 @@ jobs:
       - name: Build and smoke-test CLI
         run: npm run cli:build && npm run smoke:cli
 
+      - name: Verify Docker deployments
+        run: npm run smoke:docker
+
       - name: Security audit
         run: npm audit --audit-level=high

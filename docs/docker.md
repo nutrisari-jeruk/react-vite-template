@@ -1,96 +1,60 @@
 # Docker Deployment
 
-## Overview
-
-Multi-stage Docker setup with profiles for development and production environments.
+The same Dockerfile supports the showcase and generated plain/PWA projects. Production runs the existing `nginx` image user on **container port 8080**, with a read-only root filesystem and writable `/tmp`. Compose continues publishing **host port 80** by default.
 
 ## Commands
 
 ```bash
-# Development (hot reload, source mounted)
-docker compose --profile dev up
+# Development with source mounts and Vite on port 5173
+docker compose --profile dev up --build
 
-# Production (nginx, optimized build)
+# Production; use a separate project name if another stack is already running
 docker compose --profile prod up --build
 
-# Deploy script (production only)
-./deploy.sh                    # Start production
-./deploy.sh -a build           # Build images
-./deploy.sh -a down            # Stop services
-./deploy.sh -a logs            # View logs
-./deploy.sh -a restart -f      # Force restart
-./deploy.sh -a ps              # Container status
+# Publish on host port 8081 instead of 80
+PROD_PORT=8081 docker compose --profile prod up --build
+
+# Validate the rendered Compose configuration
+docker compose --profile prod config --quiet
 ```
 
-## Architecture
+The deployment helper remains available: `./deploy.sh -a build`, `./deploy.sh --build`, `./deploy.sh -a down`, `./deploy.sh -a restart`, and `./deploy.sh -a ps`.
 
-### Multi-stage Dockerfile
+## Build and environment
 
-```
-base → dependencies → development → builder → production
-```
+The stages are `base → dependencies → builder → production`; `development` also inherits the cached dependency stage.
 
-- **base** — Shared Alpine image, copies `package.json`
-- **dependencies** — Runs `npm ci` (cached layer)
-- **development** — Copies source, exposes 5173, runs Vite dev server
-- **builder** — Runs `npm run build:production` to produce `dist/`
-- **production** — nginx:alpine serving static files from builder
+- Dependencies include build tooling. With a package-lock.json, the image runs `npm ci`; a fresh scaffold without a lockfile uses `npm install`. Commit the generated lockfile for reproducible subsequent builds. Both commands retain the template’s existing `--legacy-peer-deps` resolution policy. Husky is disabled during image installation because Git metadata is excluded from the build context.
+- The builder runs `npm run build`, which exists in both the showcase and CLI-generated manifests. Vite's default build mode is production.
+- `VITE_APP_ENV` and `VITE_API_URL` are public **build arguments**, embedded into the browser bundle. Compose forces `VITE_APP_ENV=production` and forwards `VITE_API_URL` from the shell or Compose .env, defaulting to `/api`. Runtime container environment variables cannot reconfigure an existing bundle.
+- Set `VITE_API_URL=https://your-api.example/api` before building to call an external backend. A relative `/api` requires your deployment gateway to route API traffic to the backend; this static frontend container does not provide an API proxy.
+- `.env` and local environment files are excluded from the image context. Other public Vite settings can be supplied in an environment-specific file such as `.env.production`. Never put secrets into VITE-prefixed values.
 
-### Docker Compose Profiles
+## Runtime and Nginx
 
-Single `docker-compose.yml` with two profiles:
+`docker/nginx.conf` is a **complete main configuration**, copied to `/etc/nginx/nginx.conf`. It is not an HTTP server fragment for conf.d. The official image's existing nginx user is reused; there is no duplicate user/group creation.
 
-| Profile | Service    | Purpose                           |
-| ------- | ---------- | --------------------------------- |
-| `dev`   | `app-dev`  | Hot reload, source mounted        |
-| `prod`  | `app-prod` | nginx, optimized, resource limits |
+Nginx places its PID and temporary files under `/tmp`. Compose mounts `/tmp` as a 64 MB tmpfs with mode 1777; the rest of the root filesystem is read-only. Access/error logs go to stdout/stderr. The container health check requests `http://127.0.0.1:8080/health`.
 
-### Deploy Script Options
+- `/health` returns HTTP 200 and `healthy`.
+- SPA paths fall back to index.html; HTML is not stored in caches.
+- Static assets retain their cache policy. Missing asset files return 404 instead of the SPA document.
+- Generated PWA configurations retain the exact `/sw.js` location with no-store/no-cache headers, overriding the JavaScript cache rule.
+- The image serves HTTP. Configure TLS and any HSTS policy at the external gateway.
 
-| Option          | Description                                    |
-| --------------- | ---------------------------------------------- |
-| `-a, --action`  | `build`, `up`, `down`, `restart`, `logs`, `ps` |
-| `-p, --port`    | Override production port                       |
-| `-n, --name`    | Override project name                          |
-| `-b, --build`   | Rebuild images before starting                 |
-| `-f, --force`   | Force recreation of containers                 |
-| `-v, --verbose` | Enable verbose output                          |
+Existing integrations that map a port directly to **container port 80** must change their target to **8080**. The `PROD_PORT` host-port setting is unchanged.
 
-## Key Files
-
-| File                 | Purpose                                               |
-| -------------------- | ----------------------------------------------------- |
-| `Dockerfile`         | Multi-stage build for dev and prod                    |
-| `docker-compose.yml` | Single file with `dev`/`prod` profiles                |
-| `docker/nginx.conf`  | Production nginx config (HTTP/2, security headers)    |
-| `deploy.sh`          | Production deployment script                          |
-| `.dockerignore`      | Excludes node_modules, dist, .git, etc.               |
-| `.env.example`       | Docker vars (`PROJECT_NAME`, `DEV_PORT`, `PROD_PORT`) |
-
-## Environment Variables
+## Regression checks
 
 ```bash
-# Docker Compose
-PROJECT_NAME=frontier-fe
-DEV_PORT=5173
-PROD_PORT=80
-PROD_MEMORY_LIMIT=512M
-PROD_CPU_LIMIT=1.0
-PROD_MEMORY_RESERVATION=128M
-PROD_CPU_RESERVATION=0.25
+npm run cli:build
+npm run sync:templates:check
+npm run smoke:docker
+
+# Repeat only one scenario during diagnosis
+npm run smoke:docker -- --scenario=pwa
 ```
 
-## Production Features
+The smoke test builds the showcase plus fresh CLI-generated plain and PWA projects. It validates Compose and Nginx, waits for container health, checks the non-root identity, SPA deep links, real JavaScript assets, HTML/asset caching, missing-file errors and PWA output. Test containers have a read-only root, writable tmpfs, no Linux capabilities, and no published host ports. Containers and tagged test images are removed afterward; build caches and temporary logs remain for diagnosis.
 
-- Non-root nginx user
-- Read-only root filesystem
-- Resource limits (memory, CPU)
-- Security headers (CSP, HSTS, X-Frame-Options)
-- Rate limiting (API: 30r/s, auth: 5r/s)
-- tmpfs for nginx cache and runtime
-- Health checks on both dev and prod containers
-
-## Related Documentation
-
-- [Project Configuration](./project-configuration.md)
-- [Security](./security.md)
+CI and the CLI publish workflow run this test before release.

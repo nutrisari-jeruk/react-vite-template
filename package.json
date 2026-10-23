@@ -25,7 +25,8 @@
     "sync:templates": "node scripts/sync-templates.mjs",
     "sync:templates:check": "node scripts/sync-templates.mjs --check",
     "check:registry": "node scripts/check-registry.mjs",
-    "smoke:cli": "node scripts/smoke-cli.mjs"
+    "smoke:cli": "node scripts/smoke-cli.mjs",
+    "smoke:docker": "node scripts/smoke-docker.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",

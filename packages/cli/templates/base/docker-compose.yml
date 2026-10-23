@@ -40,9 +40,6 @@ services:
           path: ./vite.config.ts
           target: /app/vite.config.ts
         - action: sync
-          path: ./tailwind.config.js
-          target: /app/tailwind.config.js
-        - action: sync
           path: ./postcss.config.js
           target: /app/postcss.config.js
     stdin_open: true
@@ -62,12 +59,11 @@ services:
       target: production
       args:
         - NODE_VERSION=22.22.0
-        - NODE_ENV=production
+        - VITE_APP_ENV=production
+        - VITE_API_URL=${VITE_API_URL:-/api}
     container_name: ${PROJECT_NAME:-frontier-fe}-prod
     ports:
-      - "${PROD_PORT:-80}:80"
-    environment:
-      - NODE_ENV=production
+      - "${PROD_PORT:-80}:8080"
     restart: unless-stopped
     # Resource limits for production
     deploy:
@@ -85,8 +81,7 @@ services:
     read_only: true
     # Temporary filesystems
     tmpfs:
-      - /var/cache/nginx:rw,size=10M
-      - /var/run:rw,size=5M
+      - /tmp:rw,noexec,nosuid,size=64M,mode=1777
     profiles:
       - prod
     networks:

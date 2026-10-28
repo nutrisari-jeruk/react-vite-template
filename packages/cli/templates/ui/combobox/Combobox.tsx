@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { Field } from "@base-ui/react/field";
 import { cn } from "@/utils/cn";
@@ -66,7 +66,8 @@ export function Combobox({
   id,
   comboboxSize = "md",
 }: ComboboxProps) {
-  const comboboxId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
+  const generatedId = useId();
+  const comboboxId = id ?? generatedId;
 
   const isControlled = controlledValue !== undefined;
 

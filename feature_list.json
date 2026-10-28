@@ -127,6 +127,21 @@
         "template-reliability"
       ],
       "evidence": "2026-10-23: ./init.sh passed (965 tests across 77 files, lint, app/node/test type-check, build). Coverage passed: statements 92.25%, branches 85.89%, functions 90.02%, lines 93.18%. Actual browser probe on one origin verified enabled MSW response, disabled backend response with MSW removed, and unrelated PWA registration retained. Production build with VITE_ENABLE_MOCKS=true contained no MSW runtime protocol/showcase fixture markers. CLI build, sync check, registry validation and all 8 scaffold scenarios passed, including automatic worker/SDK version alignment on dependency installation."
+    },
+    {
+      "id": "form-field-identity",
+      "name": "Form field identity and context validation",
+      "status": "done",
+      "description": "Stable unique automatic control IDs and explicit missing-provider failures",
+      "done_criteria": [
+        "Repeated labels produce distinct stable IDs with correct labels and error descriptions",
+        "Explicit IDs and valid React Hook Form workflows remain supported",
+        "Missing FormField/FormItem providers fail clearly; regression tests and template checks pass"
+      ],
+      "dependencies": [
+        "template-reliability"
+      ],
+      "evidence": "2026-10-23: 22 failing identity/context regression cases reproduced before changes. Focused suite passed 165 tests. ./init.sh passed 994 tests across 79 files, lint, app/Node/test type-check and build. Coverage passed: statements 92.36%, branches 86.06%, functions 90.02%, lines 93.29%. Shared UI templates synchronized, 53 registry items validated, and all 8 scaffold scenarios passed. Existing showcase test now selects the intended Combobox section instead of relying on ambiguous repeated labels."
     }
   ]
 }

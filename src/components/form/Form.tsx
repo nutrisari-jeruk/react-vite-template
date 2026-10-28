@@ -20,7 +20,7 @@
  *   });
  *
  *   return (
- *     <Form {...form} onSubmit={form.handleSubmit(onSubmit)}>
+ *     <Form form={form} onSubmit={onSubmit}>
  *       <FormField
  *         control={form.control}
  *         name="email"
@@ -87,8 +87,8 @@ type FormFieldContextValue<
   name: TName;
 };
 
-const FormFieldContext = React.createContext<FormFieldContextValue>(
-  {} as FormFieldContextValue
+const FormFieldContext = React.createContext<FormFieldContextValue | null>(
+  null
 );
 
 export function FormField<
@@ -110,8 +110,12 @@ export function useFormField() {
     throw new Error("useFormField should be used within <FormField>");
   }
 
+  if (!itemContext) {
+    throw new Error("useFormField should be used within <FormItem>");
+  }
+
   const { name } = fieldContext;
-  const id = itemContext?.id;
+  const { id } = itemContext;
 
   return {
     id,
@@ -126,9 +130,7 @@ type FormItemContextValue = {
   id: string;
 };
 
-const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue
-);
+const FormItemContext = React.createContext<FormItemContextValue | null>(null);
 
 export function FormItem({
   className,

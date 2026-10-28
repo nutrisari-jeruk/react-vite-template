@@ -1,6 +1,16 @@
 # Session Handoff
 
-## Latest update — mock/backend switch (2026-10-23)
+## Latest update — form identity/context (2026-10-23)
+
+The user does not yet have a development backend and explicitly chose the form component fixes next. These fixes are complete and uncommitted. Previous commits: e9b0249 (mock/backend switch), 6e8addd (Docker/Nginx), 76075fa (template reliability).
+
+Input, Textarea, Checkbox, Select, Combobox and native FormSelect now generate unique stable IDs through useId, preserving explicit IDs. Repeated/translated labels no longer collide or change field identity. Select/FormSelect error descriptions refer to their own controls. Shared Form consumers require FormField and FormItem providers and throw clear errors when either is missing. Existing valid form flows remain supported. Tests and migration/component documentation cover these contracts.
+
+Verification: 994 tests across 79 files, lint, app/Node/test type-check, build, coverage thresholds (statements 92.36%), template sync, registry validation and all eight CLI scaffold scenarios passed. Before fixing, regression tests reproduced 22 failures; the focused suite passed 165 tests afterward. A previously ambiguous showcase test now selects the intended Combobox section.
+
+Next: review/commit these changes if requested. Backend integration checks remain deferred until a dev backend exists; frontend work can proceed independently. Local .env and .claude/settings.json are untouched. Do not publish/deploy or commit without an explicit request.
+
+## Mock/backend switch (2026-10-23)
 
 The development mock/backend switch is complete. Earlier fixes are committed as 76075fa (template reliability) and 6e8addd (Docker/Nginx).
 
@@ -10,7 +20,7 @@ Startup awaits optional MSW, removes only stale mockServiceWorker.js registratio
 
 Verification passed: 965 tests, lint, app/Node/test type-check, coverage thresholds, production build with the flag true and no MSW runtime/fixture code, CLI build, template sync, registry validation, and eight scaffold scenarios. A real-browser test on a controlled local backend proved enabled interception, disabled passthrough with stale MSW removed, and PWA registration retention. It did not exercise the user's real backend. See progress.md and docs/testing.md for evidence.
 
-Next session: remind the user to run the manual checklist below with VITE_ENABLE_MOCKS=false and the actual backend URL. The Input ID/Form context audit findings remain pending after integration verification. Do not publish/deploy or commit further work without an explicit request.
+Backend integration awaits a development backend. The Input ID/Form context findings were subsequently resolved; see the latest update above. Do not publish/deploy or commit further work without an explicit request.
 
 ## Docker/Nginx follow-up — 2026-10-23
 
@@ -30,7 +40,7 @@ User-owned `.claude/settings.json` remains modified and is excluded from the imp
 
 ## Start the next session here
 
-Remind the user to perform manual browser and real-backend testing before further feature work. These checks are still pending; passing automated tests does not complete them.
+The user does not yet have a development backend. Keep the browser/real-backend checklist below pending until one is available; do not block independent frontend work on it. Passing automated tests does not complete backend integration verification.
 
 - Test login with and without OTP, registration with username, forgot/reset password, and logout.
 - Open `/dashboard` directly and reload it; verify redirects while OTP is pending and after session expiry.

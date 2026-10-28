@@ -426,3 +426,29 @@ Compound component — `Accordion`, `AccordionItem`, `AccordionTrigger`, `Accord
 
 - [Project Structure](./project-structure.md)
 - [Testing](./testing.md)
+
+## Form field identity and provider requirements
+
+`Input`, `Textarea`, `Checkbox`, `Select`, `Combobox`, and the native `FormSelect` generate a unique, stable ID with React `useId` when `id` is omitted. Repeated or translated labels do not change the field identity. Labels and error/helper descriptions refer to the corresponding control. `FormInput` and `FormTextarea` inherit this behavior from their underlying UI components.
+
+Pass `id` explicitly when integrating with existing anchors or selectors; automatic IDs are opaque and no longer derived from label text. Prefer accessible label/role queries in tests. Caller-supplied IDs must be unique within the document.
+
+Shared Form consumers (`FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, and `useFormField`) require both a `FormField` and a `FormItem` ancestor. Missing contexts throw a descriptive error instead of generating undefined identifiers. Valid field composition and validation callbacks are unchanged:
+
+```tsx
+<Form form={form} onSubmit={onSubmit}>
+  <FormField
+    control={form.control}
+    name="email"
+    render={({ field, fieldState }) => (
+      <FormItem>
+        <FormLabel>Email</FormLabel>
+        <FormControl>
+          <Input {...field} />
+        </FormControl>
+        <FormMessage>{fieldState.error?.message}</FormMessage>
+      </FormItem>
+    )}
+  />
+</Form>
+```

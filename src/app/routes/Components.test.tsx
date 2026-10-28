@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { ToastProvider } from "@/components/ui";
@@ -92,22 +92,31 @@ describe("Components Page", () => {
       it("renders all four Combobox variants (Choose a fruit, With error, With helper, Disabled)", () => {
         renderComponentsPage();
 
-        const chooseFruit = screen.getByLabelText(/choose a fruit/i);
-        expect(chooseFruit).toBeInTheDocument();
+        const section = document.getElementById("combobox");
+        expect(section).toBeInTheDocument();
+        if (!section) throw new Error("Combobox showcase section is missing");
+        const comboboxSection = within(section);
+        const chooseFruit = comboboxSection.getByRole("combobox", {
+          name: /choose a fruit/i,
+        });
         expect(chooseFruit).toHaveAttribute("placeholder", "Type to search...");
 
-        const withError = screen.getByLabelText(/with error/i);
-        expect(withError).toBeInTheDocument();
-        const comboboxSection = document.getElementById("combobox");
-        expect(comboboxSection).toBeInTheDocument();
-        expect(comboboxSection).toHaveTextContent("This field is required");
+        const withError = comboboxSection.getByRole("combobox", {
+          name: /with error/i,
+        });
+        expect(withError).toHaveAccessibleDescription("This field is required");
+        expect(withError).toHaveAttribute("aria-invalid", "true");
 
-        const withHelper = screen.getByLabelText(/with helper/i);
-        expect(withHelper).toBeInTheDocument();
-        expect(screen.getByText("Pick one from the list")).toBeInTheDocument();
+        const withHelper = comboboxSection.getByRole("combobox", {
+          name: /with helper/i,
+        });
+        expect(withHelper).toHaveAccessibleDescription(
+          "Pick one from the list"
+        );
 
-        const disabledCombobox = screen.getByLabelText(/^disabled$/i);
-        expect(disabledCombobox).toBeInTheDocument();
+        const disabledCombobox = comboboxSection.getByRole("combobox", {
+          name: /^disabled$/i,
+        });
         expect(disabledCombobox).toBeDisabled();
       });
     });

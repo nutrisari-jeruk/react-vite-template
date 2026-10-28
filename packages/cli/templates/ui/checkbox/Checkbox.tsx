@@ -24,7 +24,7 @@
  * ```
  */
 
-import type { InputHTMLAttributes } from "react";
+import { useId, type InputHTMLAttributes } from "react";
 import { cn } from "@/utils/cn";
 
 /**
@@ -52,7 +52,8 @@ export function Checkbox({
   disabled,
   ...props
 }: CheckboxProps) {
-  const checkboxId = id || label?.toLowerCase().replace(/\s+/g, "-");
+  const generatedId = useId();
+  const checkboxId = id ?? generatedId;
 
   return (
     <div className={cn("flex flex-col gap-1", className)}>

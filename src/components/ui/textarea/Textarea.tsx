@@ -1,4 +1,4 @@
-import { forwardRef, type TextareaHTMLAttributes } from "react";
+import { forwardRef, useId, type TextareaHTMLAttributes } from "react";
 import { cn } from "@/utils/cn";
 
 /**
@@ -30,7 +30,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     },
     ref
   ) {
-    const textareaId = id || label?.toLowerCase().replace(/\s+/g, "-");
+    const generatedId = useId();
+    const textareaId = id ?? generatedId;
 
     const sizeStyles = {
       sm: "px-3 py-1.5 text-sm",

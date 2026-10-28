@@ -1,4 +1,9 @@
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from "react";
+import {
+  forwardRef,
+  useId,
+  type InputHTMLAttributes,
+  type ReactNode,
+} from "react";
 import { cn } from "@/utils/cn";
 
 /**
@@ -38,7 +43,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   },
   ref
 ) {
-  const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
   const effectiveVariant = error ? "error" : variant;
 
   const sizeStyles = {

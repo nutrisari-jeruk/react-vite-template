@@ -6,6 +6,10 @@
 
 ## Current Objective
 
+**form-field-identity — done.** Shared controls use unique, stable automatic IDs while preserving explicit caller IDs. Shared Form consumers fail clearly when FormField or FormItem context is missing. Real-backend testing is deferred because the user does not yet have a development backend; independent frontend work can continue.
+
+## Mock/backend switch (previous work)
+
 **mock-backend-switch — done.** `VITE_ENABLE_MOCKS` is an explicit, development-only opt-in, defaulting to false. Production ignores it. Cleanup removes the application MSW registration, reloads before React mounts if the old controller remains, and preserves unrelated/PWA workers. Startup failures stop rendering instead of silently changing request behavior. CLI starters share the bootstrap and include empty project-specific handlers; generated manifests let MSW refresh the worker on dependency installation.
 
 ## Template reliability (previous work)
@@ -71,4 +75,23 @@ Verification:
 - CLI build, template sync, 53-item registry validation and all eight CLI scaffold scenarios: PASS. The fresh dependency fixture also proved its public worker matched the installed MSW SDK exactly.
 - Final smoke log: `/var/folders/6v/qtlqjzld0870jwhns0xq1x7w0000gn/T/frontier-smoke-rrCqh0/commands.log`; browser artifacts: `/tmp/frontier-mock-browser-x9b0fzdp/playwright`.
 
-Next: set VITE_ENABLE_MOCKS=false and VITE_API_URL for the real backend, then execute the existing manual auth/session/DataTable checklist. Restart Vite after changing environment values. Form component audit findings remain separate pending work.
+Backend integration is pending until a development backend is available. Restart Vite after changing environment values when that work begins. The form component findings were subsequently resolved in the follow-up below.
+
+
+## Form Identity and Context Follow-up — 2026-10-23
+
+**form-field-identity — done, uncommitted.** Input, Textarea, Checkbox, Select, Combobox and native FormSelect use React useId for default control IDs. FormInput/FormTextarea inherit the fixes. Caller IDs are preserved, repeated labels cannot collide, and changing label text does not change field identity. Select and FormSelect expose their matching error descriptions; native FormSelect labels work without a caller ID.
+
+FormFieldContext and FormItemContext now default to null. useFormField and its consumers throw clear errors for missing providers instead of producing undefined identifiers. Valid React Hook Form compositions, submission/validation callbacks and explicit IDs are preserved. Updated the Form API example and documented opaque automatic IDs and provider requirements.
+
+Regression evidence: before the fix, 22 cases failed; afterward the focused field/form/wrapper suite passed 165 tests. A showcase test had queried repeated labels globally and could previously select the wrong component; it now scopes role queries to the Combobox section and checks the actual associated errors/helpers.
+
+Final verification:
+
+- `./init.sh`: PASS — lint with zero warnings, app/Node/test type-check, 994 tests across 79 files, production build.
+- `npm run test:coverage -- --run`: PASS — statements 92.36%, branches 86.06%, functions 90.02%, lines 93.29%.
+- Template sync check and 53-item registry validation: PASS; five shared UI templates updated.
+- Eight CLI scaffold scenarios: PASS using the previously installed dependency fixture. Log: `/var/folders/6v/qtlqjzld0870jwhns0xq1x7w0000gn/T/frontier-smoke-zpfnpc/commands.log`.
+- `git diff --check`: PASS.
+
+The user has no dev backend yet. Keep real-backend auth/session checks pending; do not require backend access for unrelated frontend improvements. No local .env or .claude/settings.json edits, dependency changes, publication, deployment or commit were made in this follow-up.

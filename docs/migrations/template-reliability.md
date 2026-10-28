@@ -65,3 +65,9 @@ Local `.claude/settings.json` is excluded from automatic template synchronizatio
 Development no longer starts MSW automatically. Set `VITE_ENABLE_MOCKS=true` and `VITE_API_URL=/api` to use showcase fixtures, then restart Vite. For backend integration leave the flag false or unset and configure `VITE_API_URL` for your backend. The previously unused `VITE_ENABLE_MSW` variable is ignored. Production builds always disable mocking.
 
 Only the application mock service worker is removed on switching to backend mode. A controlled document reloads before React mounts, while unrelated PWA workers remain registered. Fresh CLI projects include the bootstrap and an empty `src/mocks/handlers.ts`; add your project's own handlers when opting in.
+
+## Form identity and context follow-up (2026-10-23)
+
+Automatic form-control IDs are now unique React-generated values, rather than slugs of labels. Repeated labels and label changes no longer collide or change the control identity. If existing selectors depend on an ID such as `email`, pass `id="email"` explicitly, or query by accessible role/label in tests. Avoid assigning the same explicit ID to multiple controls.
+
+`FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, and `useFormField` require both `FormField` and `FormItem` context. Correct invalid composition by adding the missing provider; these consumers now fail clearly rather than emitting undefined identifiers. Standalone Input/Textarea/Checkbox/Select/Combobox components remain usable without these Form providers.

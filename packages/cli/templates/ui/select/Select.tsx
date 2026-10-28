@@ -50,7 +50,8 @@ export function Select({
   onChange,
   ...props
 }: SelectProps) {
-  const selectId = id || label?.toLowerCase().replace(/\s+/g, "-");
+  const generatedId = React.useId();
+  const selectId = id ?? generatedId;
 
   const options: SelectOption[] = [];
   if (children) {
@@ -100,6 +101,14 @@ export function Select({
           {...props}
         >
           <BaseSelect.Trigger
+            aria-invalid={!!error}
+            aria-describedby={
+              error
+                ? `${selectId}-error`
+                : helperText
+                  ? `${selectId}-helper`
+                  : undefined
+            }
             className={(state) =>
               cn(
                 baseStyles,

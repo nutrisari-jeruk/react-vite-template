@@ -1,4 +1,4 @@
-import { forwardRef, type SelectHTMLAttributes } from "react";
+import { forwardRef, useId, type SelectHTMLAttributes } from "react";
 import { cn } from "@/utils/cn";
 
 interface FormSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -8,14 +8,19 @@ interface FormSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
-  ({ label, error, options, className, ...props }, ref) => {
+  ({ label, error, options, className, id, ...props }, ref) => {
+    const generatedId = useId();
+    const selectId = id ?? generatedId;
     return (
       <div className="flex flex-col gap-1">
-        <label htmlFor={props.id} className="text-sm font-medium text-gray-700">
+        <label htmlFor={selectId} className="text-sm font-medium text-gray-700">
           {label}
         </label>
         <select
           ref={ref}
+          id={selectId}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${selectId}-error` : undefined}
           className={cn(
             "rounded-lg border px-4 py-2 transition-colors",
             "focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none",
@@ -33,7 +38,11 @@ export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
             </option>
           ))}
         </select>
-        {error && <span className="text-sm text-red-600">{error}</span>}
+        {error && (
+          <span id={`${selectId}-error`} className="text-sm text-red-600">
+            {error}
+          </span>
+        )}
       </div>
     );
   }

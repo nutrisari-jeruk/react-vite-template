@@ -24,7 +24,7 @@ jobs:
         run: npm ci --prefix packages/cli
 
       - name: Validate source and templates
-        run: npm run lint && npm run type-check && npm run test:coverage -- --run && npm run build && npm run sync:templates:check && npm run check:registry
+        run: npm run lint && npm run type-check && npm run test:coverage && npm run test:showcase:coverage && npm run build && npm run build:showcase && npm run sync:templates:check && npm run check:registry
 
       - name: Build and smoke-test CLI
         run: npm run cli:build && npm run smoke:cli

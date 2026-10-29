@@ -142,6 +142,25 @@
         "template-reliability"
       ],
       "evidence": "2026-10-23: 22 failing identity/context regression cases reproduced before changes. Focused suite passed 165 tests. ./init.sh passed 994 tests across 79 files, lint, app/Node/test type-check and build. Coverage passed: statements 92.36%, branches 86.06%, functions 90.02%, lines 93.29%. Shared UI templates synchronized, 53 registry items validated, and all 8 scaffold scenarios passed. Existing showcase test now selects the intended Combobox section instead of relying on ambiguous repeated labels."
+    },
+    {
+      "id": "lean-frontend-template",
+      "name": "Lean Frontend Template (Audit Steps 1-5)",
+      "status": "done",
+      "description": "Separate showcase from starter, eager import boundary protection, direct RHF control consolidation, native transitions/modern build, and Bearer token storage in localStorage",
+      "done_criteria": [
+        "Root src serves clean minimal starter; apps/showcase serves full showcase workspace",
+        "ToastProvider imported directly and narrow session entrypoint prevents lazy-boundary regression",
+        "Redundant form wrappers and Form.tsx abstraction removed; direct RHF controls preserved",
+        "Motion and Zustand removed; native CSS transitions and Base UI bindings used",
+        "Vite build modernized to ES2022 with native minifier and rolldownOptions",
+        "Bearer tokens stored in localStorage across all environments without cookie fallback",
+        "./init.sh, coverage, CLI build, sync check, registry validation, CLI smoke, and Docker smoke pass"
+      ],
+      "dependencies": [
+        "form-field-identity"
+      ],
+      "evidence": "2026-10-24: ./init.sh passed (888 showcase tests, 2 starter tests, both builds, 0 lint warnings). Coverage passed: starter 100%, showcase 91.47% stmts / 85.51% branch / 89.14% funcs / 92.59% lines. CLI build, sync check (90 registry, 65 base), 53-item registry validation, 8-scenario CLI smoke pass. Docker smoke passed starter, plain, and pwa production deployments. Preview browser probes verified starter welcome on root, 404 on /components, showcase component interactions without motion errors, and initial homepage JS payload reduced from ~988 kB to ~638 kB raw."
     }
   ]
 }

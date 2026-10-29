@@ -4,11 +4,11 @@
 
 The `frontier-fe` CLI is a shadcn-style project scaffolder published to npm. It lets developers bootstrap SOP-compliant React projects and install components, features, hooks, and pages on demand — without cloning this repo.
 
-This repository has a dual role:
+This repository has three roles:
 
-- **Showcase app** — the `src/` directory is a fully functional dev app with a dev server, tests, and all 43 components
-- **CLI source** — the `packages/cli/` directory is the npm-published tool that scaffolds new projects
-
+- **Showcase app** (`apps/showcase/`) — full dev application with tests, auth, examples, and all UI components. This is the **canonical development home** for registry items.
+- **Minimal starter** (`src/`) — minimal application shell, Home, and NotFound. Serves as the base template for `frontier-fe init`.
+- **CLI package** (`packages/cli/`) — the npm-published tool (`frontier-fe`) that scaffolds new projects.
 ## Commands
 
 ### `init` — Scaffold a New Project
@@ -106,7 +106,7 @@ packages/cli/
 ├── registry/
 │   ├── registry.json     # All 43 scaffoldable items
 │   └── schema.json       # JSON Schema for registry
-├── templates/            # Distribution copies (synced from src/)
+├── templates/            # Distribution copies (synced from apps/showcase/ & src/)
 ├── dist/                 # Built output (tsup)
 └── package.json
 ```
@@ -147,43 +147,45 @@ to `src/components/ui/index.ts`. The CLI reads existing barrel content and appen
 
 ### Source of Truth
 
-`src/` is the **development home** — edit components here, use the dev server, and write tests. `packages/cli/templates/` is the **distribution copy** that ships with the npm package.
+`apps/showcase/src/` is the **canonical development home** for registry items — edit components here, use `npm run dev:showcase`, and write tests. `src/` is the **starter source** for base files. `packages/cli/templates/` is the **distribution copy** that ships with the npm package.
 
-### Sync Direction: `src/` → templates
+### Sync Direction: `apps/showcase/src/` → templates
 
 ```
-src/components/ui/button/Button.tsx   ← edit here
+apps/showcase/src/components/ui/button/Button.tsx   ← edit here
         │  npm run sync:templates
         ▼
-packages/cli/templates/ui/button/Button.tsx  ← ships to npm
+packages/cli/templates/ui/button/Button.tsx         ← ships to npm
 ```
 
 ### Sync Script
 
 ```bash
-npm run sync:templates        # Copy src/ → templates
+npm run sync:templates        # Sync canonical sources → templates
 npm run sync:templates:check  # CI mode — exits non-zero if out of sync
 ```
 
-The sync script (`scripts/sync-templates.mjs`) does two things:
+The sync script (`scripts/sync-templates.mjs`) does three things:
 
-1. **Registry items** — walks `registry.json`, copies each item's `target` file (from `src/`) to its `source` path (in `packages/cli/templates/`)
-2. **Base files** — parses the `BASE_FILES` constant from `init.ts`, copies repo-level config files (vite.config.ts, eslint config, tsconfig, etc.) to the templates directory
+1. **Registry items** — walks `registry.json`, copies each item's file from its canonical path under `apps/showcase/` to its template path in `packages/cli/templates/`.
+2. **Shared base files** — copies shared libraries, mocks, env, and test-setup from `apps/showcase/` to both root starter `src/` and `packages/cli/templates/base/`.
+3. **Root base files** — copies root starter files and root configuration files (vite.config.ts, eslint config, tsconfig, etc.) to `packages/cli/templates/base/`.
 
 **What sync covers:**
 
-- All 43 registry items (UI components, hooks, features, layouts, pages, lib)
+- All 53 registry items (UI components, hooks, features, layouts, pages, lib)
 - Repo root config files (vite.config.ts, eslint.config.js, tsconfig, etc.)
+- Shared base libs and configs
 
 **What sync skips:**
 
 - Test files (`.test.tsx`, `.test.ts`, `.spec.ts`) — excluded from template copies
-- Base template `src/` files — intentionally minimal, not synced from the showcase app
+- Local-only configuration files (`.claude/settings.json`)
 
-**Template-only files** are maintained directly in `packages/cli/templates/` (not in `src/`):
+**Template-only files** are maintained directly in `packages/cli/templates/`:
 
-- `lib/api-client.ts`, `lib/api-error.ts` — scaffolded by `init` into a new project
-- Any file that appears as a registry `source` but lacks a corresponding `src/` file
+- `base/pwa/` assets
+- Any file with `templateOnly: true` in `registry.json`
 
 ## Registry
 
@@ -225,7 +227,7 @@ The sync script (`scripts/sync-templates.mjs`) does two things:
 
 ### Adding a New Item
 
-1. Create the component/hook/feature in `src/` following SOP conventions
+1. Create the component/hook/feature in `apps/showcase/src/` following SOP conventions
 2. Add an entry to `registry.json` with the correct `source`/`target` paths
 3. Run `npm run sync:templates` to copy it to `packages/cli/templates/`
 4. Verify with `npm run sync:templates:check`

@@ -3,20 +3,14 @@
  */
 
 export const ROUTES = {
+  // --- FRONTIER-FE: ROUTE CONSTANTS ---
   HOME: "/",
-  ABOUT: "/about",
-  DASHBOARD: "/dashboard",
-  COMPONENTS: "/components",
-  EXAMPLES: {
-    ERROR_HANDLING: "/examples/error-handling",
-    AUTH: "/examples/auth",
-    FORM_VALIDATION: "/examples/form-validation",
-  },
   LOGIN: "/login",
   REGISTER: "/register",
+  OTP: "/otp",
+  DASHBOARD: "/dashboard",
   FORGET_PASSWORD: "/forget-password",
   RESET_PASSWORD: "/reset-password",
-  OTP: "/otp",
   NOT_FOUND: "*",
 } as const;
 

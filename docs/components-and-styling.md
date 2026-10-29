@@ -179,49 +179,27 @@ const router = createBrowserRouter([
 
 ## Form Components
 
-### Form Integration Components
+### Direct Controls with React Hook Form
 
-Components that integrate with React Hook Form:
-
-```typescript
-// src/components/FormInput.tsx
-import { forwardRef } from "react";
-import { Input } from "./ui/input";
-
-interface FormInputProps extends InputProps {
-  label: string;
-  error?: string;
-}
-
-export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
-  ({ label, error, ...props }, ref) => {
-    return (
-      <div>
-        <label className="block text-sm font-medium mb-1">{label}</label>
-        <Input ref={ref} error={error} {...props} />
-        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-      </div>
-    );
-  }
-);
-```
-
-### Usage with React Hook Form
+`Input`, `Textarea`, `Checkbox`, `Select`, and `Combobox` are the supported form controls. They accept `label`, `error`, and `helperText` props directly, so no wrapper component is needed to integrate React Hook Form.
 
 ```typescript
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormInput } from "@/components";
+import { Input } from "@/components/ui/input";
 
 function MyForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(schema),
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: zodResolver(schema) });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormInput
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <Input
         label="Email"
+        type="email"
         {...register("email")}
         error={errors.email?.message}
       />
@@ -229,6 +207,34 @@ function MyForm() {
   );
 }
 ```
+
+For controlled primitives (`Select`, `Combobox`, custom widgets) use `Controller`:
+
+```typescript
+import { Controller, useForm } from "react-hook-form";
+import { Select } from "@/components/ui/select";
+
+const { control } = useForm<{ role: string }>();
+
+<Controller
+  control={control}
+  name="role"
+  render={({ field, fieldState }) => (
+    <Select
+      label="Role"
+      value={field.value}
+      onChange={(e) => field.onChange(e.target.value)}
+      onBlur={field.onBlur}
+      error={fieldState.error?.message}
+    >
+      <option value="doctor">Doctor</option>
+      <option value="nurse">Nurse</option>
+    </Select>
+  )}
+/>;
+```
+
+> Earlier template versions shipped `FormInput`, `FormTextarea`, `FormSelect`, and a `Form`/`FormField`/`FormItem` wrapper set. They were removed because the controls already carry label, error, and ref support. See [migrations/lean-template.md](./migrations/lean-template.md).
 
 ## Best Practices
 
@@ -427,28 +433,10 @@ Compound component — `Accordion`, `AccordionItem`, `AccordionTrigger`, `Accord
 - [Project Structure](./project-structure.md)
 - [Testing](./testing.md)
 
-## Form field identity and provider requirements
+## Form field identity
 
-`Input`, `Textarea`, `Checkbox`, `Select`, `Combobox`, and the native `FormSelect` generate a unique, stable ID with React `useId` when `id` is omitted. Repeated or translated labels do not change the field identity. Labels and error/helper descriptions refer to the corresponding control. `FormInput` and `FormTextarea` inherit this behavior from their underlying UI components.
+`Input`, `Textarea`, `Checkbox`, `Select`, and `Combobox` generate a unique, stable ID with React `useId` when `id` is omitted. Repeated or translated labels do not change the field identity. Labels and error/helper descriptions refer to the corresponding control. Prefer accessible label/role queries in tests.
 
-Pass `id` explicitly when integrating with existing anchors or selectors; automatic IDs are opaque and no longer derived from label text. Prefer accessible label/role queries in tests. Caller-supplied IDs must be unique within the document.
+Pass `id` explicitly when integrating with existing anchors or selectors; automatic IDs are opaque and no longer derived from label text. Caller-supplied IDs must be unique within the document.
 
-Shared Form consumers (`FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, and `useFormField`) require both a `FormField` and a `FormItem` ancestor. Missing contexts throw a descriptive error instead of generating undefined identifiers. Valid field composition and validation callbacks are unchanged:
-
-```tsx
-<Form form={form} onSubmit={onSubmit}>
-  <FormField
-    control={form.control}
-    name="email"
-    render={({ field, fieldState }) => (
-      <FormItem>
-        <FormLabel>Email</FormLabel>
-        <FormControl>
-          <Input {...field} />
-        </FormControl>
-        <FormMessage>{fieldState.error?.message}</FormMessage>
-      </FormItem>
-    )}
-  />
-</Form>
-```
+The former `Form`/`FormField`/`FormItem`/`FormLabel`/`FormControl`/`FormDescription`/`FormMessage`/`useFormField` wrapper set was removed. Use `FormProvider` from React Hook Form when a subtree needs form context, and pass `label` and `error` straight to the control as shown above.

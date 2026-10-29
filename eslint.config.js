@@ -38,7 +38,10 @@ export default [
       "import/resolver": {
         typescript: {
           alwaysTryTypes: true,
-          project: "./tsconfig.app.json",
+          project: [
+            "./tsconfig.app.json",
+            "./apps/showcase/tsconfig.app.json",
+          ],
         },
       },
     },

@@ -17,7 +17,6 @@
  */
 
 import { Tabs as BaseTabs } from "@base-ui/react/tabs";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@/utils/cn";
 
 // ============================================================================
@@ -143,43 +142,16 @@ export function TabsContent({
   value,
   className = "",
 }: TabsContentProps) {
-  const prefersReducedMotion = useReducedMotion();
-
-  const animationConfig = prefersReducedMotion
-    ? {
-        initial: { opacity: 1 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 },
-        transition: { duration: 0 },
-      }
-    : {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 },
-        transition: { duration: 0.15 },
-      };
-
   return (
     <BaseTabs.Panel
       value={value}
-      render={(props, state) => (
-        <AnimatePresence mode="wait">
-          {!state.hidden && (
-            <motion.div
-              id={props.id}
-              role="tabpanel"
-              initial={animationConfig.initial}
-              animate={animationConfig.animate}
-              exit={animationConfig.exit}
-              transition={animationConfig.transition}
-              className={cn("mt-4", className)}
-            >
-              {children}
-            </motion.div>
-          )}
-        </AnimatePresence>
+      className={cn(
+        "mt-4 transition-opacity duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 motion-reduce:transition-none",
+        className
       )}
-    />
+    >
+      {children}
+    </BaseTabs.Panel>
   );
 }
 

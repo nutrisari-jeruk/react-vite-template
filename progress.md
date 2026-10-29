@@ -2,11 +2,53 @@
 
 ## Last Updated
 
-2026-10-23
+2026-10-24
 
 ## Current Objective
 
-**form-field-identity — done.** Shared controls use unique, stable automatic IDs while preserving explicit caller IDs. Shared Form consumers fail clearly when FormField or FormItem context is missing. Real-backend testing is deferred because the user does not yet have a development backend; independent frontend work can continue.
+**lean-frontend-template — done.** Implemented audit steps 1–5: separated showcase (`apps/showcase/`) from minimal starter (`src/`), protected lazy-loading boundaries with narrow `@/features/auth/session` entrypoint, consolidated direct RHF + labeled control convention (removed redundant FormInput, FormTextarea, FormSelect, and Form.tsx abstraction), replaced motion/zustand with native CSS transitions and Base UI bindings, updated builds to Vite 8 native minification (`target: 'es2022'`, `rolldownOptions`), and standardized Bearer auth in localStorage.
+
+## Lean Frontend Template Implementation (Audit Steps 1–5)
+
+### Key Changes
+1. **Two Application Roots**:
+   - Root `src/` is now the minimal, clean starter derived from `BASE_FILES` (Home, NotFound, minimal router and provider, zero auth/demo pages).
+   - Existing showcase moved intact to `apps/showcase/` as private ESM workspace `@frontier/showcase`. Serves as canonical registry source.
+   - Scripts: `npm run dev`/`build`/`preview`/`test:run` for starter; `npm run dev:showcase`/`build:showcase`/`preview:showcase`/`test:showcase` for showcase.
+   - Root `npm run type-check` and `./init.sh` verify both starter and showcase.
+2. **Eager Imports and Lazy Boundaries**:
+   - Eager `ToastProvider` imported directly from `@/components/ui/toast` instead of broad `@/components/ui` barrel, eliminating initial load of 427 kB UI chunk.
+   - Created `@/features/auth/session` public entrypoint exporting `AuthGuard`, `useUser`, `useLogout`, `useLogin`, `useRegister`, `AuthLoader`, and session types without dragging form components into eager layouts (`AuthenticatedLayout`, `Navbar`).
+   - Mirrored narrow session entrypoint in registry item `auth` files.
+3. **Direct RHF + Form Controls**:
+   - Removed redundant wrapper components: `FormInput`, `FormTextarea`, `FormSelect`.
+   - Removed unused composite form abstraction `Form.tsx` (`Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `useFormField`) and its abstraction-only test suites.
+   - Adapted `FieldIdentity.test.tsx` at `apps/showcase/src/components/ui/FieldIdentity.test.tsx` maintaining coverage of unique-ID and label/error associations across all surviving controls (`Input`, `Textarea`, `Checkbox`, `Select`, `Combobox`).
+4. **Native CSS Transitions & Modern Builds**:
+   - Replaced `motion` with native CSS transitions across `Dialog`, `Accordion`, `Tabs`, `Alert`, `Toast`, `Spinner`, and `Components` page.
+   - Base UI primitives used directly with full prop/event/ref/ARIA binding spreading and CSS variables (`--accordion-panel-height`).
+   - Removed `motion` and `zustand` dependencies from root and showcase package manifests, CLI `BASE_NPM_DEPS`, and registry items.
+   - Removed `terser` dependency; Vite configs set to `target: 'es2022'`, native Vite 8 minifier, and `rolldownOptions`. Build times dropped from ~4.8s to ~0.7s (85% faster).
+   - CLI `add` now assigns exact known version ranges for optional dependencies from `package.json` rather than unbounded `*` or `latest`.
+5. **Bearer Token Storage in localStorage**:
+   - Removed `cookieStorage`, `CookieOptions`, and fallback branches from `tokenStorage.ts`.
+   - Exact setter signatures: `setAccessToken(token: string): void`, `setRefreshToken(token: string): void`, `setAuthTokens(accessToken: string, refreshToken?: string): void`.
+   - Safe storage access and SSR guards preserved.
+   - Stored Bearer tokens in localStorage are documented as subject to XSS exposure (not HttpOnly cookies).
+   - Operational breaking change: existing production cookies will not be migrated or read; deployment requires one-time legacy cookie cleanup, and users must re-authenticate.
+
+### Verification
+- `./init.sh`: PASS (final run) — lint 0 warnings, starter + showcase type-check, 2 starter tests, 888 showcase tests, starter + showcase production builds.
+- `npm run test:coverage`: PASS — 100% statements/branches/functions/lines on the starter.
+- `npm run test:showcase:coverage`: PASS — statements 91.47%, branches 85.51%, functions 89.14%, lines 92.59% (existing 70% thresholds enforced per scope).
+- `npm run cli:build`: PASS.
+- `npm run sync:templates:check`: PASS — 90 registry files, 65 base files, 1 doc in sync.
+- `npm run check:registry`: PASS — 53 items validated.
+- `npm run smoke:cli`: PASS — 8 scaffold scenarios on a freshly installed dependency fixture built by `init --skip-install` + `add <all registry items>` + `npm install`, plus idempotent add, manifest persistence, and nonzero install failure.
+- Browser probe (preview builds at 127.0.0.1): starter shows "Welcome to Your App" with the `frontier-fe add` prompt; `/components` renders the 404 page; hard reload succeeds. Showcase serves Home, About, and Components; Accordion expands, Tabs switch panels, Toast renders `role="alert"`, and no motion runtime is requested.
+- Bundle attribution: starter entry 307.5 kB raw / 97.5 kB gzip with 4 chunks total; showcase entry 612 kB raw / 191 kB gzip. The showcase homepage no longer loads the 427 kB `ui` aggregator chunk: initial requests are `index`, `chunk-62JRHF6Z`, `extends`, `useQuery`, `schemas`, `Home` (~988 kB raw before → ~638 kB raw after).
+- Docker: PASS (`npm run smoke:docker`) — restarted OrbStack runtime (`orb restart -a`); all three scenarios (`starter`, `plain`, `pwa`) built production multi-stage images, validated Compose prod configuration, started non-root (UID 101, read-only root FS, `/tmp` tmpfs), verified container health, SPA deep-link routing (`/dashboard`), immutable static asset caching, and no-cache HTML headers. PWA scenario additionally verified `/sw.js` no-store and web manifest availability. Full log: `/var/folders/6v/qtlqjzld0870jwhns0xq1x7w0000gn/T/frontier-docker-XU9uqU/docker.log`.
+- Host-load flake, recorded for the next session: two aggregate showcase runs timed out in `userEvent`-heavy tests (Select, Toast, Login form) at 15 s while host load was 14–48 from that Docker VM. Every one of those files passes in isolation and the full suite passes once load dropped; no source change was made to accommodate it.
 
 ## Mock/backend switch (previous work)
 

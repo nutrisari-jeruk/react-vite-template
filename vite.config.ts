@@ -33,13 +33,9 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: "dist",
       sourcemap: mode === "development", // Source maps only in development
-      minify: "terser", // Use terser for minification
-      target: "es2015", // Support modern browsers
+      target: "es2022",
 
-      // Chunk splitting strategy
-      // Note: React 19 has complex internal dependencies that break with aggressive
-      // manual chunking. Let Vite/Rollup handle chunk splitting automatically.
-      rollupOptions: {
+      rolldownOptions: {
         output: {
           // Chunk file naming
           chunkFileNames: "assets/js/[name]-[hash].js",
@@ -47,9 +43,6 @@ export default defineConfig(({ mode }) => {
           assetFileNames: "assets/[ext]/[name]-[hash].[ext]",
         },
       },
-
-      chunkSizeWarningLimit: 1500,
-
       // CSS code splitting
       cssCodeSplit: true,
 

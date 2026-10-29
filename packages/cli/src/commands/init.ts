@@ -136,23 +136,14 @@ const BASE_FILES = [
 ];
 
 const BASE_NPM_DEPS: Record<string, string> = {
-  "@base-ui/react": "^1.1.0",
-  "@hookform/resolvers": "^5.2.2",
   "@tanstack/react-query": "^5.100.14",
-  "@tanstack/react-query-devtools": "^5.96.1",
   axios: "1.19.0",
   clsx: "^2.1.1",
-  "lucide-react": "^0.562.0",
-  motion: "^12.27.0",
   react: "^19.2.6",
   "react-dom": "^19.2.6",
   "react-error-boundary": "^6.1.1",
-  "react-hook-form": "^7.70.0",
-  "react-query-auth": "^2.4.3",
   "react-router-dom": "^7.15.1",
   "tailwind-merge": "^3.6.0",
-  zod: "^4.3.6",
-  zustand: "^5.0.12",
 };
 
 const BASE_DEV_DEPS: Record<string, string> = {

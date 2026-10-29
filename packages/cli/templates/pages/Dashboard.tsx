@@ -1,4 +1,4 @@
-import { useUser } from "@/features/auth";
+import { useUser } from "@/features/auth/session";
 
 export default function Dashboard() {
   const { data: user, isLoading } = useUser();

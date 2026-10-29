@@ -17,7 +17,7 @@
  */
 
 import * as React from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { useMediaQuery } from "@/hooks";
 import { cn } from "@/utils/cn";
 
 // ============================================================================
@@ -210,8 +210,6 @@ interface ToastViewportProps {
 }
 
 function ToastViewport({ position, toasts, onDismiss }: ToastViewportProps) {
-  const prefersReducedMotion = useReducedMotion();
-
   const positionClasses: Record<ToastPosition, string> = {
     "top-left": "top-2 left-2",
     "top-center": "top-2 left-1/2 -translate-x-1/2",
@@ -237,11 +235,9 @@ function ToastViewport({ position, toasts, onDismiss }: ToastViewportProps) {
       aria-live="polite"
       aria-atomic="true"
     >
-      <AnimatePresence mode={prefersReducedMotion ? "wait" : "popLayout"}>
-        {toasts.map((toast) => (
-          <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
-        ))}
-      </AnimatePresence>
+      {toasts.map((toast) => (
+        <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
+      ))}
     </div>
   );
 }
@@ -256,57 +252,36 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onDismiss }: ToastItemProps) {
-  const prefersReducedMotion = useReducedMotion();
+  const prefersReducedMotion = useMediaQuery(
+    "(prefers-reduced-motion: reduce)"
+  );
   const [isDismissing, setIsDismissing] = React.useState(false);
-  const dismissTimeoutRef = React.useRef<number | null>(null);
+  const dismissTimerRef = React.useRef<number | undefined>(undefined);
+  const dismissedRef = React.useRef(false);
+
+  const completeDismiss = React.useCallback(() => {
+    if (dismissedRef.current) return;
+    dismissedRef.current = true;
+    clearTimeout(dismissTimerRef.current);
+    dismissTimerRef.current = undefined;
+    onDismiss(toast.id);
+  }, [toast.id, onDismiss]);
+
+  const handleDismiss = React.useCallback(() => {
+    if (isDismissing || dismissedRef.current) return;
+    if (prefersReducedMotion) {
+      completeDismiss();
+      return;
+    }
+    setIsDismissing(true);
+    dismissTimerRef.current = window.setTimeout(completeDismiss, 150);
+  }, [isDismissing, prefersReducedMotion, completeDismiss]);
 
   React.useEffect(() => {
     return () => {
-      if (dismissTimeoutRef.current !== null) {
-        clearTimeout(dismissTimeoutRef.current);
-      }
+      clearTimeout(dismissTimerRef.current);
     };
   }, []);
-
-  const handleDismiss = React.useCallback(() => {
-    setIsDismissing(true);
-    const delay = prefersReducedMotion ? 0 : 150;
-    dismissTimeoutRef.current = window.setTimeout(() => {
-      onDismiss(toast.id);
-      dismissTimeoutRef.current = null;
-    }, delay);
-  }, [toast.id, onDismiss, prefersReducedMotion]);
-
-  const animationConfig = prefersReducedMotion
-    ? {
-        initial: { opacity: 1, x: 0 },
-        animate: { opacity: 1, x: 0 },
-        exit: { opacity: 0, x: 0 },
-        transition: { duration: 0 },
-      }
-    : {
-        initial: {
-          opacity: 0,
-          x: toast.position?.startsWith("right")
-            ? 100
-            : toast.position?.startsWith("left")
-              ? -100
-              : 0,
-          y: toast.position?.startsWith("top") ? -50 : 50,
-        },
-        animate: { opacity: 1, x: 0, y: 0 },
-        exit: {
-          opacity: 0,
-          scale: 0.9,
-          x: toast.position?.startsWith("right")
-            ? 100
-            : toast.position?.startsWith("left")
-              ? -100
-              : 0,
-        },
-        transition: { duration: 0.15, ease: "easeOut" as const },
-      };
-
   const variantStyles: Record<ToastVariant, string> = {
     info: "bg-white border-blue-200 text-gray-900",
     success: "bg-white border-green-200 text-gray-900",
@@ -361,18 +336,22 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
   };
 
   return (
-    <motion.div
+    <div
       className={cn(
-        "pointer-events-auto relative w-full overflow-hidden rounded-lg border shadow-lg",
+        "pointer-events-auto relative w-full overflow-hidden rounded-lg border shadow-lg transition-all duration-200 ease-out motion-reduce:transition-none",
+        isDismissing
+          ? "pointer-events-none -translate-y-2 opacity-0"
+          : "translate-y-0 opacity-100",
         variantStyles[toast.variant || "info"]
       )}
       role="alert"
       aria-labelledby={toast.title ? `${toast.id}-title` : undefined}
       aria-describedby={`${toast.id}-message`}
-      initial={animationConfig.initial}
-      animate={animationConfig.animate}
-      exit={animationConfig.exit}
-      transition={animationConfig.transition}
+      onTransitionEnd={(e) => {
+        if (e.target === e.currentTarget && isDismissing) {
+          completeDismiss();
+        }
+      }}
     >
       <div className="flex gap-3 p-4">
         {/* Icon */}
@@ -452,7 +431,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
           </button>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 

@@ -23,13 +23,27 @@ This file provides guidance to Claude Code (claude.ai/code) and AI agents workin
 ## Quick Start
 
 ```bash
-npm install              # Install dependencies
-npm run dev              # Start development server (http://localhost:5173)
-npm run build            # Build for production
+npm install              # Install dependencies (workspaces included)
+npm run dev              # Minimal starter (http://localhost:5173)
+npm run build            # Build the starter
+npm test                 # Starter tests
+
+npm run dev:showcase     # Full showcase (http://localhost:5173, shifts if taken)
+npm run build:showcase   # Build the showcase
+npm run test:showcase    # Showcase tests
+
 npm run lint             # Run ESLint
-npm test                 # Run tests
-./init.sh                # Run all verification checks (lint → type-check → test → build)
+./init.sh                # lint → type-check → tests → build, for both apps
 ```
+
+## Two Applications
+
+| App | Path | Purpose | Commands |
+|---|---|---|---|
+| Starter | `src/` | Minimal scaffold: app shell, Home, NotFound, empty barrels | `dev`, `build`, `test:run`, `preview` |
+| Showcase | `apps/showcase/` | Full component library, auth, examples; canonical registry source | `dev:showcase`, `build:showcase`, `test:showcase`, `preview:showcase` |
+
+The apps never import each other. `@` resolves to each app's own `src/`. Registry templates are generated from `apps/showcase/` by `scripts/sync-templates.mjs`; base files come from `src/`.
 
 ## Startup Workflow
 
@@ -67,18 +81,24 @@ This template follows **SOP Coding Standard 2.0 (React Vite SPA)**. Do NOT apply
 **Error Handling:** App wrapped with `react-error-boundary` in `src/app/provider.tsx` with fallback UI and reload button
 
 ```
-src/
+src/                      # Minimal starter — only shell, Home, NotFound
 ├── app/                  # Application layer (router, providers, routes)
-├── components/           # Shared components (ui/, layouts/)
+├── components/           # Shared components (empty barrels + layouts)
 ├── config/               # Environment variables, constants
-├── features/             # Self-contained feature modules
-├── hooks/                # Shared custom hooks
+├── hooks/                # Shared custom hooks (empty barrel)
 ├── libs/                 # Third-party configs (axios instance, queryClient)
-├── stores/               # Zustand global state stores
-├── tests/                # Test utilities and MSW setup
+├── mocks/                # MSW bootstrap
+├── tests/                # Test utilities
 ├── types/                # Shared TypeScript types
 └── utils/                # Utility functions
+
+apps/showcase/src/        # Full showcase — adds features/, all UI components, examples
+├── features/             # Self-contained feature modules (auth)
+├── components/ui/        # Complete component library
+└── app/routes/           # Demo pages, /components, examples
 ```
+
+There is no Zustand store and no JavaScript animation library. Global UI state is component state or URL state; animations are CSS transitions driven by Base UI `data-starting-style`/`data-ending-style` plus `motion-reduce:` variants.
 
 ## Quick Rules
 
@@ -110,11 +130,12 @@ import type { User } from "@/types";
 | Type        | Tool                                        |
 | ----------- | ------------------------------------------- |
 | Server data | TanStack Query (`useQuery` / `useMutation`) |
-| Global UI   | Zustand (`src/stores/`)                     |
 | URL params  | `useSearchParams`                           |
 | Local UI    | `useState`                                  |
 
-**NEVER store server state in Zustand. NEVER fetch data with useEffect + useState.**
+There is no global client-state store. Lift state, use URL params, or colocate it with the feature.
+
+**NEVER store server state in a global store. NEVER fetch data with useEffect + useState.**
 
 ### useEffect Guidelines
 
@@ -185,11 +206,15 @@ Always use `api` from `@/libs`. **axios is pinned to exactly `1.19.0`** (no `^` 
 1. Create `src/hooks/use[Name].ts` (camelCase)
 2. Export from `src/hooks/index.ts`
 
-### Adding a Zustand Store
+### Adding a Shared UI Component
 
-1. Create `src/stores/[name]Store.ts`
-2. Export from `src/stores/index.ts`
-3. Use only for: theme, auth session, UI preferences
+Developing components happens in the showcase, because registry templates are generated from there.
+
+1. Create `apps/showcase/src/components/ui/[name]/[Name].tsx` (PascalCase)
+2. Create barrel `index.ts` and export from `apps/showcase/src/components/ui/index.ts`
+3. Add co-located `[Name].test.tsx`
+4. Add the item to `packages/cli/registry/registry.json`
+5. Run `npm run check:registry`, then `npm run sync:templates`
 
 ## Do's and Don'ts
 
@@ -201,13 +226,15 @@ Always use `api` from `@/libs`. **axios is pinned to exactly `1.19.0`** (no `^` 
 - Use `cn()` for conditional classNames
 - Use `type` keyword for type-only imports
 - Use TanStack Query for ALL data fetching
+- Keep eager layout/provider imports narrow (`@/components/ui/toast`, `@/features/auth/session`) so lazy boundaries hold
 - **Check [Component Props Reference](./docs/components-and-styling.md#component-props-reference) before using component variants/sizes**
 
 ### Don't
 
 - Use `any` type, `useEffect` + `useState` for data fetching
-- Store server data in Zustand
+- Store server data in a global store
 - Import from internal feature paths or create circular dependencies
+- Import the broad `@/components` or `@/components/ui` barrel from eager providers/layouts
 - Use template literals for className merging
 - Use relative imports for cross-directory imports
 - Guess component props — always verify first

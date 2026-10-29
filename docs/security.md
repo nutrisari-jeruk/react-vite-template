@@ -8,7 +8,11 @@ This document covers security best practices implemented in the application.
 
 ### Token Storage and Session Lifecycle
 
-Token utilities are defined in `src/libs/tokenStorage.ts`. Development and staging use localStorage; production uses JavaScript-managed cookies. Cookie options are caller-supplied. JavaScript cannot create HttpOnly cookies; server-managed HttpOnly authentication requires a backend integration. JWT helpers decode payloads and inspect expiration without verifying signatures.
+Token utilities are defined in `src/libs/tokenStorage.ts`. Bearer access and refresh tokens are stored in localStorage in every environment — development, staging, and production alike. `tokenStorage` therefore has a single adapter; there is no cookie storage and no environment switch.
+
+localStorage is readable by any JavaScript running on the origin. A successful XSS attack can exfiltrate tokens, so localStorage tokens are **not** HttpOnly and are **not** intrinsically secure. HttpOnly, server-managed cookies require a backend contract this template does not assume. JWT helpers decode payloads and inspect expiration without verifying signatures.
+
+Setters take tokens only: `setAccessToken(token)`, `setRefreshToken(token)`, `setAuthTokens(accessToken, refreshToken?)`. There are no cookie options.
 
 `useUser` reads `/auth/me` through the shared query cache. Pending OTP sessions cannot access protected routes. Logout clears local tokens, pending verification state, and private query data even if the server request fails.
 
@@ -60,28 +64,21 @@ if (isValidUrl(userProvidedUrl)) {
 
 ## CSRF Protection
 
-### SameSite Cookies
+### Bearer Tokens Are Not Ambient Credentials
 
-Cookies are configured with `sameSite: "strict"`:
+Authentication uses an `Authorization: Bearer <token>` header. Browsers never attach it automatically, so a cross-site form post or image request cannot authenticate as the user. This template adds no CSRF token exchange because the backend contract does not use credential cookies.
 
-```typescript
-// Prevents cookies from being sent with cross-site requests
-document.cookie = `token=${token}; SameSite=Strict; Secure`;
-```
+If a future backend switches to cookie-based sessions, re-introduce CSRF protection then: `SameSite` cookies plus a token (double-submit or synchronizer) and CORS restrictions. Do not mix that change with the current Bearer flow.
 
 ### Request Headers
 
-Include CSRF token in requests if required by backend:
+The Axios client attaches the access token to non-auth requests:
 
 ```typescript
-api.interceptors.request.use((config) => {
-  const csrfToken = getCsrfToken();
-  if (csrfToken) {
-    config.headers["X-CSRF-Token"] = csrfToken;
-  }
-  return config;
-});
+config.headers.Authorization = `Bearer ${getAccessToken()}`;
 ```
+
+Add a CSRF header only when the selected backend requires one.
 
 ## Input Validation
 
@@ -208,7 +205,7 @@ Commit `package-lock.json` to ensure consistent installs.
 
 ### Authentication
 
-- [ ] Use secure token storage in production
+- [ ] Accept that localStorage Bearer tokens are XSS-reachable; harden XSS defenses instead of assuming the storage is safe
 - [ ] Validate token expiration
 - [ ] Clear tokens on logout/401
 - [ ] Use HTTPS only

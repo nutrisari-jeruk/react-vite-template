@@ -81,7 +81,7 @@ async function syncRegistryItems() {
     for (const file of item.files) {
       if (isTestFile(file.target)) continue;
 
-      const srcPath = path.join(ROOT, file.target);
+      const srcPath = path.join(ROOT, "apps/showcase", file.target);
       const templatePath = path.join(ROOT, "packages/cli", file.source);
 
       const result = await syncFile(srcPath, templatePath);
@@ -119,26 +119,62 @@ async function syncBaseFiles() {
   ];
 
   for (const [, source, target] of entries) {
-    // Skip src/ files in base template — they're intentionally minimal,
-    // not copies of the showcase src/
-    const sharedSource = target.startsWith("src/libs/") || target === "src/config/env.ts" || target === "src/tests/setup.ts" || target === "src/mocks/initialize.ts" || target === "src/mocks/browser.ts";
-    if ((target.startsWith("src/") && !sharedSource) || target === ".claude/settings.json") continue;
+    if (target === ".claude/settings.json") continue;
 
-    const srcPath = path.join(ROOT, target);
+    const isSharedSource =
+      target.startsWith("src/libs/") ||
+      target === "src/config/env.ts" ||
+      target === "src/tests/setup.ts" ||
+      target === "src/mocks/initialize.ts" ||
+      target === "src/mocks/browser.ts";
+
     const templatePath = path.join(TEMPLATES_DIR, source);
 
-    const result = await syncFile(srcPath, templatePath);
-    if (
-      result.status === "differ" ||
-      result.status === "missing_template" ||
-      result.status === "missing_source"
-    ) {
-      errors++;
-    } else if (result.status === "copied" || result.status === "ok") {
-      synced++;
+    if (isSharedSource) {
+      const showcaseSrcPath = path.join(ROOT, "apps/showcase", target);
+      const rootStarterPath = path.join(ROOT, target);
+
+      const starterResult = await syncFile(showcaseSrcPath, rootStarterPath);
+      if (
+        starterResult.status === "differ" ||
+        starterResult.status === "missing_template" ||
+        starterResult.status === "missing_source"
+      ) {
+        errors++;
+      } else if (
+        starterResult.status === "copied" ||
+        starterResult.status === "ok"
+      ) {
+        synced++;
+      }
+
+      const templateResult = await syncFile(showcaseSrcPath, templatePath);
+      if (
+        templateResult.status === "differ" ||
+        templateResult.status === "missing_template" ||
+        templateResult.status === "missing_source"
+      ) {
+        errors++;
+      } else if (
+        templateResult.status === "copied" ||
+        templateResult.status === "ok"
+      ) {
+        synced++;
+      }
+    } else {
+      const srcPath = path.join(ROOT, target);
+      const result = await syncFile(srcPath, templatePath);
+      if (
+        result.status === "differ" ||
+        result.status === "missing_template" ||
+        result.status === "missing_source"
+      ) {
+        errors++;
+      } else if (result.status === "copied" || result.status === "ok") {
+        synced++;
+      }
     }
   }
-
   return { errors, synced };
 }
 

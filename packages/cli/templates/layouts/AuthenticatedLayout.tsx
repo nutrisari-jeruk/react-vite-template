@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { AuthGuard } from "@/features/auth";
+import { AuthGuard } from "@/features/auth/session";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 

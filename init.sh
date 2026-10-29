@@ -15,8 +15,10 @@ npm run type-check
 
 echo "==> [3/4] Tests"
 npm run test:run
+npm run test:showcase
 
 echo "==> [4/4] Build"
 npm run build
+npm run build:showcase
 
 echo "==> All checks passed."

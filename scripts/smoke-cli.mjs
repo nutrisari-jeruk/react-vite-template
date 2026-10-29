@@ -43,7 +43,30 @@ if (supplied) {
 } else {
   // A fresh PWA scaffold supplies the superset of dependencies for every fixture.
   // Install once; each fixture has its own sources, manifest, output and tests.
-  command(["init", "dependencies", "--cwd", temp, "--pwa", "--yes"]);
+  command([
+    "init",
+    "dependencies",
+    "--cwd",
+    temp,
+    "--pwa",
+    "--yes",
+    "--skip-install",
+  ]);
+  const registryJson = JSON.parse(
+    fs.readFileSync(
+      path.join(root, "packages/cli/registry/registry.json"),
+      "utf8"
+    )
+  );
+  command([
+    "add",
+    ...registryJson.items.map((i) => i.name),
+    "--cwd",
+    path.join(temp, "dependencies"),
+    "--yes",
+    "--skip-install",
+  ]);
+  run("npm", ["install"], path.join(temp, "dependencies"));
   dependencies = path.join(temp, "dependencies/node_modules");
   assert.equal(
     fs.readFileSync(

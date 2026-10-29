@@ -11,7 +11,8 @@ This application uses a combination of state management approaches based on the 
 | Form State      | React Hook Form           |
 | UI State        | React useState/useReducer |
 | Local UI State  | React useState            |
-| Global UI State | Zustand (`src/stores/`)   |
+
+There is no global client-state store: no Zustand, no Redux. Lift state to the closest common owner, put navigation-relevant state in the URL, and keep server data in TanStack Query.
 
 ## Server State with TanStack Query
 
@@ -26,7 +27,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The shared client owns retry policy. Queries retry retryable errors; mutations default to `retry: false`. Authentication uses `useUser` and `QUERY_KEYS.AUTH.USER`; do not mirror user or token state into Zustand.
+The shared client owns retry policy. Queries retry retryable errors; mutations default to `retry: false`. Authentication uses `useUser` and `QUERY_KEYS.AUTH.USER`; do not mirror user or token state into component-local state stores.
 
 ### Query Keys
 

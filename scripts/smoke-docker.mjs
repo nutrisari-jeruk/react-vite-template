@@ -41,12 +41,14 @@ const requested = process.argv
   .find((arg) => arg.startsWith("--scenario="))
   ?.slice("--scenario=".length);
 assert.ok(
-  !requested || ["showcase", "plain", "pwa"].includes(requested),
+  !requested || ["starter", "showcase", "plain", "pwa"].includes(requested),
   "Unknown Docker scenario"
 );
-for (const scenario of requested ? [requested] : ["showcase", "plain", "pwa"]) {
+for (const scenario of requested
+  ? [requested === "showcase" ? "starter" : requested]
+  : ["starter", "plain", "pwa"]) {
   let cwd = root;
-  if (scenario !== "showcase") {
+  if (scenario !== "starter") {
     run(process.execPath, [
       cli,
       "init",

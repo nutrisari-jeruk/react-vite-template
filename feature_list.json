@@ -19,14 +19,14 @@
     {
       "id": "ui-components",
       "name": "UI Component Library",
-      "status": "in-progress",
+      "status": "done",
       "description": "Shared UI components with Tailwind + @base-ui/react primitives",
       "done_criteria": [
         "All components exported from src/components/ui/index.ts",
         "Co-located tests pass for every component",
         "Showcase page at /components renders all components"
       ],
-      "evidence": "26 components exist; 5 newest (Toast, Spinner, Tabs, Accordion, Progress) on feat/add-new-component branch awaiting merge",
+      "evidence": "All 26 components implemented with native CSS transitions and Base UI primitives in apps/showcase/; all tests pass",
       "dependencies": []
     },
     {

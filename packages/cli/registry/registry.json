@@ -238,8 +238,8 @@
           "target": "src/components/ui/alert/index.ts"
         }
       ],
-      "npmDependencies": ["motion"],
-      "registryDependencies": ["cn"],
+      "npmDependencies": [],
+      "registryDependencies": ["cn", "use-media-query"],
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": ["export { Alert } from \"./alert\";"]
@@ -259,8 +259,8 @@
           "target": "src/components/ui/toast/index.ts"
         }
       ],
-      "npmDependencies": ["motion"],
-      "registryDependencies": ["cn"],
+      "npmDependencies": [],
+      "registryDependencies": ["cn", "use-media-query"],
       "barrel": {
         "file": "src/components/ui/index.ts",
         "exports": [
@@ -283,7 +283,7 @@
           "target": "src/components/ui/spinner/index.ts"
         }
       ],
-      "npmDependencies": ["motion"],
+      "npmDependencies": [],
       "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
@@ -331,7 +331,7 @@
           "target": "src/components/ui/tabs/index.ts"
         }
       ],
-      "npmDependencies": ["@base-ui/react", "motion"],
+      "npmDependencies": ["@base-ui/react"],
       "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
@@ -354,7 +354,7 @@
           "target": "src/components/ui/accordion/index.ts"
         }
       ],
-      "npmDependencies": ["@base-ui/react", "motion"],
+      "npmDependencies": ["@base-ui/react"],
       "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
@@ -532,7 +532,7 @@
           "target": "src/components/ui/dialog/index.ts"
         }
       ],
-      "npmDependencies": ["@base-ui/react", "motion"],
+      "npmDependencies": ["@base-ui/react"],
       "registryDependencies": ["cn"],
       "barrel": {
         "file": "src/components/ui/index.ts",
@@ -745,6 +745,10 @@
         {
           "source": "templates/features/auth/types/index.ts",
           "target": "src/features/auth/types/index.ts"
+        },
+        {
+          "source": "templates/features/auth/session.ts",
+          "target": "src/features/auth/session.ts"
         },
         {
           "source": "templates/features/auth/index.ts",

@@ -10,7 +10,6 @@
  * ```
  */
 
-import { useReducedMotion } from "motion/react";
 import { cn } from "@/utils/cn";
 
 export type SpinnerSize = "xs" | "sm" | "md" | "lg" | "xl";
@@ -54,8 +53,6 @@ export function Spinner({
   label,
   className = "",
 }: SpinnerProps) {
-  const prefersReducedMotion = useReducedMotion();
-
   if (variant === "spinner") {
     return (
       <div
@@ -67,8 +64,7 @@ export function Spinner({
         <svg
           className={cn(
             sizeClasses[size],
-            "text-gray-400",
-            !prefersReducedMotion && "animate-spin"
+            "animate-spin text-gray-400 motion-reduce:animate-none"
           )}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -110,13 +106,9 @@ export function Spinner({
             className={cn(
               "rounded-full bg-current",
               dotSizeClasses[size],
-              !prefersReducedMotion && "animate-pulse"
+              "animate-pulse motion-reduce:animate-none"
             )}
-            style={
-              !prefersReducedMotion
-                ? { animationDelay: `${dotDelay[i]}ms` }
-                : undefined
-            }
+            style={{ animationDelay: `${dotDelay[i]}ms` }}
             aria-hidden="true"
           />
         ))}
@@ -145,13 +137,9 @@ export function Spinner({
             className={cn(
               "rounded-full bg-current",
               barSizeClasses[size].bar,
-              !prefersReducedMotion && "animate-pulse"
+              "animate-pulse motion-reduce:animate-none"
             )}
-            style={
-              !prefersReducedMotion
-                ? { animationDelay: `${barDelay[i]}ms` }
-                : undefined
-            }
+            style={{ animationDelay: `${barDelay[i]}ms` }}
             aria-hidden="true"
           />
         ))}

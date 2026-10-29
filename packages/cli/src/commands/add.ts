@@ -17,6 +17,24 @@ import {
 } from "../utils/files.js";
 import { wireRoute } from "../utils/route-wiring.js";
 
+const REGISTRY_NPM_DEP_VERSIONS: Record<string, string> = {
+  "@base-ui/react": "^1.1.0",
+  "@hookform/resolvers": "^5.2.2",
+  "@tanstack/react-query": "^5.100.14",
+  "@tanstack/react-query-devtools": "^5.96.1",
+  axios: "1.19.0",
+  clsx: "^2.1.1",
+  "lucide-react": "^0.562.0",
+  react: "^19.2.6",
+  "react-dom": "^19.2.6",
+  "react-error-boundary": "^6.1.1",
+  "react-hook-form": "^7.70.0",
+  "react-query-auth": "^2.4.3",
+  "react-router-dom": "^7.15.1",
+  "tailwind-merge": "^3.6.0",
+  zod: "^4.3.6",
+};
+
 interface AddOptions {
   cwd: string;
   all?: boolean;
@@ -218,7 +236,9 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
       const manifestPath = `${cwd}/package.json`;
       const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
       manifest.dependencies ??= {};
-      for (const dep of npmDeps) manifest.dependencies[dep] ??= "*";
+      for (const dep of npmDeps) {
+        manifest.dependencies[dep] ??= REGISTRY_NPM_DEP_VERSIONS[dep] ?? "*";
+      }
       writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
       if (!options.skipInstall)
         execFileSync(pm, ["install"], { cwd, stdio: "pipe" });

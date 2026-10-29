@@ -15,7 +15,6 @@
  */
 
 import { Accordion as BaseAccordion } from "@base-ui/react/accordion";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@/utils/cn";
 
 // ============================================================================
@@ -117,45 +116,44 @@ export function AccordionTrigger({
   children,
   className = "",
 }: AccordionTriggerProps) {
-  const prefersReducedMotion = useReducedMotion();
-
   return (
-    <BaseAccordion.Trigger
-      render={(props, triggerState) => {
-        const open = triggerState.open;
-
-        return (
-          <button
-            {...props}
-            className={cn(
-              "flex w-full items-center justify-between rounded-lg px-4 py-3 text-left font-medium transition-colors",
-              "hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none",
-              open && "bg-gray-50",
-              className
-            )}
-          >
-            {children}
-            <svg
+    <BaseAccordion.Header className="flex">
+      <BaseAccordion.Trigger
+        render={(props, triggerState) => {
+          const open = triggerState.open;
+          return (
+            <button
+              {...props}
               className={cn(
-                "size-4 shrink-0 transition-transform duration-200",
-                !prefersReducedMotion && open && "rotate-180"
+                "flex w-full items-center justify-between rounded-lg px-4 py-3 text-left font-medium transition-colors",
+                "hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none",
+                open && "bg-gray-50",
+                className
               )}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-        );
-      }}
-    />
+              {children}
+              <svg
+                className={cn(
+                  "size-4 shrink-0 transition-transform duration-200 motion-reduce:transition-none",
+                  open && "rotate-180"
+                )}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+          );
+        }}
+      />
+    </BaseAccordion.Header>
   );
 }
 
@@ -167,48 +165,15 @@ export function AccordionPanel({
   children,
   className = "",
 }: AccordionPanelProps) {
-  const prefersReducedMotion = useReducedMotion();
-
-  const animationConfig = prefersReducedMotion
-    ? {
-        initial: { height: 0, opacity: 1 },
-        animate: { height: "auto", opacity: 1 },
-        exit: { height: 0, opacity: 1 },
-        transition: { duration: 0 },
-      }
-    : {
-        initial: { height: 0, opacity: 0 },
-        animate: { height: "auto", opacity: 1 },
-        exit: { height: 0, opacity: 0 },
-        transition: { duration: 0.2, ease: "easeOut" as const },
-      };
-
   return (
     <BaseAccordion.Panel
-      render={(props, panelState) => {
-        const { id } = props;
-        const open = panelState.open;
-
-        return (
-          <AnimatePresence initial={false}>
-            {open && (
-              <motion.div
-                id={id}
-                initial={animationConfig.initial}
-                animate={animationConfig.animate}
-                exit={animationConfig.exit}
-                transition={animationConfig.transition}
-                className="overflow-hidden"
-              >
-                <div className={cn("px-4 pt-0 pb-4", className)}>
-                  {children}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        );
-      }}
-    />
+      className={cn(
+        "h-[var(--accordion-panel-height)] overflow-hidden text-sm transition-[height,opacity] duration-200 ease-out data-[ending-style]:h-0 data-[ending-style]:opacity-0 data-[starting-style]:h-0 data-[starting-style]:opacity-0 motion-reduce:transition-none",
+        className
+      )}
+    >
+      <div className="px-4 pt-0 pb-4">{children}</div>
+    </BaseAccordion.Panel>
   );
 }
 

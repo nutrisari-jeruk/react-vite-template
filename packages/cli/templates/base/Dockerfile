@@ -29,7 +29,7 @@ COPY . .
 ARG VITE_APP_ENV=production
 ARG VITE_API_URL=/api
 ENV VITE_APP_ENV=${VITE_APP_ENV} VITE_API_URL=${VITE_API_URL}
-# Both the showcase and generated projects provide this script.
+# Produces the static bundle this image serves; works at the repo root and in generated projects.
 RUN npm run build
 
 FROM nginx:alpine AS production

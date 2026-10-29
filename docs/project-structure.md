@@ -2,23 +2,37 @@
 
 ## Overview
 
-The project follows the **Bulletproof React** architecture — a feature-based structure that scales well and maintains clear boundaries between different parts of the application.
+The repository holds two runnable applications plus the CLI that scaffolds new projects.
+
+- **`src/`** — the minimal starter. This is what `npm run dev`, `npm run build`, and `npm run test:run` serve. It contains the app shell, one Home page, NotFound, empty barrels, and shared libs/config/utils.
+- **`apps/showcase/`** — the full showcase (workspace `@frontier/showcase`): every UI component, auth flows, examples, and the `/components` page. This is the canonical development source for registry items. Use `npm run dev:showcase`, `npm run build:showcase`, `npm run test:showcase`.
+- **`packages/cli/`** — `frontier-fe`, published to npm. Templates are generated from `apps/showcase/` (registry items) and `src/` (base files) by `scripts/sync-templates.mjs`.
+
+Neither app imports the other. `@` resolves to that app's own `src/` directory, so each has an independent tsconfig/Vite/Vitest project.
 
 ## Root Structure
 
 ```
-src/
+src/                      # Minimal starter (root app)
 ├── app/                  # Application layer
-├── components/           # Shared components
+├── components/           # Shared components (empty barrels + layouts)
 ├── config/               # Configuration
-├── features/             # Feature modules
-├── hooks/                # Shared hooks
+├── hooks/                # Shared hooks (empty barrel)
 ├── libs/                 # Core utilities
+├── mocks/                # MSW bootstrap
 ├── tests/                # Test utilities
 ├── types/                # Shared types
 ├── utils/                # Utility functions
 ├── main.tsx              # Entry point
 └── index.css             # Global styles
+
+apps/showcase/            # Full showcase workspace
+├── src/                  # Same layout, complete feature set
+├── index.html            # Showcase HTML entry
+├── public/               # Showcase-only assets
+├── vite.config.ts        # Showcase Vite config
+├── vitest.config.ts      # Showcase test config
+└── tsconfig.*.json       # Showcase TS projects
 ```
 
 ## Directory Details

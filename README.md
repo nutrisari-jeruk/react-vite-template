@@ -21,17 +21,11 @@ A production-ready React frontend template built with modern tools and best prac
 
 ### Animation Approach
 
-This project uses a **hybrid animation strategy** for optimal performance:
+Animations are CSS-only; no JavaScript animation library ships in this template.
 
-- **CSS animations** for simple, declarative animations:
-  - CSS keyframes for entrance animations (defined in `index.css`)
-  - Tailwind's built-in animations (e.g., `animate-spin`, `animate-pulse`)
-  - Custom animation utilities using Tailwind's `animate-[...]` syntax
-- **motion/react** (formerly framer-motion) for JavaScript-driven animations:
-  - Complex animations requiring JavaScript logic
-  - Scroll-triggered animations
-  - Interactive animations with state management
-  - Respects `prefers-reduced-motion` for accessibility
+- **CSS transitions** for component enter/exit: Base UI exposes `data-starting-style` and `data-ending-style` attributes (`transitionStatus`), so Dialog, Accordion, and Tabs animate from those attributes directly.
+- **CSS keyframes and Tailwind animations** for the rest (`animate-spin`, `animate-pulse`, `animate-[...]`).
+- **`motion-reduce:` variants** (`motion-reduce:transition-none`, `motion-reduce:animate-none`) handle `prefers-reduced-motion`. Components that need the preference in JavaScript use the `useMediaQuery` hook.
 
 ## Getting Started
 
@@ -378,7 +372,7 @@ The `Progress` component displays progress indicators with linear and circular v
 - Circular progress with size variants (`sm`, `md`, `lg`, `xl`)
 - Optional labels and percentage display
 - Built on @base-ui/react for accessibility
-- Smooth animations with motion/react
+- Smooth CSS width transitions
 
 ```typescript
 import { Progress } from '@/components/ui'
@@ -439,7 +433,7 @@ The `Accordion` component provides collapsible content sections using @base-ui/r
 
 - Controlled and uncontrolled modes
 - Single or multiple panel expansion modes
-- Animated expand/collapse with motion.div
+- Animated expand/collapse with CSS height transitions
 - Chevron rotation on expand
 - Compound API: Accordion, AccordionItem, AccordionTrigger, AccordionPanel
 
@@ -768,8 +762,7 @@ npm run test:coverage   # Run with coverage report
 
 ### Authentication
 
-- Secure token storage with cookies/localStorage
-- Environment-based storage strategy
+- Bearer token storage in localStorage for every environment (XSS-exposed by design; see [docs/security.md](./docs/security.md))
 - JWT token parsing and validation
 - Automatic token expiration tracking
 - Token refresh hooks
@@ -937,7 +930,7 @@ if (result.status === "otp-required") {
 `AuthGuard` waits for the session query and sends pending OTP sessions to `/otp`.
 Login and registration obtain the actual user ID from `/auth/me`; OTP completion refreshes that user even when the backend keeps the existing token.
 
-Token utilities live in `@/libs/tokenStorage`. Development and staging use localStorage; production uses JavaScript-managed cookies. These cookies remain accessible to JavaScript; HttpOnly cookies require backend support. JWT helpers decode payloads and inspect expiry; they do not verify signatures.
+Token utilities live in `@/libs/tokenStorage`. Bearer access and refresh tokens are stored in localStorage in every environment. localStorage is readable by any script on the origin, so token theft via XSS is possible; HttpOnly cookies require a backend contract this template does not assume. JWT helpers decode payloads and inspect expiry; they do not verify signatures.
 
 A 401 on an authenticated request triggers one shared refresh operation when a refresh token is available. Both rotated tokens are saved before requests retry. Failed refresh clears tokens and cached private data. Login, registration, logout, and refresh requests do not trigger refresh recursively. Refresh is request-driven; there is no interval hook.
 
@@ -982,7 +975,7 @@ function MyDialog() {
 
 - Built on Base UI for accessibility
 - Multiple sizes (sm, md, lg, xl, full)
-- Animated entry/exit with Framer Motion
+- Animated entry/exit with CSS transitions
 - Respects `prefers-reduced-motion`
 - Optional close button and footer
 

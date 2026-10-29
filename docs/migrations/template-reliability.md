@@ -1,5 +1,7 @@
 # Template reliability migration
 
+> **Superseded in part.** The cookie-based production token storage described below no longer exists, and the `Form`/`FormField`/`FormItem` wrappers were removed. See [lean-template.md](./lean-template.md) for the current behavior.
+
 This update changes source imports, authentication hooks, and DataTable selection props. Apply these changes to existing projects explicitly; `frontier-fe add` does not migrate application code or replace already-installed items.
 
 ## Source paths and generated projects

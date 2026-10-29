@@ -1,6 +1,6 @@
 # Docker Deployment
 
-The same Dockerfile supports the showcase and generated plain/PWA projects. Production runs the existing `nginx` image user on **container port 8080**, with a read-only root filesystem and writable `/tmp`. Compose continues publishing **host port 80** by default.
+The same Dockerfile supports the root starter and generated plain/PWA projects. Production runs the existing `nginx` image user on **container port 8080**, with a read-only root filesystem and writable `/tmp`. Compose continues publishing **host port 80** by default.
 
 ## Commands
 
@@ -25,7 +25,7 @@ The deployment helper remains available: `./deploy.sh -a build`, `./deploy.sh --
 The stages are `base → dependencies → builder → production`; `development` also inherits the cached dependency stage.
 
 - Dependencies include build tooling. With a package-lock.json, the image runs `npm ci`; a fresh scaffold without a lockfile uses `npm install`. Commit the generated lockfile for reproducible subsequent builds. Both commands retain the template’s existing `--legacy-peer-deps` resolution policy. Husky is disabled during image installation because Git metadata is excluded from the build context.
-- The builder runs `npm run build`, which exists in both the showcase and CLI-generated manifests. Vite's default build mode is production.
+- The builder runs `npm run build`, which exists in the root starter and in CLI-generated manifests. Vite's default build mode is production. The showcase is not containerized here; build it with `npm run build:showcase`.
 - `VITE_APP_ENV` and `VITE_API_URL` are public **build arguments**, embedded into the browser bundle. Compose forces `VITE_APP_ENV=production` and forwards `VITE_API_URL` from the shell or Compose .env, defaulting to `/api`. Runtime container environment variables cannot reconfigure an existing bundle.
 - Set `VITE_API_URL=https://your-api.example/api` before building to call an external backend. A relative `/api` requires your deployment gateway to route API traffic to the backend; this static frontend container does not provide an API proxy.
 - `.env` and local environment files are excluded from the image context. Other public Vite settings can be supplied in an environment-specific file such as `.env.production`. Never put secrets into VITE-prefixed values.
@@ -55,6 +55,6 @@ npm run smoke:docker
 npm run smoke:docker -- --scenario=pwa
 ```
 
-The smoke test builds the showcase plus fresh CLI-generated plain and PWA projects. It validates Compose and Nginx, waits for container health, checks the non-root identity, SPA deep links, real JavaScript assets, HTML/asset caching, missing-file errors and PWA output. Test containers have a read-only root, writable tmpfs, no Linux capabilities, and no published host ports. Containers and tagged test images are removed afterward; build caches and temporary logs remain for diagnosis.
+The smoke test builds the root starter plus fresh CLI-generated plain and PWA projects. It validates Compose and Nginx, waits for container health, checks the non-root identity, SPA deep links, real JavaScript assets, HTML/asset caching, missing-file errors and PWA output. Test containers have a read-only root, writable tmpfs, no Linux capabilities, and no published host ports. Containers and tagged test images are removed afterward; build caches and temporary logs remain for diagnosis. Run `npm run build:showcase` separately to verify the showcase bundle; it is not part of the Docker smoke.
 
 CI and the CLI publish workflow run this test before release.
